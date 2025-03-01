@@ -12,7 +12,7 @@ import Fingerprint from "@/components/steps/Fingerprint";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 export type VitalSignsType = {
   heartRate: number;
-  bloodPressure: string; // Example format: "120/80"
+  bloodPressure: string;
   temperature: number;
   respiratoryRate: number;
   oxygenSaturation: number;
@@ -39,7 +39,6 @@ export default function Home() {
     oxygenSaturation: 98,
   });
 
-  // Function to update vital signs
   const updateVitalSigns = (
     key: keyof VitalSignsType,
     value: number | string
@@ -87,14 +86,7 @@ export default function Home() {
             )}
           </div>
         </div>
-        <div className="flex justify-between">
-          {/* <Button className="w-24" onClick={prevStep}>
-            {t("previous")}
-          </Button>
-          <Button className="w-24" onClick={nextStep}>
-            {t("next")}
-          </Button> */}
-        </div>
+        <div className="flex justify-between"></div>
       </div>
       {step !== 0 && (
         <div className="fixed bottom-0 left-0 w-full h-[100px] bg-[#F1F3F5] mt-6">

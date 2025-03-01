@@ -6,7 +6,7 @@ export const messages = {
     previous: "Previous",
     put_finger_scanner: "Please put your finger on the scanner",
     put_hand_sensor: "Please put your hand in the pressure sensor",
-    chief_complaint_title: "Select Your Reason for Visit",
+    chief_complaint_title: "Select your reason for visit",
     pain_injuries: "Pain & Injuries",
     headache: "Headache",
     chest_pain: "Chest Pain",
