@@ -9,11 +9,11 @@ import {
   SelectAccordionItem,
   SelectAccordionTrigger,
 } from "@/components/ui/select-accordion";
-import { Input } from "../ui/input";
+import { Input } from "../../../components/ui/input";
 import {
   CustomRadioGroup,
   CustomRadioGroupItem,
-} from "../ui/custom-radio-group";
+} from "../../../components/ui/custom-radio-group";
 
 interface ReasonForVisitProps {
   reason: string;
