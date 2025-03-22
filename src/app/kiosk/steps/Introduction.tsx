@@ -1,6 +1,6 @@
 import { useLanguage } from "@/context/LanguageContext";
 import React from "react";
-import { Button } from "../ui/button";
+import { Button } from "../../../components/ui/button";
 
 // export default function Introduction() {
 //   const { t } = useLanguage();
