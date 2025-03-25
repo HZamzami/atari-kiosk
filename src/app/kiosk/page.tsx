@@ -18,7 +18,7 @@ export type VitalSignsType = {
   respiratoryRate: number;
   oxygenSaturation: number;
 };
-export default function Kiosk() {
+export default function page() {
   const { t, locale } = useLanguage();
   const [step, setStep] = useState(0);
   const [reason, setReason] = useState("");
