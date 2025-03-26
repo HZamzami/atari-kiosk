@@ -1,10 +1,20 @@
 import { useLanguage } from "@/context/LanguageContext";
 import React, { useState } from "react";
 import Image from "next/image";
+// React example with image reference
+const handleImageClick = (e) => {
+  const rect = e.target.getBoundingClientRect();
+  const x = e.clientX - rect.left;
+  const y = e.clientY - rect.top;
+  console.log(`Clicked at: ${x}, ${y}`);
+};
+type BodyZone = "head" | "chest" | "abdomen" | "arms" | "legs";
 export default function BodyMap() {
   const { t } = useLanguage();
   const [selectedPart, setSelectedPart] = useState(null);
-
+  const [selectedZone, setSelectedZone] = useState<BodyZone | null>(
+    null
+  );
   const bodyParts = {
     head: {
       name: "Head & Neck",
@@ -36,28 +46,29 @@ export default function BodyMap() {
         <img
           src="/front-m.webp"
           alt="Human body"
-          useMap="#bodymap"
+          // useMap="#bodymap"
           className="max-h-[500px] w-auto"
+          onClick={handleImageClick}
         />
 
         <map name="bodymap">
           <area
             shape="rect"
-            coords="120,0,180,60"
+            coords="100,0,175,80"
             alt="Head"
             onClick={() => setSelectedPart("head")}
             className="cursor-pointer"
           />
           <area
             shape="rect"
-            coords="120,60,180,150"
+            coords="95,80,175,135"
             alt="Chest"
             onClick={() => setSelectedPart("chest")}
             className="cursor-pointer"
           />
           <area
             shape="rect"
-            coords="120,150,180,230"
+            coords="100,135,170,220"
             alt="Abdomen"
             onClick={() => setSelectedPart("abdomen")}
             className="cursor-pointer"
@@ -77,7 +88,7 @@ export default function BodyMap() {
             className="cursor-pointer"
           />
           <area
-            shape="poly"
+            shape="rect"
             coords="110,230,170,230,200,400,80,400"
             alt="Legs"
             onClick={() => setSelectedPart("legs")}
