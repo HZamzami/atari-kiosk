@@ -3,13 +3,12 @@ import { List, Home } from "lucide-react";
 import {
   Sidebar,
   SidebarContent,
-  SidebarGroup,
-  SidebarGroupContent,
-  SidebarGroupLabel,
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
+  SidebarHeader,
 } from "@/components/ui/sidebar";
+import Link from "next/link";
 
 // Menu items.
 const items = [
@@ -20,7 +19,7 @@ const items = [
   },
   {
     title: "Records",
-    url: "#",
+    url: "records",
     icon: List,
   },
 ];
@@ -29,23 +28,19 @@ export function DashboardSidebar() {
   return (
     <Sidebar>
       <SidebarContent>
-        <SidebarGroup>
-          <SidebarGroupLabel>ATARI</SidebarGroupLabel>
-          <SidebarGroupContent>
-            <SidebarMenu>
-              {items.map((item) => (
-                <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton asChild>
-                    <a href={item.url}>
-                      <item.icon />
-                      <span>{item.title}</span>
-                    </a>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              ))}
-            </SidebarMenu>
-          </SidebarGroupContent>
-        </SidebarGroup>
+        <SidebarHeader>ATARI</SidebarHeader>
+        <SidebarMenu>
+          {items.map((item) => (
+            <SidebarMenuItem key={item.title}>
+              <SidebarMenuButton asChild>
+                <Link href={`/dashboard/${item.url}`}>
+                  <item.icon />
+                  <span className="text-base">{item.title}</span>
+                </Link>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+          ))}
+        </SidebarMenu>
       </SidebarContent>
     </Sidebar>
   );
