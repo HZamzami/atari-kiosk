@@ -1,6 +1,6 @@
 import { useLanguage } from "@/context/LanguageContext";
 import React, { useEffect, useState } from "react";
-import { VitalSignsType } from "@/app/page";
+import { VitalSignsType } from "@/types/vitalsigns";
 
 interface ThankYouProps {
   vitalSigns: VitalSignsType;
