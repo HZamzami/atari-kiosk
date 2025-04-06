@@ -22,7 +22,7 @@ export const messages = {
     sore_throat: "Sore Throat",
 
     gastrointestinal_issues: "Gastrointestinal Issues",
-    nausea: "Nausea/Vomiting",
+    nausea: "Nausea / Vomiting",
     diarrhea: "Diarrhea",
     constipation: "Constipation",
     blood_stool: "Blood in Stool",
@@ -30,7 +30,7 @@ export const messages = {
     neurological_issues: "Neurological Issues",
     dizziness: "Dizziness",
     seizures: "Seizures",
-    numbness: "Numbness/Weakness",
+    numbness: "Numbness / Weakness",
 
     fever_infections: "Fever & Infections",
     flu: "Flu-like Symptoms",
@@ -41,8 +41,15 @@ export const messages = {
     other_placeholder: "Enter your reason...",
     ctas_4_instruction:
       "Your condition is less urgent. Please wait in the designated area, and a nurse will assist you as soon as possible.",
-    generating_ticket: "Generating ticket...",
+    generating_ticket: "Take your ticket...",
     thank_you: "Thank you,",
+    fever: "Fever",
+    breathing: "Breathing",
+    general_pain: "General Pain",
+    wound_cut: "Wound / Cut",
+    fracture: "Fracture / Sprain",
+    body_map: "Body Map",
+    more: "More",
   },
   ar: {
     welcome: "مرحبًا بك في جهاز الطوارئ!",
@@ -67,7 +74,7 @@ export const messages = {
     sore_throat: "التهاب الحلق",
 
     gastrointestinal_issues: "مشاكل الجهاز الهضمي",
-    nausea: "غثيان/قيء",
+    nausea: "غثيان / قيء",
     diarrhea: "إسهال",
     constipation: "إمساك",
     blood_stool: "دم في البراز",
@@ -75,7 +82,7 @@ export const messages = {
     neurological_issues: "مشاكل عصبية",
     dizziness: "دوخة",
     seizures: "تشنجات",
-    numbness: "خدر/ضعف",
+    numbness: "خدر / ضعف",
 
     fever_infections: "الحمى والعدوى",
     flu: "أعراض الإنفلونزا",
@@ -86,7 +93,14 @@ export const messages = {
     other_placeholder: "أدخل السبب...",
     ctas_4_instruction:
       "حالتك ليست حرجة. يرجى الانتظار في المنطقة المحددة، وسوف يساعدك الممرض قريباً.",
-    generating_ticket: "جاري إنشاء التذكرة...",
+    generating_ticket: "استلم تذكرتك...",
     thank_you: "شكرا،",
+    fever: "حمى",
+    breathing: "التنفس",
+    general_pain: "ألم عام",
+    wound_cut: "جرح / قطع",
+    fracture: "كسر / التواء",
+    body_map: "خريطة الجسم",
+    more: "المزيد",
   },
 };

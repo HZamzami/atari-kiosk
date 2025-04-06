@@ -61,7 +61,7 @@ export default function ThankYou({
       <div className="bg-[#fafbfd] rounded-lg shadow-lg p-6 w-full max-w-lg text-center">
         {loading ? (
           <h2 className="text-2xl font-bold">
-            Evaluating triage level...
+            Evaluating triage level... (TODO)
           </h2>
         ) : error ? (
           <h2 className="text-2xl font-bold">CTAS 4</h2>
