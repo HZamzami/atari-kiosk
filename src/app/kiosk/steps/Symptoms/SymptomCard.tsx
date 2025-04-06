@@ -30,7 +30,7 @@ export default function SymptomCard({
             : "border-gray-300 bg-white"
         }
         hover:shadow-md transition
-        w-52 h-40
+        w-80 h-40
       `}
     >
       {isBodyMap && (

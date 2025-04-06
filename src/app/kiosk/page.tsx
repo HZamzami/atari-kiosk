@@ -11,13 +11,7 @@ import Stepper from "@/components/Stepper";
 import Fingerprint from "@/app/kiosk/steps/Fingerprint";
 import BodyMap from "@/app/kiosk/steps/BodyMap";
 import { ChevronLeft, ChevronRight } from "lucide-react";
-export type VitalSignsType = {
-  heartRate: number;
-  bloodPressure: string;
-  temperature: number;
-  respiratoryRate: number;
-  oxygenSaturation: number;
-};
+import { VitalSignsType } from "@/types/vitalsigns";
 export default function page() {
   const { t, locale } = useLanguage();
   const [step, setStep] = useState(0);
