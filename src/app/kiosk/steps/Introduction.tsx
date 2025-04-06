@@ -14,19 +14,19 @@ export default function Introduction({ onNext }: IntroductionProps) {
   const { setLocale } = useLanguage();
 
   return (
-    <div className="flex flex-col items-center justify-center h-full space-y-6">
+    <div className="flex flex-col items-center justify-center h-full space-y-8">
       <h1 className="text-4xl font-bold text-center">
         مرحبا بك في جهاز الطوارئ
         <br />
         Welcome to the Emergency Kiosk
       </h1>
-      <div className="flex gap-4">
+      <div className="flex gap-6">
         <Button
           onClick={() => {
             setLocale("en");
             onNext();
           }}
-          className="w-[120px] h-[72px] px-8 py-4 text-2xl font-semibold   rounded-lg  transition-colors"
+          className="w-[150px] h-[90px] px-8 py-4 text-2xl font-semibold   rounded-lg  transition-colors"
         >
           EN
         </Button>
@@ -35,7 +35,7 @@ export default function Introduction({ onNext }: IntroductionProps) {
             setLocale("ar");
             onNext();
           }}
-          className="w-[120px] h-[72px] px-8 py-4 text-2xl font-semibold   rounded-lg  transition-colors"
+          className="w-[150px] h-[90px] px-8 py-4 text-2xl font-semibold   rounded-lg  transition-colors"
         >
           ع
         </Button>

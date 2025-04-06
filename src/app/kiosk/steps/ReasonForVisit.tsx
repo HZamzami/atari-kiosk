@@ -14,6 +14,7 @@ import {
   CustomRadioGroup,
   CustomRadioGroupItem,
 } from "../../../components/ui/custom-radio-group";
+import SymptomsGrid from "./Symptoms/SymptomGrid";
 
 interface ReasonForVisitProps {
   reason: string;
@@ -37,7 +38,8 @@ export default function ReasonForVisit({
         {t("chief_complaint_title")}
       </h1>
       <div className="w-[80%]">
-        <SelectAccordion type="single" collapsible>
+        <SymptomsGrid />
+        {/* <SelectAccordion type="single" collapsible>
           {chiefComplaints.map((complaint) => (
             <SelectAccordionItem
               value={t(complaint.title)}
@@ -83,7 +85,7 @@ export default function ReasonForVisit({
               </SelectAccordionContent>
             </SelectAccordionItem>
           ))}
-        </SelectAccordion>
+        </SelectAccordion> */}
       </div>
     </div>
   );

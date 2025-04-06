@@ -48,10 +48,10 @@ export default function page() {
   };
   const steps = [
     "Intro",
-    "BodyMap",
     "Fingerprint",
     "Vital",
     "Reason",
+    "BodyMap",
     "Thank",
   ];
   const nextStep = () =>
@@ -67,31 +67,37 @@ export default function page() {
         <div className="flex-grow flex justify-between items-center">
           <div>
             {locale === "en" ? (
-              <ChevronLeft onClick={prevStep} />
+              <ChevronLeft className="w-12 h-12" onClick={prevStep} />
             ) : (
-              <ChevronRight onClick={prevStep} />
+              <ChevronRight
+                className="w-12 h-12"
+                onClick={prevStep}
+              />
             )}
           </div>
           <div className="flex-grow">
             {step === 0 && <Introduction onNext={nextStep} />}
-            {step === 1 && <BodyMap />}
-            {step === 2 && <Fingerprint />}
-            {step === 3 && <VitalSigns />}
-            {step === 4 && (
+            {step === 1 && <Fingerprint />}
+            {step === 2 && <VitalSigns />}
+            {step === 3 && (
               <ReasonForVisit
                 reason={reason}
                 handleReasonChange={handleReasonChange}
               />
             )}
+            {step === 4 && <BodyMap />}
             {step === 5 && (
               <ThankYou vitalSigns={vitalSigns} reason={reason} />
             )}
           </div>
           <div>
             {locale === "en" ? (
-              <ChevronRight onClick={nextStep} />
+              <ChevronRight
+                className="w-12 h-12"
+                onClick={nextStep}
+              />
             ) : (
-              <ChevronLeft onClick={nextStep} />
+              <ChevronLeft className="w-12 h-12" onClick={nextStep} />
             )}
           </div>
         </div>
