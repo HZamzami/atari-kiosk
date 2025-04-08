@@ -1,9 +1,15 @@
 import { useLanguage } from "@/context/LanguageContext";
 import React, { useState } from "react";
-import Image from "next/image";
 
-type BodyZone = "head" | "chest" | "abdomen" | "arms" | "legs";
-
+type BodyZone =
+  | "head"
+  | "chest"
+  | "abdomen"
+  | "arms"
+  | "legs"
+  | "back"
+  | "buttocks";
+type BodyView = "front" | "back";
 type BodyPartInfo = {
   name: string;
   symptoms: string[];
@@ -18,8 +24,8 @@ export default function BodyMap() {
   const [selectedZone, setSelectedZone] = useState<BodyZone | null>(
     null
   );
-
-  const bodyParts: Record<BodyZone, BodyPartInfo> = {
+  const [bodyView, setBodyView] = useState<BodyView>("back");
+  const frontBodyParts: Record<BodyZone, BodyPartInfo> = {
     head: {
       name: "Head & Neck",
       symptoms: ["Headache", "Dizziness", "Sore throat"],
@@ -64,6 +70,59 @@ export default function BodyMap() {
       },
     },
   };
+  const backBodyParts: Record<BodyZone, BodyPartInfo> = {
+    head: {
+      name: "Head & Neck",
+      symptoms: ["Headache", "Dizziness", "Sore throat"],
+      coords: {
+        shape: "rect",
+        areas: ["105,-10,180,65"],
+      },
+    },
+
+    back: {
+      name: "Back",
+      symptoms: ["Chest pain", "Shortness of breath", "Cough"],
+      coords: {
+        shape: "rect",
+        areas: ["105,65,180,185"],
+      },
+    },
+    buttocks: {
+      name: "Buttocks",
+      symptoms: ["Chest pain", "Shortness of breath", "Cough"],
+      coords: {
+        shape: "rect",
+        areas: ["95,185,190,240"],
+      },
+    },
+    arms: {
+      name: "Arms",
+      symptoms: ["Arm pain", "Weakness", "Numbness"],
+      coords: {
+        shape: "poly",
+        areas: [
+          "100,84, 100,150, 100,130, 80,165, 45,209, 20,258, -15,258, 0,209, 30,165, 60,120, 75,80",
+          "185,84, 185,150, 185,130, 200,165, 235,209, 260,258, 300,258, 285,209, 255,165, 225,120, 210,80",
+        ],
+      },
+    },
+    legs: {
+      name: "Legs",
+      symptoms: ["Leg pain", "Joint pain", "Swelling"],
+      coords: {
+        shape: "poly",
+        areas: ["90,240,50,500,235,500,195,240"],
+      },
+    },
+  };
+  const toggleBodyView = () => {
+    setBodyView(bodyView === "front" ? "back" : "front");
+    setSelectedZone(null); // Clear selected zone when flipping
+  };
+
+  const bodyParts =
+    bodyView === "front" ? frontBodyParts : backBodyParts;
 
   const renderOverlay = () => {
     if (!selectedZone) return null;
@@ -110,30 +169,61 @@ export default function BodyMap() {
       <h1 className="text-4xl font-bold">TODO</h1>
       <div className="relative">
         <img
-          src="/front-m.webp"
-          alt="Human body"
-          useMap="#bodymap"
+          src={
+            bodyView === "front" ? "/front-m.webp" : "/back-m.webp"
+          }
+          alt={
+            bodyView === "front"
+              ? "Human body front"
+              : "Human body back"
+          }
+          useMap={bodyView === "front" ? "#frontmap" : "#backmap"}
           className="max-h-[500px] w-auto"
         />
 
         {/* Render selected zone overlay */}
         {renderOverlay()}
 
-        <map name="bodymap">
-          {Object.entries(bodyParts).map(([zone, part]) =>
-            part.coords.areas.map((coords, index) => (
-              <area
-                key={`${zone}-${index}`}
-                shape={part.coords.shape}
-                coords={coords}
-                alt={part.name}
-                onClick={() => setSelectedZone(zone as BodyZone)}
-                className="cursor-pointer"
-              />
-            ))
-          )}
-        </map>
+        {bodyView === "front" ? (
+          <map name="frontmap">
+            {Object.entries(frontBodyParts).map(([zone, part]) =>
+              part.coords.areas.map((coords, index) => (
+                <area
+                  key={`${zone}-${index}`}
+                  shape={part.coords.shape}
+                  coords={coords}
+                  alt={part.name}
+                  onClick={() => setSelectedZone(zone as BodyZone)}
+                  className="cursor-pointer"
+                />
+              ))
+            )}
+          </map>
+        ) : (
+          <map name="backmap">
+            {Object.entries(backBodyParts).map(([zone, part]) =>
+              part.coords.areas.map((coords, index) => (
+                <area
+                  key={`${zone}-${index}`}
+                  shape={part.coords.shape}
+                  coords={coords}
+                  alt={part.name}
+                  onClick={() => setSelectedZone(zone as BodyZone)}
+                  className="cursor-pointer"
+                />
+              ))
+            )}
+          </map>
+        )}
       </div>
+      <button
+        onClick={toggleBodyView}
+        className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md transition-colors"
+      >
+        {bodyView === "front"
+          ? t("Show Back View")
+          : t("Show Front View")}
+      </button>
       {/* {selectedZone && <div>{bodyParts[selectedZone].name}</div>} */}
     </div>
   );

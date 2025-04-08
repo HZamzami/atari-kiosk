@@ -1,7 +1,6 @@
 "use client";
 import { useLanguage } from "@/context/LanguageContext";
 import LanguageSwitcher from "@/components/LanguageSwitcher";
-import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import Introduction from "@/app/kiosk/steps/Introduction";
 import ReasonForVisit from "@/app/kiosk/steps/ReasonForVisit";
@@ -11,38 +10,12 @@ import Stepper from "@/components/Stepper";
 import Fingerprint from "@/app/kiosk/steps/Fingerprint";
 import BodyMap from "@/app/kiosk/steps/BodyMap";
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import { VitalSignsType } from "@/types/vital-signs";
+import { PatientDataProvider } from "@/context/PatientDataContext";
 
 export default function page() {
   const { t, locale } = useLanguage();
   const [step, setStep] = useState(0);
-  const [reasons, setReasons] = useState<string[]>([]);
 
-  const handleReasonChange = (
-    value: string | React.ChangeEvent<HTMLInputElement>
-  ) => {
-    const newValue =
-      typeof value === "string" ? value : value.target.value;
-
-    // Avoid adding empty or duplicate values
-    if (newValue && !reasons.includes(newValue)) {
-      setReasons([...reasons, newValue]);
-    }
-  };
-  const [vitalSigns, setVitalSigns] = useState<VitalSignsType>({
-    heartRate: 72,
-    bloodPressure: "120/80",
-    temperature: 36.8,
-    respiratoryRate: 16,
-    oxygenSaturation: 98,
-  });
-
-  const updateVitalSigns = (
-    key: keyof VitalSignsType,
-    value: number | string
-  ) => {
-    setVitalSigns((prev) => ({ ...prev, [key]: value }));
-  };
   const steps = [
     "Intro",
     "Fingerprint",
@@ -56,57 +29,58 @@ export default function page() {
   const prevStep = () =>
     setStep((prevStep) => Math.max(prevStep - 1, 0));
   return (
-    <div className="flex flex-col min-h-screen w-full">
-      <div className=" container flex flex-col mx-auto flex-grow pb-[100px]">
-        <div className="ms-auto">
-          {/* {step !== 0 && <LanguageSwitcher />} */}
+    <PatientDataProvider>
+      <div className="flex flex-col min-h-screen w-full">
+        <div className=" container flex flex-col mx-auto flex-grow pb-[100px]">
+          <div className="ms-auto">
+            {/* {step !== 0 && <LanguageSwitcher />} */}
+          </div>
+          <div className="flex-grow flex justify-between items-center">
+            <div>
+              {locale === "en" ? (
+                <ChevronLeft
+                  className="w-12 h-12"
+                  onClick={prevStep}
+                />
+              ) : (
+                <ChevronRight
+                  className="w-12 h-12"
+                  onClick={prevStep}
+                />
+              )}
+            </div>
+            <div className="flex-grow">
+              {step === 0 && <Introduction onNext={nextStep} />}
+              {step === 1 && <Fingerprint />}
+              {step === 2 && <VitalSigns />}
+              {step === 3 && <ReasonForVisit />}
+              {step === 4 && <BodyMap />}
+              {step === 5 && <ThankYou />}
+            </div>
+            <div>
+              {locale === "en" ? (
+                <ChevronRight
+                  className="w-12 h-12"
+                  onClick={nextStep}
+                />
+              ) : (
+                <ChevronLeft
+                  className="w-12 h-12"
+                  onClick={nextStep}
+                />
+              )}
+            </div>
+          </div>
+          <div className="flex justify-between"></div>
         </div>
-        <div className="flex-grow flex justify-between items-center">
-          <div>
-            {locale === "en" ? (
-              <ChevronLeft className="w-12 h-12" onClick={prevStep} />
-            ) : (
-              <ChevronRight
-                className="w-12 h-12"
-                onClick={prevStep}
-              />
-            )}
+        {step !== 0 && (
+          <div className="fixed bottom-0 left-0 w-full h-[100px] bg-[#F1F3F5] mt-6">
+            <div className="container mx-auto h-full flex flex-col items-stretch justify-center">
+              <Stepper currentStep={step} steps={steps} />
+            </div>
           </div>
-          <div className="flex-grow">
-            {step === 0 && <Introduction onNext={nextStep} />}
-            {step === 1 && <Fingerprint />}
-            {step === 2 && <VitalSigns />}
-            {step === 3 && (
-              <ReasonForVisit
-                reasons={reasons}
-                handleReasonChange={handleReasonChange}
-              />
-            )}
-            {step === 4 && <BodyMap />}
-            {step === 5 && (
-              <ThankYou vitalSigns={vitalSigns} reasons={reasons} />
-            )}
-          </div>
-          <div>
-            {locale === "en" ? (
-              <ChevronRight
-                className="w-12 h-12"
-                onClick={nextStep}
-              />
-            ) : (
-              <ChevronLeft className="w-12 h-12" onClick={nextStep} />
-            )}
-          </div>
-        </div>
-        <div className="flex justify-between"></div>
+        )}
       </div>
-      {step !== 0 && (
-        <div className="fixed bottom-0 left-0 w-full h-[100px] bg-[#F1F3F5] mt-6">
-          <div className="container mx-auto h-full flex flex-col items-stretch justify-center">
-            <Stepper currentStep={step} steps={steps} />
-          </div>
-        </div>
-      )}
-    </div>
+    </PatientDataProvider>
   );
 }

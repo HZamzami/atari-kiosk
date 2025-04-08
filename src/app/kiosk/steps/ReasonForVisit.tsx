@@ -1,19 +1,11 @@
 import { useLanguage } from "@/context/LanguageContext";
 import React, { useEffect } from "react";
 
-import SymptomsGrid from "./Symptoms/SymptomGrid";
+import SymptomsGrid from "@/components/SymptomGrid";
+import { usePatientData } from "@/context/PatientDataContext";
 
-interface ReasonForVisitProps {
-  reasons: string[];
-  handleReasonChange: (
-    value: string | React.ChangeEvent<HTMLInputElement>
-  ) => void;
-}
-
-export default function ReasonForVisit({
-  reasons,
-  handleReasonChange,
-}: ReasonForVisitProps) {
+export default function ReasonForVisit() {
+  const { reasons, addReason, removeReason } = usePatientData();
   const { t, locale } = useLanguage();
   const isRTL = locale === "ar";
   useEffect(() => {

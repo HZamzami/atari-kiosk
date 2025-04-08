@@ -1,11 +1,7 @@
 import { useLanguage } from "@/context/LanguageContext";
 import React, { useEffect, useState } from "react";
 import { VitalSignsType } from "@/types/vital-signs";
-
-interface ThankYouProps {
-  vitalSigns: VitalSignsType;
-  reasons: string[];
-}
+import { usePatientData } from "@/context/PatientDataContext";
 
 interface CtasResponse {
   ctasLevel: number;
@@ -14,10 +10,8 @@ interface CtasResponse {
   recommendedActions: string[];
 }
 
-export default function ThankYou({
-  reasons,
-  vitalSigns,
-}: ThankYouProps) {
+export default function ThankYou() {
+  const { reasons, vitalSigns } = usePatientData();
   const { t } = useLanguage();
   const [ctasData, setCtasData] = useState<CtasResponse | null>(null);
   const [loading, setLoading] = useState(true);
