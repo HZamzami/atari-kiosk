@@ -4,7 +4,7 @@ import { VitalSignsType } from "@/types/vital-signs";
 
 interface ThankYouProps {
   vitalSigns: VitalSignsType;
-  reason: string;
+  reasons: string[];
 }
 
 interface CtasResponse {
@@ -15,7 +15,7 @@ interface CtasResponse {
 }
 
 export default function ThankYou({
-  reason,
+  reasons,
   vitalSigns,
 }: ThankYouProps) {
   const { t } = useLanguage();
@@ -32,7 +32,7 @@ export default function ThankYou({
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({ vitalSigns, reason }),
+          body: JSON.stringify({ vitalSigns, reasons }),
         });
 
         if (!response.ok) {
@@ -50,7 +50,7 @@ export default function ThankYou({
     };
 
     fetchCtasLevel();
-  }, [vitalSigns, reason]);
+  }, [vitalSigns, reasons]);
 
   const getCtasInstructions = (level: number) => {
     return t(`ctas_${level}_instruction`) || t("ctas_4_instruction");

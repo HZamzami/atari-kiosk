@@ -16,17 +16,19 @@ import { VitalSignsType } from "@/types/vital-signs";
 export default function page() {
   const { t, locale } = useLanguage();
   const [step, setStep] = useState(0);
-  const [reason, setReason] = useState("");
+  const [reasons, setReasons] = useState<string[]>([]);
+
   const handleReasonChange = (
     value: string | React.ChangeEvent<HTMLInputElement>
   ) => {
-    if (typeof value === "string") {
-      setReason(value);
-    } else {
-      setReason(value.target.value);
+    const newValue =
+      typeof value === "string" ? value : value.target.value;
+
+    // Avoid adding empty or duplicate values
+    if (newValue && !reasons.includes(newValue)) {
+      setReasons([...reasons, newValue]);
     }
   };
-
   const [vitalSigns, setVitalSigns] = useState<VitalSignsType>({
     heartRate: 72,
     bloodPressure: "120/80",
@@ -76,13 +78,13 @@ export default function page() {
             {step === 2 && <VitalSigns />}
             {step === 3 && (
               <ReasonForVisit
-                reason={reason}
+                reasons={reasons}
                 handleReasonChange={handleReasonChange}
               />
             )}
             {step === 4 && <BodyMap />}
             {step === 5 && (
-              <ThankYou vitalSigns={vitalSigns} reason={reason} />
+              <ThankYou vitalSigns={vitalSigns} reasons={reasons} />
             )}
           </div>
           <div>

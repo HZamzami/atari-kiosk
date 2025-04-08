@@ -2,7 +2,9 @@ import { NextRequest, NextResponse } from "next/server";
 import { Groq } from "groq-sdk";
 export async function POST(req: NextRequest) {
   try {
-    const { vitalSigns, reason } = await req.json();
+    const { vitalSigns, reasons } = await req.json();
+    const joinedReasons =
+      reasons?.join(", ") || "No complaint provided";
 
     const groq = new Groq({
       apiKey: process.env.GROQ_API_KEY,
@@ -18,7 +20,7 @@ export async function POST(req: NextRequest) {
        * Respiratory Rate: ${vitalSigns.respiratoryRate} breaths/min
        * Oxygen Saturation: ${vitalSigns.oxygenSaturation}%
 
-    2. Review the patient's chief complaint: "${reason}"
+    2. Review the patient's chief complaints: "${joinedReasons}"
 
     3. Consider each factor in the context of the patient's overall health, working through your clinical reasoning step by step:
        * Identify any abnormal vital signs that indicate an immediate risk
