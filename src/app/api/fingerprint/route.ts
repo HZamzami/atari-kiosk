@@ -13,7 +13,7 @@ export async function POST(request: Request) {
     }
     
     const nationalIDResponse = await fetch(server + "/absher?fingerprint=" + template, {
-      method: "GET"
+      method: "POST"
     });
     
     if (!nationalIDResponse.ok) {
