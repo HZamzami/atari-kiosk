@@ -1,18 +1,21 @@
-// components/SymptomsGrid.tsx
 "use client";
-import { useState } from "react";
 import { symptoms } from "@/lib/symptoms";
 import SymptomCard from "./SymptomCard";
-
-export default function SymptomsGrid() {
-  const [selectedKeys, setSelectedKeys] = useState<string[]>([]);
+import { usePatientData } from "@/context/PatientDataContext";
+interface SymptomsGridProps {
+  toggleViewBodyMap: () => void;
+}
+export default function SymptomsGrid({
+  toggleViewBodyMap,
+}: SymptomsGridProps) {
+  const { reasons, addReason, removeReason } = usePatientData();
 
   const toggle = (key: string) => {
-    setSelectedKeys((prev) =>
-      prev.includes(key)
-        ? prev.filter((k) => k !== key)
-        : [...prev, key]
-    );
+    if (reasons.includes(key)) {
+      removeReason(key);
+    } else {
+      addReason(key);
+    }
   };
 
   return (
@@ -20,19 +23,14 @@ export default function SymptomsGrid() {
       <div className="grid grid-cols-3 gap-4 justify-items-center">
         {symptoms.map((symptom) => (
           <SymptomCard
+          toggleViewBodyMap={toggleViewBodyMap}
             key={symptom.key}
             symptom={symptom}
-            selected={selectedKeys.includes(symptom.key)}
+            selected={reasons.includes(symptom.key)}
             onToggle={toggle}
           />
         ))}
       </div>
-      {/* {selectedKeys.length > 0 && (
-        <div className="mt-4">
-          <span className="font-medium">Selected:</span>{" "}
-          {selectedKeys.join(", ")}
-        </div>
-      )} */}
     </div>
   );
 }

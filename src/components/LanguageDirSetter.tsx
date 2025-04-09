@@ -7,7 +7,6 @@ export default function LanguageDirSetter() {
   const { locale } = useLanguage();
 
   useEffect(() => {
-    // Set the document's language and direction
     document.documentElement.setAttribute("lang", locale);
     document.documentElement.setAttribute(
       "dir",
@@ -15,5 +14,5 @@ export default function LanguageDirSetter() {
     );
   }, [locale]);
 
-  return null; // This component doesn't render anything visible
+  return null;
 }
