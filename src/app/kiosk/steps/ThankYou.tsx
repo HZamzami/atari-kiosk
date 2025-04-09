@@ -1,10 +1,12 @@
 import { useLanguage } from "@/context/LanguageContext";
 import React, { useEffect, useState } from "react";
 import { VitalSignsType } from "@/types/vital-signs";
+import { PatientDataType } from "@/types/patientData";
 
 interface ThankYouProps {
   vitalSigns: VitalSignsType;
   reason: string;
+  patientData?: PatientDataType;
 }
 
 interface CtasResponse {
