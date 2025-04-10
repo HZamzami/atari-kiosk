@@ -3,6 +3,10 @@ import { NextResponse } from "next/server";
 export async function POST(request: Request) {
   try {
     const { template } = await request.json();
+    const absher = {
+      national_id: "          ",
+      fingerprint: template
+    };
     const server = process.env.DB_API_URL;
     
     if (!template) {
@@ -12,8 +16,12 @@ export async function POST(request: Request) {
       );
     }
     
-    const nationalIDResponse = await fetch(server + "/absher?fingerprint=" + template, {
-      method: "POST"
+    const nationalIDResponse = await fetch(server + "/absher", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ absher })
     });
     
     if (!nationalIDResponse.ok) {
@@ -46,7 +54,7 @@ export async function POST(request: Request) {
     
     const patientData = await patientDataEHRResponse.json();
     
-    const patientDataResponse = await fetch(server + "/patients/patient?pateint_id=" + patientData.pateint_id, {
+    const patientDataResponse = await fetch(server + "/patients/patient?patient_id=" + patientData.pateint_id, {
       method: "GET"
     });
     
