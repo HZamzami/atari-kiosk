@@ -1,6 +1,13 @@
 import { NextRequest, NextResponse } from "next/server";
 import { Groq } from "groq-sdk";
 export async function POST(req: NextRequest) {
+  const headersList = req.headers;
+  const referer = headersList.get("referer") || "";
+  const isValidOrigin = referer.includes("localhost");
+  
+  if (!isValidOrigin) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 403 });
+  }
   try {
     const { vitalSigns, reason } = await req.json();
 
@@ -18,9 +25,9 @@ export async function POST(req: NextRequest) {
        * Respiratory Rate: ${vitalSigns.respiratoryRate} breaths/min
        * Oxygen Saturation: ${vitalSigns.oxygenSaturation}%
 
-    2. Review the patient's chief complaint: "${reason}"
+    2. Review the patient"s chief complaint: "${reason}"
 
-    3. Consider each factor in the context of the patient's overall health, working through your clinical reasoning step by step:
+    3. Consider each factor in the context of the patient"s overall health, working through your clinical reasoning step by step:
        * Identify any abnormal vital signs that indicate an immediate risk
        * Consider the urgency of the chief complaint, especially if it suggests life-threatening conditions
        * Evaluate the relationship between vital signs and the complaint
