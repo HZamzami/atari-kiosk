@@ -1,8 +1,16 @@
 import { useLanguage } from "@/context/LanguageContext";
+import { usePatientData } from "@/context/PatientDataContext";
+import { Trash } from "lucide-react";
 import React, { useState } from "react";
-import Image from "next/image";
 
-type BodyZone = "head" | "chest" | "abdomen" | "arms" | "legs";
+export type BodyZone =
+  | "head&neck"
+  | "chest"
+  | "abdomen"
+  | "arms"
+  | "legs"
+  | "back"
+  | "buttocks";
 
 type BodyPartInfo = {
   name: string;
@@ -13,36 +21,32 @@ type BodyPartInfo = {
   };
 };
 
-export default function BodyMap() {
+interface BodyMapProps {
+  toggleViewBodyMap: () => void;
+}
+
+export default function BodyMap({ toggleViewBodyMap }: BodyMapProps) {
   const { t } = useLanguage();
   const [selectedZone, setSelectedZone] = useState<BodyZone | null>(
     null
   );
+  const { reasons, addReason, removeReason } = usePatientData();
 
-  const bodyParts: Record<BodyZone, BodyPartInfo> = {
-    head: {
+  const frontBodyParts: Record<BodyZone, BodyPartInfo> = {
+    "head&neck": {
       name: "Head & Neck",
       symptoms: ["Headache", "Dizziness", "Sore throat"],
-      coords: {
-        shape: "rect",
-        areas: ["100,0,175,83"],
-      },
+      coords: { shape: "rect", areas: ["100,0,175,83"] },
     },
     chest: {
       name: "Chest",
       symptoms: ["Chest pain", "Shortness of breath", "Cough"],
-      coords: {
-        shape: "rect",
-        areas: ["95,83,175,135"],
-      },
+      coords: { shape: "rect", areas: ["95,83,175,135"] },
     },
     abdomen: {
       name: "Abdomen",
       symptoms: ["Stomach pain", "Nausea", "Bloating"],
-      coords: {
-        shape: "rect",
-        areas: ["100,135,175,220"],
-      },
+      coords: { shape: "rect", areas: ["100,135,175,220"] },
     },
     arms: {
       name: "Arms",
@@ -65,10 +69,50 @@ export default function BodyMap() {
     },
   };
 
-  const renderOverlay = () => {
+  const backBodyParts: Record<BodyZone, BodyPartInfo> = {
+    "head&neck": {
+      name: "Head & Neck",
+      symptoms: ["Headache", "Dizziness", "Sore throat"],
+      coords: { shape: "rect", areas: ["105,-10,180,65"] },
+    },
+    back: {
+      name: "Back",
+      symptoms: ["Back pain", "Stiffness", "Cough"],
+      coords: { shape: "rect", areas: ["105,65,180,185"] },
+    },
+    buttocks: {
+      name: "Buttocks",
+      symptoms: ["Tailbone pain", "Bruising"],
+      coords: { shape: "rect", areas: ["95,185,190,240"] },
+    },
+    arms: {
+      name: "Arms",
+      symptoms: ["Arm pain", "Weakness", "Numbness"],
+      coords: {
+        shape: "poly",
+        areas: [
+          "100,84, 100,150, 100,130, 80,165, 45,209, 20,258, -15,258, 0,209, 30,165, 60,120, 75,80",
+          "185,84, 185,150, 185,130, 200,165, 235,209, 260,258, 300,258, 285,209, 255,165, 225,120, 210,80",
+        ],
+      },
+    },
+    legs: {
+      name: "Legs",
+      symptoms: ["Leg pain", "Joint pain", "Swelling"],
+      coords: {
+        shape: "poly",
+        areas: ["90,240,50,500,235,500,195,240"],
+      },
+    },
+  };
+
+  const renderOverlay = (
+    bodyParts: Record<BodyZone, BodyPartInfo>
+  ) => {
     if (!selectedZone) return null;
 
     const part = bodyParts[selectedZone];
+    if (!part) return null;
 
     if (part.coords.shape === "rect") {
       return part.coords.areas.map((coords, index) => {
@@ -106,35 +150,93 @@ export default function BodyMap() {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center h-full space-y-6">
-      <h1 className="text-4xl font-bold">TODO</h1>
-      <div className="relative">
-        <img
-          src="/front-m.webp"
-          alt="Human body"
-          useMap="#bodymap"
-          className="max-h-[500px] w-auto"
-        />
-
-        {/* Render selected zone overlay */}
-        {renderOverlay()}
-
-        <map name="bodymap">
-          {Object.entries(bodyParts).map(([zone, part]) =>
-            part.coords.areas.map((coords, index) => (
-              <area
-                key={`${zone}-${index}`}
-                shape={part.coords.shape}
-                coords={coords}
-                alt={part.name}
-                onClick={() => setSelectedZone(zone as BodyZone)}
-                className="cursor-pointer"
-              />
-            ))
-          )}
-        </map>
+    <div className="grid grid-cols-5 gap-1">
+      <div className="flex flex-col justify-center items-center">
+        <div className="w-full h-full bg-gray-100">
+          <div className="p-4 w-full h-full">
+            {reasons.length === 0 ? (
+              <div className="w-full h-full flex justify-center items-center flex-col gap-8">
+                <img src="/symptoms.svg" alt="symptoms" />
+                <span>No Symptoms Added</span>
+              </div>
+            ) : (
+              <div className="w-full h-full flex flex-col items-center justify-center gap-6">
+                {reasons.map((reason) => (
+                  <div
+                    key={reason}
+                    className="flex items-center justify-between w-full border-b pb-2"
+                  >
+                    <span className="text-sm">{t(reason)}</span>
+                    <button
+                      onClick={() => removeReason(reason)}
+                      className="text-red-500 hover:text-red-700"
+                    >
+                      <Trash className="w-4 h-4" />
+                    </button>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        </div>
       </div>
-      {/* {selectedZone && <div>{bodyParts[selectedZone].name}</div>} */}
+
+      <div className="col-span-3 flex justify-center gap-10">
+        <div className="relative">
+          <img
+            src="/front-m.webp"
+            alt="Human body front"
+            useMap="#frontmap"
+            className="max-h-[500px] w-auto"
+          />
+          {renderOverlay(frontBodyParts)}
+          <map name="frontmap">
+            {Object.entries(frontBodyParts).map(([zone, part]) =>
+              part.coords.areas.map((coords, index) => (
+                <area
+                  key={`front-${zone}-${index}`}
+                  shape={part.coords.shape}
+                  coords={coords}
+                  alt={part.name}
+                  onClick={() => setSelectedZone(zone as BodyZone)}
+                  className="cursor-pointer"
+                />
+              ))
+            )}
+          </map>
+        </div>
+
+        <div className="relative">
+          <img
+            src="/back-m.webp"
+            alt="Human body back"
+            useMap="#backmap"
+            className="max-h-[500px] w-auto"
+          />
+          {renderOverlay(backBodyParts)}
+          <map name="backmap">
+            {Object.entries(backBodyParts).map(([zone, part]) =>
+              part.coords.areas.map((coords, index) => (
+                <area
+                  key={`back-${zone}-${index}`}
+                  shape={part.coords.shape}
+                  coords={coords}
+                  alt={part.name}
+                  onClick={() => setSelectedZone(zone as BodyZone)}
+                  className="cursor-pointer"
+                />
+              ))
+            )}
+          </map>
+        </div>
+      </div>
+
+      {/* Controls */}
+      <div className="flex flex-col justify-end items-center gap-6">
+        <button className=" border px-5 py-3 rounded-md w-20 justify-center items-center">
+          Skin
+        </button>
+      </div>
     </div>
   );
 }

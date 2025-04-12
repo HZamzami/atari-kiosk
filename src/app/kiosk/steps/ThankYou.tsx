@@ -1,13 +1,7 @@
 import { useLanguage } from "@/context/LanguageContext";
 import React, { useEffect, useState } from "react";
 import { VitalSignsType } from "@/types/vital-signs";
-import { PatientDataType } from "@/types/patientData";
-
-interface ThankYouProps {
-  vitalSigns: VitalSignsType;
-  reason: string;
-  patientData?: PatientDataType;
-}
+import { usePatientData } from "@/context/PatientDataContext";
 
 interface CtasResponse {
   ctasLevel: number;
@@ -16,10 +10,8 @@ interface CtasResponse {
   recommendedActions: string[];
 }
 
-export default function ThankYou({
-  reason,
-  vitalSigns,
-}: ThankYouProps) {
+export default function ThankYou() {
+  const { reasons, vitalSigns } = usePatientData();
   const { t } = useLanguage();
   const [ctasData, setCtasData] = useState<CtasResponse | null>(null);
   const [loading, setLoading] = useState(true);
@@ -34,7 +26,7 @@ export default function ThankYou({
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({ vitalSigns, reason }),
+          body: JSON.stringify({ vitalSigns, reasons }),
         });
 
         if (!response.ok) {
@@ -52,7 +44,7 @@ export default function ThankYou({
     };
 
     fetchCtasLevel();
-  }, [vitalSigns, reason]);
+  }, [vitalSigns, reasons]);
 
   const getCtasInstructions = (level: number) => {
     return t(`ctas_${level}_instruction`) || t("ctas_4_instruction");

@@ -2,25 +2,33 @@
 import { useLanguage } from "@/context/LanguageContext";
 import { Symptom } from "@/types/symptom";
 import { ArrowLeft, ArrowRight, MoreHorizontal } from "lucide-react";
-
 type SymptomCardProps = {
   symptom: Symptom;
   selected: boolean;
   onToggle: (key: string) => void;
+  toggleViewBodyMap: () => void;
 };
 
 export default function SymptomCard({
   symptom,
   selected,
   onToggle,
+  toggleViewBodyMap,
 }: SymptomCardProps) {
   const Icon = symptom.icon;
   const isBodyMap = symptom.key === "body_map";
   const { t, locale } = useLanguage();
   const isRTL = locale === "ar";
+  const handleClick = () => {
+    if (isBodyMap) {
+      toggleViewBodyMap();
+    } else {
+      onToggle(symptom.key);
+    }
+  };
   return (
     <button
-      onClick={() => onToggle(symptom.key)}
+      onClick={handleClick}
       className={`
         relative flex flex-col items-center justify-center p-4 rounded-lg border
         ${isBodyMap ? "border-dashed" : "border-solid"}
@@ -30,7 +38,7 @@ export default function SymptomCard({
             : "border-gray-300 bg-white"
         }
         hover:shadow-md transition
-        w-52 h-40
+        w-60 h-36
       `}
     >
       {isBodyMap && (

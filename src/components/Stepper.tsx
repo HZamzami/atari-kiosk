@@ -8,7 +8,7 @@ export default function Stepper({
   currentStep,
 }: StepperProps) {
   return (
-    <div className="flex justify-between items-center">
+    <div className="flex justify-between items-center px-[18px]">
       {steps.map((step, index) => (
         <div key={step} className="flex flex-col items-center">
           <div
