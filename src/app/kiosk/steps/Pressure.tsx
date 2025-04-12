@@ -2,7 +2,7 @@ import { useLanguage } from "@/context/LanguageContext";
 import React from "react";
 import Image from "next/image";
 
-export default function VitalSigns() {
+export default function Pressure() {
   const { t } = useLanguage();
   return (
     <div className="flex flex-col items-center justify-center h-full space-y-6">

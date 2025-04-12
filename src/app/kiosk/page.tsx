@@ -4,7 +4,7 @@ import LanguageSwitcher from "@/components/LanguageSwitcher";
 import { useState } from "react";
 import Introduction from "@/app/kiosk/steps/Introduction";
 import ReasonForVisit from "@/app/kiosk/steps/ReasonForVisit";
-import VitalSigns from "@/app/kiosk/steps/VitalSigns";
+import Pressure from "@/app/kiosk/steps/Pressure";
 import ThankYou from "@/app/kiosk/steps/ThankYou";
 import Stepper from "@/components/Stepper";
 import Fingerprint from "@/app/kiosk/steps/Fingerprint";
@@ -13,6 +13,8 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 import { PatientDataProvider } from "@/context/PatientDataContext";
 import { PersonalPatientDataType } from "@/types/patientData";
 import { Button } from "@/components/ui/button";
+import Temperature from "./steps/Temperature";
+import Oximeter from "./steps/Oximeter";
 
 export default function page() {
   const { t, locale } = useLanguage();
@@ -29,7 +31,15 @@ export default function page() {
   const [patientData, setPatientData] =
     useState<PersonalPatientDataType | null>(null);
 
-  const steps = ["Intro", "Fingerprint", "Vital", "Reason", "Thank"];
+  const steps = [
+    "Intro",
+    "Fingerprint",
+    "Temperature",
+    "Pressure",
+    "Oximeter",
+    "Reason",
+    "Thank",
+  ];
   const nextStep = () =>
     setStep((prevStep) => Math.min(prevStep + 1, steps.length - 1));
   const prevStep = () => {
@@ -76,7 +86,7 @@ export default function page() {
     <PatientDataProvider>
       <div className="flex flex-col min-h-screen w-full">
         <div
-          className={` container flex flex-col mx-auto flex-grow  px-4 sm:px-6 md:px-8 ${
+          className={`container flex flex-col mx-auto flex-grow  px-4 sm:px-6 md:px-8 ${
             showStepper && "pb-[80px]"
           }`}
         >
@@ -133,14 +143,16 @@ export default function page() {
                 />
               )}
 
-              {step === 2 && <VitalSigns />}
-              {step === 3 && (
+              {step === 2 && <Temperature />}
+              {step === 3 && <Pressure />}
+              {step === 4 && <Oximeter />}
+              {step === 5 && (
                 <ReasonForVisit
                   viewBodyMap={viewBodyMap}
                   toggleViewBodyMap={toggleViewBodyMap}
                 />
               )}
-              {step === 4 && <ThankYou />}
+              {step === 6 && <ThankYou />}
             </div>
             <div className={showRightArrow ? "" : "invisible"}>
               {locale === "en" ? (
