@@ -2,19 +2,18 @@ import { useLanguage } from "@/context/LanguageContext";
 import { usePatientData } from "@/context/PatientDataContext";
 import { Trash } from "lucide-react";
 import React, { useState } from "react";
-
+import { bodyZoneSymptoms } from "@/lib/symptoms";
+import BodySheet from "@/components/BodySheet";
 export type BodyZone =
   | "head&neck"
   | "chest"
   | "abdomen"
   | "arms"
   | "legs"
-  | "back"
-  | "buttocks";
+  | "back&buttocks";
 
 type BodyPartInfo = {
   name: string;
-  symptoms: string[];
   coords: {
     shape: "rect" | "poly";
     areas: string[];
@@ -30,27 +29,24 @@ export default function BodyMap({ toggleViewBodyMap }: BodyMapProps) {
   const [selectedZone, setSelectedZone] = useState<BodyZone | null>(
     null
   );
-  const { reasons, addReason, removeReason } = usePatientData();
+  const [sheetOpen, setSheetOpen] = useState(false);
+  const { reasons, removeReason, toggleReason } = usePatientData();
 
-  const frontBodyParts: Record<BodyZone, BodyPartInfo> = {
+  const frontBodyParts: Partial<Record<BodyZone, BodyPartInfo>> = {
     "head&neck": {
       name: "Head & Neck",
-      symptoms: ["Headache", "Dizziness", "Sore throat"],
       coords: { shape: "rect", areas: ["100,0,175,83"] },
     },
     chest: {
       name: "Chest",
-      symptoms: ["Chest pain", "Shortness of breath", "Cough"],
       coords: { shape: "rect", areas: ["95,83,175,135"] },
     },
     abdomen: {
       name: "Abdomen",
-      symptoms: ["Stomach pain", "Nausea", "Bloating"],
       coords: { shape: "rect", areas: ["100,135,175,220"] },
     },
     arms: {
       name: "Arms",
-      symptoms: ["Arm pain", "Weakness", "Numbness"],
       coords: {
         shape: "poly",
         areas: [
@@ -61,7 +57,6 @@ export default function BodyMap({ toggleViewBodyMap }: BodyMapProps) {
     },
     legs: {
       name: "Legs",
-      symptoms: ["Leg pain", "Joint pain", "Swelling"],
       coords: {
         shape: "poly",
         areas: ["95,220,55,500,220,500,180,220"],
@@ -69,25 +64,21 @@ export default function BodyMap({ toggleViewBodyMap }: BodyMapProps) {
     },
   };
 
-  const backBodyParts: Record<BodyZone, BodyPartInfo> = {
+  const backBodyParts: Partial<Record<BodyZone, BodyPartInfo>> = {
     "head&neck": {
       name: "Head & Neck",
-      symptoms: ["Headache", "Dizziness", "Sore throat"],
       coords: { shape: "rect", areas: ["105,-10,180,65"] },
     },
-    back: {
-      name: "Back",
-      symptoms: ["Back pain", "Stiffness", "Cough"],
-      coords: { shape: "rect", areas: ["105,65,180,185"] },
-    },
-    buttocks: {
-      name: "Buttocks",
-      symptoms: ["Tailbone pain", "Bruising"],
-      coords: { shape: "rect", areas: ["95,185,190,240"] },
+    "back&buttocks": {
+      name: "Back & Buttocks",
+
+      coords: {
+        shape: "rect",
+        areas: ["105,65,180,240"],
+      },
     },
     arms: {
       name: "Arms",
-      symptoms: ["Arm pain", "Weakness", "Numbness"],
       coords: {
         shape: "poly",
         areas: [
@@ -98,16 +89,22 @@ export default function BodyMap({ toggleViewBodyMap }: BodyMapProps) {
     },
     legs: {
       name: "Legs",
-      symptoms: ["Leg pain", "Joint pain", "Swelling"],
       coords: {
         shape: "poly",
         areas: ["90,240,50,500,235,500,195,240"],
       },
     },
   };
-
+  const getZoneSymptoms = (zone: BodyZone | null) => {
+    if (!zone || !bodyZoneSymptoms[zone]) return [];
+    return bodyZoneSymptoms[zone].map((symptom) => symptom.key);
+  };
+  const handleZoneClick = (zone: BodyZone) => {
+    setSelectedZone(zone);
+    setSheetOpen(true);
+  };
   const renderOverlay = (
-    bodyParts: Record<BodyZone, BodyPartInfo>
+    bodyParts: Partial<Record<BodyZone, BodyPartInfo>>
   ) => {
     if (!selectedZone) return null;
 
@@ -150,7 +147,7 @@ export default function BodyMap({ toggleViewBodyMap }: BodyMapProps) {
   };
 
   return (
-    <div className="grid grid-cols-5 gap-1">
+    <div className="grid grid-cols-3 gap-1">
       <div className="flex flex-col justify-center items-center">
         <div className="w-full h-full bg-gray-100">
           <div className="p-4 w-full h-full">
@@ -181,7 +178,7 @@ export default function BodyMap({ toggleViewBodyMap }: BodyMapProps) {
         </div>
       </div>
 
-      <div className="col-span-3 flex justify-center gap-10">
+      <div className="col-span-2 flex justify-center gap-10">
         <div className="relative">
           <img
             src="/front-m.webp"
@@ -198,7 +195,7 @@ export default function BodyMap({ toggleViewBodyMap }: BodyMapProps) {
                   shape={part.coords.shape}
                   coords={coords}
                   alt={part.name}
-                  onClick={() => setSelectedZone(zone as BodyZone)}
+                  onClick={() => handleZoneClick(zone as BodyZone)}
                   className="cursor-pointer"
                 />
               ))
@@ -222,7 +219,7 @@ export default function BodyMap({ toggleViewBodyMap }: BodyMapProps) {
                   shape={part.coords.shape}
                   coords={coords}
                   alt={part.name}
-                  onClick={() => setSelectedZone(zone as BodyZone)}
+                  onClick={() => handleZoneClick(zone as BodyZone)}
                   className="cursor-pointer"
                 />
               ))
@@ -231,12 +228,12 @@ export default function BodyMap({ toggleViewBodyMap }: BodyMapProps) {
         </div>
       </div>
 
-      {/* Controls */}
-      <div className="flex flex-col justify-end items-center gap-6">
-        <button className=" border px-5 py-3 rounded-md w-20 justify-center items-center">
-          Skin
-        </button>
-      </div>
+      <BodySheet
+        open={sheetOpen}
+        onOpenChange={setSheetOpen}
+        selectedZone={selectedZone}
+        toggleViewBodyMap={toggleViewBodyMap}
+      />
     </div>
   );
 }

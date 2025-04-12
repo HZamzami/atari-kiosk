@@ -8,26 +8,18 @@ interface SymptomsGridProps {
 export default function SymptomsGrid({
   toggleViewBodyMap,
 }: SymptomsGridProps) {
-  const { reasons, addReason, removeReason } = usePatientData();
-
-  const toggle = (key: string) => {
-    if (reasons.includes(key)) {
-      removeReason(key);
-    } else {
-      addReason(key);
-    }
-  };
+  const { reasons, toggleReason } = usePatientData();
 
   return (
     <div className="p-4">
       <div className="grid grid-cols-3 gap-4 justify-items-center">
         {symptoms.map((symptom) => (
           <SymptomCard
-          toggleViewBodyMap={toggleViewBodyMap}
+            toggleViewBodyMap={toggleViewBodyMap}
             key={symptom.key}
             symptom={symptom}
             selected={reasons.includes(symptom.key)}
-            onToggle={toggle}
+            onToggle={toggleReason}
           />
         ))}
       </div>
