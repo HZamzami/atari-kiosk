@@ -2,8 +2,10 @@
 
 import React, { createContext, useContext, useState } from "react";
 import { VitalSignsType } from "@/types/vital-signs";
+import { PersonalPatientDataType } from "@/types/patientData";
 
 type PatientDataContextType = {
+  personalInfo?: PersonalPatientDataType;
   reasons: string[];
   addReason: (reason: string) => void;
   removeReason: (reason: string) => void;

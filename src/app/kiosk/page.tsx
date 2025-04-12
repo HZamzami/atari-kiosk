@@ -11,6 +11,8 @@ import Fingerprint from "@/app/kiosk/steps/Fingerprint";
 import BodyMap from "@/app/kiosk/steps/BodyMap";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { PatientDataProvider } from "@/context/PatientDataContext";
+import { PersonalPatientDataType } from "@/types/patientData";
+import { Button } from "@/components/ui/button";
 
 export default function page() {
   const { t, locale } = useLanguage();
@@ -19,6 +21,14 @@ export default function page() {
   const toggleViewBodyMap = () => {
     setViewBodyMap(!viewBodyMap);
   };
+
+  const [reason, setReason] = useState("");
+  const [isVerifyingFingerprint, setIsVerifyingFingerprint] =
+    useState(true);
+  const [isPatientVerified, setIsPatientVerified] = useState(false);
+  const [patientData, setPatientData] =
+    useState<PersonalPatientDataType | null>(null);
+
   const steps = ["Intro", "Fingerprint", "Vital", "Reason", "Thank"];
   const nextStep = () =>
     setStep((prevStep) => Math.min(prevStep + 1, steps.length - 1));
@@ -29,6 +39,35 @@ export default function page() {
       setStep((prevStep) => Math.max(prevStep - 1, 0));
     }
   };
+  // Reset fingerprint verification state when moving away from that step
+  const handleStepChange = (newStep: number) => {
+    if (step === 1 && newStep !== 1) {
+      // Only allow proceeding from fingerprint step if verified or if going back
+      if (!isPatientVerified && newStep > step) {
+        return;
+      }
+    }
+
+    // Reset verification state when moving to fingerprint step
+    if (newStep === 1) {
+      setIsVerifyingFingerprint(true);
+    }
+
+    setStep(newStep);
+  };
+
+  const handleVerificationComplete = (
+    isVerified: boolean,
+    patientData?: PersonalPatientDataType
+  ) => {
+    setIsVerifyingFingerprint(false);
+    setIsPatientVerified(isVerified);
+
+    if (isVerified && patientData) {
+      setPatientData(patientData);
+    }
+  };
+
   const showStepper = step !== 0;
   const showLeftArrow = viewBodyMap;
   const showRightArrow =
@@ -41,6 +80,31 @@ export default function page() {
             showStepper && "pb-[80px]"
           }`}
         >
+          {patientData && (
+            <div className="bg-blue-50 p-3 rounded-md mb-4 flex justify-between items-center">
+              <div>
+                <span className="font-medium">{t("patient")}: </span>
+                <span>
+                  {patientData.first_name} {patientData.middle_name}{" "}
+                  {patientData.last_name}
+                </span>
+                <span className="mx-2">|</span>
+                <span className="font-medium">{t("dob")}: </span>
+                <span>{patientData.birth_date}</span>
+              </div>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => {
+                  setIsPatientVerified(false);
+                  setPatientData(null);
+                  setStep(1); // Go back to fingerprint step
+                }}
+              >
+                {t("change_patient")}
+              </Button>
+            </div>
+          )}
           <div className="ms-auto">
             {/* {step !== 0 && <LanguageSwitcher />} */}
           </div>
@@ -60,8 +124,15 @@ export default function page() {
             </div>
 
             <div className="flex-grow px-2">
-              {step === 0 && <Introduction onNext={nextStep} />}
-              {step === 1 && <Fingerprint />}
+              {step === 0 && (
+                <Introduction onNext={() => handleStepChange(1)} />
+              )}
+              {step === 1 && (
+                <Fingerprint
+                  onVerificationComplete={handleVerificationComplete}
+                />
+              )}
+
               {step === 2 && <VitalSigns />}
               {step === 3 && (
                 <ReasonForVisit

@@ -1,0 +1,103 @@
+import { NextResponse } from "next/server";
+
+export async function POST(request: Request) {
+  const headersList = request.headers;
+  const referer = headersList.get("referer") || "";
+  const isValidOrigin = referer.includes("localhost");
+  
+  if (!isValidOrigin) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 403 });
+  }
+  try {
+    const { template } = await request.json();
+    const absher = {
+      national_id: "          ",
+      fingerprint: template
+    };
+    const server = process.env.DB_API_URL;
+    
+    if (!template) {
+      return NextResponse.json(
+        { verified: false, message: "No fingerprint template provided" },
+        { status: 400 }
+      );
+    }
+    
+    const nationalIDResponse = await fetch(server + "/absher", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ absher })
+    });
+    
+    if (!nationalIDResponse.ok) {
+      const errorData = await nationalIDResponse.json();
+      return NextResponse.json(
+        { 
+          verified: false, 
+          message: JSON.stringify(errorData) || "Verification service error" 
+        },
+        { status: nationalIDResponse.status }
+      );
+    }
+    
+    const nationalID = await nationalIDResponse.json();
+    
+    const patientDataEHRResponse = await fetch(server + "/patients_ehr?national_id=" + nationalID.national_id, {
+      method: "GET"
+    });
+    
+    if (!patientDataEHRResponse.ok) {
+      const errorData = await patientDataEHRResponse.json();
+      return NextResponse.json(
+        { 
+          verified: false, 
+          message: JSON.stringify(errorData) || "EHR service error" 
+        },
+        { status: patientDataEHRResponse.status }
+      );
+    }
+    
+    const patientData = await patientDataEHRResponse.json();
+    
+    const patientDataResponse = await fetch(server + "/patients/patient?patient_id=" + patientData.pateint_id, {
+      method: "GET"
+    });
+    
+    if (!patientDataResponse.ok) {
+      const createLocalPatientResponse = await fetch(server + "/patients", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ patientData })
+      });
+
+      if (!createLocalPatientResponse.ok) {
+        const errorData = await createLocalPatientResponse.json();
+        return NextResponse.json(
+          { 
+            verified: false, 
+            message: JSON.stringify(errorData) || "Local service error" 
+          },
+          { status: createLocalPatientResponse.status }
+        );
+      }
+    }
+
+    const patient = await patientDataResponse.json();
+
+    return NextResponse.json({
+      verified: true,
+      patientData: patient,
+      message: "Fingerprint verified successfully"
+    });
+  } catch (error) {
+    console.error("Fingerprint verification error:", error);
+    return NextResponse.json(
+      { verified: false, message: "Internal server error" },
+      { status: 500 }
+    );
+  }
+}
