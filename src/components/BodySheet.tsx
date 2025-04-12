@@ -7,6 +7,7 @@ import {
   SheetHeader,
   SheetTitle,
   SheetDescription,
+  SheetClose,
 } from "@/components/ui/sheet";
 import SymptomCard from "@/components/SymptomCard";
 import React from "react";
@@ -60,14 +61,15 @@ export default function BodySheet({
         <SheetHeader className="space-y-0">
           <SheetTitle>{t(getZoneName(selectedZone))}</SheetTitle>
 
-          <div className="flex justify-between mt-0">
-            <button className="text-red-500">Cancel</button>
-            <button className="text-green-400">Done</button>
+          <div className="ms-auto">
+            <SheetClose className="border border-green-400 text-green-400  px-4 py-1 rounded-md">
+              {t("done")}
+            </SheetClose>
           </div>
         </SheetHeader>
 
         <div className="mt-6 overflow-x-auto ">
-          <div className="flex space-x-4 px-1 justify-center">
+          <div className="flex gap-4 px-1 justify-center">
             {zoneSymptoms.map((symptom) => (
               <SymptomCard
                 key={symptom.key}

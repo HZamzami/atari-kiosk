@@ -230,7 +230,12 @@ export default function BodyMap({ toggleViewBodyMap }: BodyMapProps) {
 
       <BodySheet
         open={sheetOpen}
-        onOpenChange={setSheetOpen}
+        onOpenChange={(open) => {
+          setSheetOpen(open);
+          if (!open) {
+            setSelectedZone(null);
+          }
+        }}
         selectedZone={selectedZone}
         toggleViewBodyMap={toggleViewBodyMap}
       />

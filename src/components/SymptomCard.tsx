@@ -1,7 +1,8 @@
 "use client";
 import { useLanguage } from "@/context/LanguageContext";
 import { Symptom } from "@/types/symptom";
-import { ArrowLeft, ArrowRight, MoreHorizontal } from "lucide-react";
+import { ArrowLeft, ArrowRight, X } from "lucide-react";
+
 type SymptomCardProps = {
   symptom: Symptom;
   selected: boolean;
@@ -19,6 +20,7 @@ export default function SymptomCard({
   const isBodyMap = symptom.key === "body_map";
   const { t, locale } = useLanguage();
   const isRTL = locale === "ar";
+
   const handleClick = () => {
     if (isBodyMap) {
       toggleViewBodyMap();
@@ -26,6 +28,7 @@ export default function SymptomCard({
       onToggle(symptom.key);
     }
   };
+
   return (
     <button
       onClick={handleClick}
@@ -41,6 +44,23 @@ export default function SymptomCard({
         w-60 h-36
       `}
     >
+      {/* Only show X indicator when selected */}
+      {!isBodyMap && selected && (
+        <div
+          className={`absolute top-2 ${isRTL ? "left-2" : "right-2"}`}
+        >
+          <div className="w-4 h-4 rounded-full border border-red-600 flex items-center justify-center bg-red-100">
+            <X className="w-3 h-3 text-red-600" />
+          </div>
+        </div>
+      )}
+      {!isBodyMap && !selected && (
+        <div
+          className={`absolute top-2 ${isRTL ? "left-2" : "right-2"}`}
+        >
+          <div className="w-4 h-4 border border-gray-400 rounded-full" />
+        </div>
+      )}
       {isBodyMap && (
         <div
           className={`absolute bottom-2 flex items-center text-sm text-gray-700 bg-gray-100 px-2 py-1 rounded-full ${

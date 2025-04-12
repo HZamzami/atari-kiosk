@@ -60,6 +60,7 @@ export const messages = {
     arm_pain: "Arm Pain",
     leg_pain: "Leg Pain",
     buttock_pain: "Buttock Pain",
+    done: "Done",
   },
   ar: {
     welcome: "مرحبًا بك في جهاز الطوارئ!",
@@ -122,5 +123,6 @@ export const messages = {
     arm_pain: "ألم في الذراع",
     leg_pain: "ألم في الساق",
     buttock_pain: "ألم في الأرداف",
+    done: "تم",
   },
 };
