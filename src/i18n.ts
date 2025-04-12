@@ -42,7 +42,8 @@ export const messages = {
     other_placeholder: "Enter your reason...",
     ctas_4_instruction:
       "Your condition is less urgent. Please wait in the designated area, and a nurse will assist you as soon as possible.",
-    generating_ticket: "Take your ticket...",
+    generating_ticket: "Generating ticket...",
+    take_your_ticket: "Take your ticket",
     thank_you: "Thank you,",
     fever: "Fever",
     breathing: "Breathing",
@@ -61,6 +62,11 @@ export const messages = {
     leg_pain: "Leg Pain",
     buttock_pain: "Buttock Pain",
     done: "Done",
+    temperature: "Temperature",
+    heartRate: "Heart Rate",
+    respiratoryRate: "Respiratory Rate",
+    bloodPressure: "Blood Pressure",
+    oxygenSaturation: "Oxygen Saturation",
   },
   ar: {
     welcome: "مرحبًا بك في جهاز الطوارئ!",
@@ -105,7 +111,8 @@ export const messages = {
     other_placeholder: "أدخل السبب...",
     ctas_4_instruction:
       "حالتك ليست حرجة. يرجى الانتظار في المنطقة المحددة، وسوف يساعدك الممرض قريباً.",
-    generating_ticket: "استلم تذكرتك...",
+    take_your_ticket: "استلم تذكرتك",
+    generating_ticket: "جاري إنشاء التذكرة...",
     thank_you: "شكرا،",
     fever: "حمى",
     breathing: "التنفس",
@@ -124,5 +131,10 @@ export const messages = {
     leg_pain: "ألم في الساق",
     buttock_pain: "ألم في الأرداف",
     done: "تم",
+    temperature: "درجة الحرارة",
+    heartRate: "معدل ضربات القلب",
+    respiratoryRate: "معدل التنفس",
+    bloodPressure: "ضغط الدم",
+    oxygenSaturation: "تشبع الأكسجين",
   },
 };
