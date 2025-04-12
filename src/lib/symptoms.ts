@@ -50,6 +50,8 @@ export const bodyZoneSymptoms: Record<BodyZone, Symptom[]> = {
     { key: "leg_pain", icon: Footprints },
     getSymptom("fracture"),
   ],
-  back: [{ key: "back_pain", icon: Backpack }],
-  buttocks: [{ key: "buttock_pain", icon: Bone }],
+  "back&buttocks": [
+    { key: "back_pain", icon: Backpack },
+    { key: "buttock_pain", icon: Bone },
+  ],
 };

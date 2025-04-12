@@ -9,6 +9,7 @@ type PatientDataContextType = {
   reasons: string[];
   addReason: (reason: string) => void;
   removeReason: (reason: string) => void;
+  toggleReason: (reason: string) => void;
   vitalSigns: VitalSignsType;
   updateVitalSign: (
     key: keyof VitalSignsType,
@@ -41,6 +42,13 @@ export const PatientDataProvider: React.FC<{
   const removeReason = (reason: string) => {
     setReasons(reasons.filter((r) => r !== reason));
   };
+  const toggleReason = (reason: string) => {
+    if (reasons.includes(reason)) {
+      removeReason(reason);
+    } else {
+      addReason(reason);
+    }
+  };
 
   const updateVitalSign = (
     key: keyof VitalSignsType,
@@ -55,6 +63,7 @@ export const PatientDataProvider: React.FC<{
         reasons,
         addReason,
         removeReason,
+        toggleReason,
         vitalSigns,
         updateVitalSign,
       }}
