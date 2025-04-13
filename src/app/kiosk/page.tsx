@@ -10,7 +10,10 @@ import Stepper from "@/components/Stepper";
 import Fingerprint from "@/app/kiosk/steps/Fingerprint";
 import BodyMap from "@/app/kiosk/steps/BodyMap";
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import { PatientDataProvider } from "@/context/PatientDataContext";
+import {
+  PatientDataProvider,
+  usePatientData,
+} from "@/context/PatientDataContext";
 import { PersonalPatientDataType } from "@/types/patientData";
 import { Button } from "@/components/ui/button";
 import Temperature from "./steps/Temperature";
@@ -24,12 +27,11 @@ export default function page() {
     setViewBodyMap(!viewBodyMap);
   };
 
-  const [reason, setReason] = useState("");
   const [isVerifyingFingerprint, setIsVerifyingFingerprint] =
     useState(true);
   const [isPatientVerified, setIsPatientVerified] = useState(false);
-  const [patientData, setPatientData] =
-    useState<PersonalPatientDataType | null>(null);
+  const { personalInfo, setPersonalInfo, resetAll } =
+    usePatientData();
 
   const steps = [
     "Intro",
@@ -68,13 +70,13 @@ export default function page() {
 
   const handleVerificationComplete = (
     isVerified: boolean,
-    patientData?: PersonalPatientDataType
+    personalInfo?: PersonalPatientDataType
   ) => {
     setIsVerifyingFingerprint(false);
     setIsPatientVerified(isVerified);
 
-    if (isVerified && patientData) {
-      setPatientData(patientData);
+    if (isVerified && personalInfo) {
+      setPersonalInfo(personalInfo);
     }
   };
 
@@ -90,24 +92,24 @@ export default function page() {
             showStepper && "pb-[80px]"
           }`}
         >
-          {patientData && (
+          {personalInfo && (
             <div className="bg-blue-50 p-3 rounded-md mb-4 flex justify-between items-center">
               <div>
                 <span className="font-medium">{t("patient")}: </span>
                 <span>
-                  {patientData.first_name} {patientData.middle_name}{" "}
-                  {patientData.last_name}
+                  {personalInfo.first_name} {personalInfo.middle_name}{" "}
+                  {personalInfo.last_name}
                 </span>
                 <span className="mx-2">|</span>
                 <span className="font-medium">{t("dob")}: </span>
-                <span>{patientData.birth_date}</span>
+                <span>{personalInfo.birth_date}</span>
               </div>
               <Button
                 variant="outline"
                 size="sm"
                 onClick={() => {
                   setIsPatientVerified(false);
-                  setPatientData(null);
+                  setPersonalInfo(null);
                   setStep(1); // Go back to fingerprint step
                 }}
               >
