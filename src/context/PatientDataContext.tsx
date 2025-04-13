@@ -5,7 +5,8 @@ import { VitalSignsType } from "@/types/vital-signs";
 import { PersonalPatientDataType } from "@/types/patientData";
 
 type PatientDataContextType = {
-  personalInfo?: PersonalPatientDataType;
+  personalInfo: PersonalPatientDataType | null;
+  setPersonalInfo: (info: PersonalPatientDataType | null) => void;
   reasons: string[];
   addReason: (reason: string) => void;
   removeReason: (reason: string) => void;
@@ -15,6 +16,7 @@ type PatientDataContextType = {
     key: keyof VitalSignsType,
     value: number | string
   ) => void;
+  resetAll: () => void;
 };
 
 const PatientDataContext = createContext<
@@ -25,6 +27,9 @@ export const PatientDataProvider: React.FC<{
   children: React.ReactNode;
 }> = ({ children }) => {
   const [reasons, setReasons] = useState<string[]>([]);
+  const [personalInfo, setPersonalInfo] =
+    useState<PersonalPatientDataType | null>(null);
+
   const [vitalSigns, setVitalSigns] = useState<VitalSignsType>({
     heartRate: 72,
     bloodPressure: "120/80",
@@ -56,16 +61,29 @@ export const PatientDataProvider: React.FC<{
   ) => {
     setVitalSigns((prev) => ({ ...prev, [key]: value }));
   };
-
+  const resetAll = () => {
+    setPersonalInfo(null);
+    setReasons([]);
+    setVitalSigns({
+      heartRate: 72,
+      bloodPressure: "120/80",
+      temperature: 36.8,
+      respiratoryRate: 16,
+      oxygenSaturation: 98,
+    });
+  };
   return (
     <PatientDataContext.Provider
       value={{
+        personalInfo,
+        setPersonalInfo,
         reasons,
         addReason,
         removeReason,
         toggleReason,
         vitalSigns,
         updateVitalSign,
+        resetAll,
       }}
     >
       {children}

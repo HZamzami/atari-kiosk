@@ -40,7 +40,15 @@ export const messages = {
 
     other: "Other",
     other_placeholder: "Enter your reason...",
+    ctas_1_instruction:
+      "Your condition is less urgent. Please wait in the designated area, and a nurse will assist you as soon as possible.",
+    ctas_2_instruction:
+      "Your condition is less urgent. Please wait in the designated area, and a nurse will assist you as soon as possible.",
+    ctas_3_instruction:
+      "Your condition is less urgent. Please wait in the designated area, and a nurse will assist you as soon as possible.",
     ctas_4_instruction:
+      "Your condition is less urgent. Please wait in the designated area, and a nurse will assist you as soon as possible.",
+    ctas_5_instruction:
       "Your condition is less urgent. Please wait in the designated area, and a nurse will assist you as soon as possible.",
     generating_ticket: "Generating ticket...",
     take_your_ticket: "Take your ticket",
@@ -67,6 +75,7 @@ export const messages = {
     respiratoryRate: "Respiratory Rate",
     bloodPressure: "Blood Pressure",
     oxygenSaturation: "Oxygen Saturation",
+    exit: "Exit",
   },
   ar: {
     welcome: "مرحبًا بك في جهاز الطوارئ!",
@@ -136,5 +145,6 @@ export const messages = {
     respiratoryRate: "معدل التنفس",
     bloodPressure: "ضغط الدم",
     oxygenSaturation: "تشبع الأكسجين",
+    exit: "إلغاء",
   },
 };
