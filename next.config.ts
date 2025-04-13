@@ -10,9 +10,29 @@ const nextConfig: NextConfig = {
   },
   experimental: {
     mdxRs: true,
+    turbo: {
+      rules: {
+        // Configure Turbopack to handle SVGs
+        "*.svg": ["@svgr/webpack"],
+      },
+    },
   },
   env: {
     //
+  },
+  webpack(config) {
+    config.module.rules.push({
+      test: /\.svg$/,
+      use: [
+        {
+          loader: "@svgr/webpack",
+          options: {
+            native: true,
+          },
+        },
+      ],
+    });
+    return config;
   },
 };
 
