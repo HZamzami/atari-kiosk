@@ -15,20 +15,26 @@ import {
   Footprints,
   Backpack,
   Toilet,
+  Octagon,
 } from "lucide-react";
 import { Symptom } from "@/types/symptom";
 import { BodyZone } from "@/app/kiosk/steps/BodyMap";
-
+import Dizziness from "@/components/icons/Dizziness";
+import IconMdiStomach from "@/components/icons/Stomach";
+import ToiletStop from "@/components/icons/ToiletStop";
+import ToiletDroplet from "@/components/icons/ToiletDroplet";
+import Arm from "@/components/icons/Arm";
+import Shoulder from "@/components/icons/Shoulder";
 export const symptoms: Symptom[] = [
   { key: "fever", icon: Thermometer },
   { key: "breathing_difficulties", icon: AirVent },
   { key: "headache", icon: Brain },
   { key: "chest_pain", icon: Heart },
   { key: "nausea_vomiting", icon: Frown },
-  { key: "dizziness_weakness", icon: AlertTriangle },
+  { key: "dizziness_weakness", icon: Dizziness },
   { key: "wound_cut", icon: Droplet },
   { key: "fracture", icon: Bone },
-  { key: "abdominal_pain", icon: Frown },
+  { key: "abdominal_pain", icon: IconMdiStomach },
 
   { key: "body_map", icon: PersonStanding },
 ];
@@ -54,13 +60,13 @@ export const bodyZoneSymptoms: Record<BodyZone, Symptom[]> = {
   abdomen: [
     getSymptom("nausea_vomiting"),
     getSymptom("abdominal_pain"),
-    { key: "diarrhea", icon: Toilet },
-    { key: "constipation", icon: Toilet },
+    { key: "diarrhea", icon: ToiletDroplet },
+    { key: "constipation", icon: ToiletStop },
   ],
   arms: [
-    { key: "arm_pain", icon: Hand },
+    { key: "arm_pain", icon: Arm },
     getSymptom("fracture"),
-    { key: "shoulder_pain", icon: Frown },
+    { key: "shoulder_pain", icon: Shoulder },
     { key: "hand_pain", icon: Hand },
   ],
   legs: [
