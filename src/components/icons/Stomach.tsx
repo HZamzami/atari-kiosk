@@ -2,9 +2,9 @@ import * as React from "react";
 
 // By: mdi
 // See: https://v0.app/icon/mdi/stomach
-// Example: <IconMdiStomach width="24px" height="24px" style={{color: "#000000"}} />
+// Example: <Stomach width="24px" height="24px" style={{color: "#000000"}} />
 
-export const IconMdiStomach = ({
+export const Stomach = ({
   height = "1em",
   stroke = "currentColor",
   strokeWidth = 2,
@@ -27,4 +27,4 @@ export const IconMdiStomach = ({
     />
   </svg>
 );
-export default IconMdiStomach;
+export default Stomach;

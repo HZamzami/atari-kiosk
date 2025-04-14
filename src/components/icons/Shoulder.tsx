@@ -4,11 +4,9 @@ export const Shoulder = (props: React.SVGProps<SVGSVGElement>) => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
     viewBox="0 0 122.88 122.43"
-    width="32"
-    height="32"
-    fill="#4b5563"
+    fill="currentColor"
     stroke="currentColor"
-    strokeWidth={2}
+    strokeWidth={3}
     {...props}
   >
     <g>
