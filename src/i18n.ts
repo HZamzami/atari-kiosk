@@ -123,7 +123,7 @@ export const messages = {
     blood_stool: "دم في البراز",
 
     neurological_issues: "مشاكل عصبية",
-    dizziness: "دوخة",
+    dizziness: "دوار",
     seizures: "تشنجات",
     numbness: "خدر / ضعف",
 
