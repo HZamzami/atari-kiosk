@@ -14,8 +14,8 @@ export async function POST(request: Request) {
   try {
     const { template } = await request.json();
     const absher = {
-      national_id: "****",
-      fingerprint: template,
+      national_id: "**********",  // KEEP IT
+      fingerprint: template
     };
     const server = process.env.DB_API_URL || "https://localhost:5050";
 
@@ -23,7 +23,7 @@ export async function POST(request: Request) {
       return NextResponse.json(
         {
           verified: false,
-          message: "No fingerprint template provided",
+          message: "No fingerprint template provided"
         },
         { status: 400 }
       );
@@ -32,18 +32,18 @@ export async function POST(request: Request) {
     const nationalIDResponse = await fetch(server + "/absher", {
       method: "POST",
       headers: {
-        "Content-Type": "application/json",
+        "Content-Type": "application/json"
       },
-      body: JSON.stringify({ absher }),
+      body: JSON.stringify( absher )
     });
 
     if (!nationalIDResponse.ok) {
-      const errorData = await nationalIDResponse.json();
+      const errorData = await nationalIDResponse.text();
       return NextResponse.json(
         {
           verified: false,
           message:
-            JSON.stringify(errorData) || "Verification service error",
+            JSON.stringify(errorData) || "Verification service error"
         },
         { status: nationalIDResponse.status }
       );
@@ -54,16 +54,16 @@ export async function POST(request: Request) {
     const patientDataEHRResponse = await fetch(
       server + "/patients_ehr?national_id=" + nationalID.national_id,
       {
-        method: "GET",
+        method: "GET"
       }
     );
 
     if (!patientDataEHRResponse.ok) {
-      const errorData = await patientDataEHRResponse.json();
+      const errorData = await patientDataEHRResponse.text();
       return NextResponse.json(
         {
           verified: false,
-          message: JSON.stringify(errorData) || "EHR service error",
+          message: JSON.stringify(errorData) || "EHR service error"
         },
         { status: patientDataEHRResponse.status }
       );
@@ -74,9 +74,9 @@ export async function POST(request: Request) {
     const patientDataResponse = await fetch(
       server +
         "/patients/patient?patient_id=" +
-        patientData.pateint_id,
+        patientData.patient_id,
       {
-        method: "GET",
+        method: "GET"
       }
     );
 
@@ -86,19 +86,19 @@ export async function POST(request: Request) {
         {
           method: "POST",
           headers: {
-            "Content-Type": "application/json",
+            "Content-Type": "application/json"
           },
-          body: JSON.stringify({ patientData }),
+          body: JSON.stringify( patientData )
         }
       );
 
       if (!createLocalPatientResponse.ok) {
-        const errorData = await createLocalPatientResponse.json();
+        const errorData = await createLocalPatientResponse.text();
         return NextResponse.json(
           {
             verified: false,
             message:
-              JSON.stringify(errorData) || "Local service error",
+              JSON.stringify(errorData) || "Local service error"
           },
           { status: createLocalPatientResponse.status }
         );
@@ -110,7 +110,7 @@ export async function POST(request: Request) {
     return NextResponse.json({
       verified: true,
       patientData: patient,
-      message: "Fingerprint verified successfully",
+      message: "Fingerprint verified successfully"
     });
   } catch (error) {
     console.error("Fingerprint verification error:", error);

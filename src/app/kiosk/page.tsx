@@ -17,6 +17,7 @@ import { PersonalPatientDataType } from "@/types/patientData";
 import { Button } from "@/components/ui/button";
 import Temperature from "./steps/Temperature";
 import Oximeter from "./steps/Oximeter";
+import { Check } from "lucide-react";
 
 export default function Page() {
   const { t, locale } = useLanguage();
@@ -123,26 +124,21 @@ function PatientDataContextPage({
         {personalInfo && (
           <div className="bg-blue-50 p-3 rounded-md mb-4 flex justify-between items-center">
             <div>
-              <span className="font-medium">{t("patient")}: </span>
+              <span className="font-medium">{t("patient")}</span>
               <span>
                 {personalInfo.first_name} {personalInfo.middle_name}{" "}
                 {personalInfo.last_name}
               </span>
               <span className="mx-2">|</span>
-              <span className="font-medium">{t("dob")}: </span>
+              <span className="font-medium">{t("date of birth")}</span>
               <span>{personalInfo.birth_date}</span>
+              <span className="mx-2">|</span>
+              <span className="font-medium">{t("national id")}</span>
+              <span>{personalInfo.national_id}</span>
             </div>
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => {
-                setIsPatientVerified(false);
-                setPersonalInfo(null);
-                setStep(1); // Go back to fingerprint step
-              }}
-            >
-              {t("change_patient")}
-            </Button>
+            <div className="w-6 h-6 rounded-full border border-green-600 flex items-center justify-center bg-green-100">
+              <Check className="w-4 h-4 text-green-600" />
+            </div>
           </div>
         )}
         <div className="ms-auto">

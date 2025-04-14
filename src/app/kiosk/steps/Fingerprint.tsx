@@ -1,94 +1,145 @@
 import { useLanguage } from "@/context/LanguageContext";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Image from "next/image";
+import { PersonalPatientDataType } from "@/types/patientData";
 
 type FingerprintProps = {
   onVerificationComplete: (
     isVerified: boolean,
-    patientData?: any
+    patientData?: PersonalPatientDataType
   ) => void;
 };
+
+type FingerprintStatus =
+  | "initializing"
+  | "waiting"
+  | "scanning"
+  | "verifying"
+  | "verified"
+  | "failed";
 
 export default function Fingerprint({
   onVerificationComplete,
 }: FingerprintProps) {
   const { t } = useLanguage();
-  const [status, setStatus] = useState<
-    "waiting" | "scanning" | "verifying" | "verified" | "failed"
-  >("waiting");
-  const [isLoading, setIsLoading] = useState(true);
+  const [status, setStatus] = useState<FingerprintStatus>("initializing");
   const [error, setError] = useState<string | null>(null);
+  const wsRef = useRef<WebSocket | null>(null);
 
   useEffect(() => {
-    setStatus("waiting");
-
-    const socket = new WebSocket(
-      process.env.FP_SERVICE_URL || "ws://localhost:8778"
-    );
-
-    socket.onopen = () => {
-      console.log("Connected to fingerprint service");
-      socket.send(JSON.stringify({ action: "capture" }));
-    };
-
-    socket.onmessage = async (event) => {
+    const webSocket = () => {
       try {
-        const data = JSON.parse(event.data);
+        const socket = new WebSocket(
+          process.env.NEXT_PUBLIC_FP_SERVICE_URL || "ws://localhost:8778"
+        );
+        wsRef.current = socket;
 
-        if (data.status === "error") {
-          setError(data.message || "Unknown error");
-          setStatus("failed");
-          onVerificationComplete(false);
-          return;
-        }
-
-        if (data.status === "scanning") {
-          setStatus("scanning");
-        }
-
-        if (data.status === "captured") {
-          setStatus("verifying");
-          const verificationResult = await verifyFingerprint(
-            data.template
-          );
-
-          if (verificationResult.verified) {
-            setStatus("verified");
-            onVerificationComplete(
-              true,
-              verificationResult.patientData
-            );
-          } else {
+        setTimeout(() => {
+          if (status === "initializing") {
             setStatus("failed");
-            setError(
-              verificationResult.message || "Verification failed"
-            );
+            setError(t("could not connect to scanner"));
             onVerificationComplete(false);
+            socket.close();
           }
-        }
+        }, 10000);
+
+        socket.onopen = () => {
+          console.log("Connected to fingerprint service");
+          setStatus("waiting");
+          socket.send(JSON.stringify({ action: "capture" }));
+        };
+
+        socket.onmessage = async (event) => {
+          if (status === "verified") {
+            socket.close();
+          }
+          try {
+            let data;
+            try {
+              data = JSON.parse(event.data);
+              if (data === null || data === undefined) {
+                console.log("Data is null or undefined after parsing");
+                return;
+              }
+            } catch (parseError) {
+              console.log("Failed to parse WebSocket message [data]:", parseError);
+              return;
+            }
+
+            if (data.status === "error") {
+              console.log(data.message);
+              socket.send(JSON.stringify({ action: "capture" }));
+            }
+            if (data.status === "failed") {
+              console.log(data.message);
+              setStatus("failed");
+              setError(
+                data.message || "Verification failed"
+              );
+              onVerificationComplete(false);
+              socket.close();
+            }
+            if (data.status === "scanning") {
+              setStatus("scanning");
+            }
+            if (data.status === "captured") {
+              if (data.template && data.template.length === 1024) {
+                setStatus("verifying");
+                const verificationResult = await verifyFingerprint(
+                  data.template
+                );
+                if (verificationResult.verified) {
+                  setStatus("verified");
+                  onVerificationComplete(
+                    true,
+                    verificationResult.patientData
+                  );
+                  socket.close();
+                } else {
+                  console.log(verificationResult.message);
+                  setStatus("failed");
+                  setError(
+                    verificationResult.message || "Verification failed"
+                  );
+                  onVerificationComplete(false);
+                  socket.close();
+                }
+              } else {
+                console.log("Invalid template length, requesting new capture");
+                setStatus("scanning");
+                socket.send(JSON.stringify({ action: "capture" }));
+              }
+            }
+          } catch (error) {
+            console.error("Error processing fingerprint data:", error);
+          }
+        };
+
+        socket.onerror = (error) => {
+          console.error("WebSocket error:", error);
+        };
+
+        socket.onclose = () => {
+          console.log("Disconnected from fingerprint service");
+          wsRef.current = null;
+        };
       } catch (error) {
-        console.error("Error processing fingerprint data:", error);
+        console.log("Error creating WebSocket", error);
         setStatus("failed");
-        setError("Failed to process fingerprint data");
+        setError("Could not connect to fingerprint scanner");
         onVerificationComplete(false);
       }
     };
 
-    socket.onerror = (error) => {
-      console.error("WebSocket error:", error);
-      setStatus("failed");
-      setError("Could not connect to fingerprint sensor");
-      onVerificationComplete(false);
-    };
-
-    socket.onclose = () => {
-      console.log("Disconnected from fingerprint service");
-    };
+    if (status !== "verified" && status !== "failed") {
+      webSocket();
+    }
 
     return () => {
-      socket.close();
+      wsRef.current?.close();
+      wsRef.current = null;
     };
-  }, [onVerificationComplete]);
+  }, [onVerificationComplete, t]);
 
   const verifyFingerprint = async (template: string) => {
     try {
@@ -133,9 +184,14 @@ export default function Fingerprint({
 
         {/* Status overlay */}
         <div className="absolute top-full left-0 right-0 text-center mt-4">
+          {status === "initializing" && (
+            <p className="text-lg text-gray-600 animate-pulse">
+              {t("put_finger_scanner")}
+            </p>
+          )}
           {status === "waiting" && (
             <p className="text-lg text-gray-600">
-              {t("place_finger")}
+              {t("put_finger_scanner")}
             </p>
           )}
           {status === "scanning" && (
@@ -148,34 +204,22 @@ export default function Fingerprint({
               {t("verifying_identity")}
             </p>
           )}
-          {status === "verified" && (
-            <p className="text-lg text-green-600">
-              {t("verification_successful")}
-            </p>
-          )}
-          {status === "failed" && (
-            <p className="text-lg text-red-600">
-              {error || t("verification_failed")}
-            </p>
-          )}
         </div>
       </div>
 
       {status === "verified" && (
         <div className="mt-4 p-4 bg-green-50 border border-green-200 rounded-md">
-          <h2 className="font-semibold text-lg">
+          <h2 className="font-semibold text-lg text-green-600 animate-pulse">
             {t("patient_found")}
           </h2>
-          <p>{t("continue_to_proceed")}</p>
         </div>
       )}
 
       {status === "failed" && (
-        <div className="mt-4 p-4 bg-red-50 border border-red-200 rounded-md">
-          <h2 className="font-semibold text-lg">
+        <div className="mt-4 p-4 bg-red-50 border border-red-200 rounded-md flex flex-col items-center">
+          <h2 className="font-semibold text-lg text-red-600 animate-pulse">
             {t("patient_not_found")}
           </h2>
-          <p>{t("try_again_or_continue")}</p>
           <button
             onClick={() => window.location.reload()}
             className="mt-2 px-4 py-2 bg-red-100 hover:bg-red-200 rounded-md transition-colors"
