@@ -38,8 +38,8 @@ export default function Fingerprint({
         if (status === "initializing") {
           setStatus("failed");
           setError(t("could not connect to scanner"));
-          onVerificationComplete(false);
           socket.close();
+          onVerificationComplete(false);
         }
       }, 10000);
 
@@ -76,8 +76,8 @@ export default function Fingerprint({
             setError(
               data.message || "Verification failed"
             );
-            onVerificationComplete(false);
             socket.close();
+            onVerificationComplete(false);
           }
           if (data.status === "scanning") {
             setStatus("scanning");
@@ -90,19 +90,19 @@ export default function Fingerprint({
               );
               if (verificationResult.verified) {
                 setStatus("verified");
+                socket.close();
                 onVerificationComplete(
                   true,
                   verificationResult.patientData
                 );
-                socket.close();
               } else {
                 console.log(verificationResult.message);
                 setStatus("failed");
                 setError(
                   verificationResult.message || "Verification failed"
                 );
-                onVerificationComplete(false);
                 socket.close();
+                onVerificationComplete(false);
               }
             } else {
               console.log("Invalid template length, requesting new capture");
