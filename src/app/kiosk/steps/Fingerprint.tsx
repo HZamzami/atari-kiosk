@@ -218,7 +218,7 @@ export default function Fingerprint({
       )}
 
       {status === "failed" && (
-        <div className="mt-4 p-4 bg-red-50 border border-red-200 rounded-md flex flex-row items-center">
+        <div className="mt-4 p-4 bg-red-50 border border-red-200 rounded-md flex flex-row items-center gap-6">
           <h2 className="font-semibold text-lg text-red-600 animate-pulse">
             {error}
           </h2>

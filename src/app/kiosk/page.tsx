@@ -151,7 +151,7 @@ function PatientDataContextPage({
                     <span className="mx-2">|</span>
                     <span>{personalInfo.birth_date}</span>
                     <span className="mx-2">|</span>
-                    <span>{personalInfo.national_id}</span>
+                    <span>{medicalHistoryList?.length}</span>
                   </div>
                   <div className="w-6 h-6 rounded-full border border-green-600 flex items-center justify-center bg-green-100">
                     <Check className="w-4 h-4 text-green-600" />
