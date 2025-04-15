@@ -15,8 +15,7 @@ import {
 } from "lucide-react";
 import {
   PatientDataProvider,
-  usePatientData,
-  useMedicalHistoryData
+  usePatientData
 } from "@/context/PatientDataContext";
 import { PersonalPatientDataType } from "@/types/patientData";
 import { Button } from "@/components/ui/button";
@@ -56,10 +55,8 @@ function PatientDataContextPage({
     setViewBodyMap(!viewBodyMap);
   };
 
-  const { personalInfo, setPersonalInfo, resetAll } =
+  const { personalInfo, setPersonalInfo, resetAll, medicalHistoryList, setMedicalHistoryList } =
     usePatientData();
-
-  const { medicalHistoryList, setMedicalHistoryList} = useMedicalHistoryData();
 
   const steps = [
     "Intro",
@@ -108,6 +105,7 @@ function PatientDataContextPage({
 
     if (isVerified && personalInfo) {
       setPersonalInfo(personalInfo);
+      console.log("medical his: ",medicalHistory);
       setMedicalHistoryList(medicalHistory || null);
     }
   };
@@ -141,7 +139,7 @@ function PatientDataContextPage({
             <div className="flex w-full gap-4 h-[40px] justify-between">
               <LanguageSwitcher />
               {personalInfo && (
-                <div className="bg-blue-50 p-3 rounded-md border flex flex-row-reverse justify-between items-center grow h-[40px]">
+                <div className="bg-blue-50 p-3 rounded-md border flex justify-between items-center grow h-[40px]">
                   <div>
                     <span>
                       {personalInfo.first_name}{" "}

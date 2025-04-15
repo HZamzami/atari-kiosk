@@ -36,8 +36,6 @@ export default function Fingerprint({
 
       setTimeout(() => {
         if (status === "initializing") {
-          setStatus("failed");
-          setError(t("could not connect to scanner"));
           socket.close();
           onVerificationComplete(false);
         }
@@ -218,17 +216,18 @@ export default function Fingerprint({
       )}
 
       {status === "failed" && (
-        <div className="mt-4 p-4 bg-red-50 border border-red-200 rounded-md flex flex-row items-center gap-6">
-          <h2 className="font-semibold text-lg text-red-600 animate-pulse">
-            {error}
-          </h2>
+        <div className="mt-4 p-4 bg-red-50 border border-red-200 rounded-md flex flex-row items-center gap-4">
+          {true && (<h2 className="font-semibold text-lg text-red-600 animate-pulse">
+            {t("patient_not_found")}
+          </h2>)}
+
           <button
             onClick={() => {
-                setStatus("initializing");
-                webSocket();
-              }
+              setStatus("initializing");
+              webSocket();
             }
-            className="mt-2 px-4 py-2 bg-red-100 hover:bg-red-200 rounded-md transition-colors"
+            }
+            className=" px-4 py-2 bg-red-100 hover:bg-red-200 rounded-md transition-colors"
           >
             {t("try_again")}
           </button>

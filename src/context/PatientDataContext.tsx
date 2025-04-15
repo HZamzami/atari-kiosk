@@ -108,13 +108,3 @@ export const usePatientData = () => {
   }
   return context;
 };
-
-export const useMedicalHistoryData = () => {
-  const context = useContext(PatientDataContext);
-  if (context === undefined) {
-    throw new Error(
-      "useMedicalHistoryData must be used within a PatientDataProvider"
-    );
-  }
-  return context;
-};
