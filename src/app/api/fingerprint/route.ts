@@ -107,9 +107,21 @@ export async function POST(request: Request) {
 
     const patient = await patientDataResponse.json();
 
+    const medicalHistoryResponse = await fetch(
+      server +
+        "/medical_history?patient_id=" +
+        patientData.patient_id,
+      {
+        method: "GET"
+      }
+    );
+
+    const medical_history = (!medicalHistoryResponse.ok) ? [] : await patientDataResponse.json();
+
     return NextResponse.json({
       verified: true,
       patientData: patient,
+      medicalHistory: medical_history,
       message: "Fingerprint verified successfully"
     });
   } catch (error) {

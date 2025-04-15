@@ -3,10 +3,13 @@
 import React, { createContext, useContext, useState } from "react";
 import { VitalSignsType } from "@/types/vital-signs";
 import { PersonalPatientDataType } from "@/types/patientData";
+import { MedicalHistoryType } from "@/types/medicalHistory";
 
 type PatientDataContextType = {
   personalInfo: PersonalPatientDataType | null;
   setPersonalInfo: (info: PersonalPatientDataType | null) => void;
+  medicalHistoryList: MedicalHistoryType[] | null;
+  setMedicalHistoryList: (info: MedicalHistoryType[] | null) => void;
   reasons: string[];
   addReason: (reason: string) => void;
   removeReason: (reason: string) => void;
@@ -29,6 +32,8 @@ export const PatientDataProvider: React.FC<{
   const [reasons, setReasons] = useState<string[]>([]);
   const [personalInfo, setPersonalInfo] =
     useState<PersonalPatientDataType | null>(null);
+  const [medicalHistoryList, setMedicalHistoryList] =
+    useState<MedicalHistoryType[] | null>(null);
 
   const [vitalSigns, setVitalSigns] = useState<VitalSignsType>({
     heartRate: 72,
@@ -63,6 +68,7 @@ export const PatientDataProvider: React.FC<{
   };
   const resetAll = () => {
     setPersonalInfo(null);
+    setMedicalHistoryList(null);
     setReasons([]);
     setVitalSigns({
       heartRate: 72,
@@ -77,6 +83,8 @@ export const PatientDataProvider: React.FC<{
       value={{
         personalInfo,
         setPersonalInfo,
+        medicalHistoryList,
+        setMedicalHistoryList,
         reasons,
         addReason,
         removeReason,
@@ -96,6 +104,16 @@ export const usePatientData = () => {
   if (context === undefined) {
     throw new Error(
       "usePatientData must be used within a PatientDataProvider"
+    );
+  }
+  return context;
+};
+
+export const useMedicalHistoryData = () => {
+  const context = useContext(PatientDataContext);
+  if (context === undefined) {
+    throw new Error(
+      "useMedicalHistoryData must be used within a PatientDataProvider"
     );
   }
   return context;

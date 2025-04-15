@@ -16,12 +16,14 @@ import {
 import {
   PatientDataProvider,
   usePatientData,
+  useMedicalHistoryData
 } from "@/context/PatientDataContext";
 import { PersonalPatientDataType } from "@/types/patientData";
 import { Button } from "@/components/ui/button";
 import Temperature from "./steps/Temperature";
 import Oximeter from "./steps/Oximeter";
 import { Check } from "lucide-react";
+import { MedicalHistoryType } from "@/types/medicalHistory";
 
 export default function Page() {
   const { t, locale } = useLanguage();
@@ -64,6 +66,8 @@ function PatientDataContextPage({
   const { personalInfo, setPersonalInfo, resetAll } =
     usePatientData();
 
+  const { medicalHistoryList, setMedicalHistoryList} = useMedicalHistoryData();
+
   const steps = [
     "Intro",
     "Fingerprint",
@@ -103,13 +107,15 @@ function PatientDataContextPage({
 
   const handleVerificationComplete = (
     isVerified: boolean,
-    personalInfo?: PersonalPatientDataType
+    personalInfo?: PersonalPatientDataType,
+    medicalHistory?: MedicalHistoryType[]
   ) => {
     setIsVerifyingFingerprint(false);
     setIsPatientVerified(isVerified);
 
     if (isVerified && personalInfo) {
       setPersonalInfo(personalInfo);
+      setMedicalHistoryList(medicalHistory || null);
     }
   };
 
