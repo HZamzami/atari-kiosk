@@ -26,13 +26,6 @@ import { Check } from "lucide-react";
 import { MedicalHistoryType } from "@/types/medicalHistory";
 
 export default function Page() {
-  const { t, locale } = useLanguage();
-  const [step, setStep] = useState(0);
-  const [viewBodyMap, setViewBodyMap] = useState<boolean>(false);
-  const toggleViewBodyMap = () => {
-    setViewBodyMap(!viewBodyMap);
-  };
-
   const [isVerifyingFingerprint, setIsVerifyingFingerprint] =
     useState(true);
   const [isPatientVerified, setIsPatientVerified] = useState(false);
