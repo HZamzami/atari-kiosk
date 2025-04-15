@@ -92,6 +92,9 @@ export const messages = {
     patient_found: "Patient data found",
     patient_not_found: "Patient data not found",
     try_again: "Try again",
+    submit: "Submit",
+    other_symptoms: "Other symptoms",
+    back: "Back",
   },
   ar: {
     welcome: "مرحبًا بك في جهاز الطوارئ!",
@@ -178,5 +181,8 @@ export const messages = {
     patient_found: "تم العثور على ملف المريض",
     patient_not_found: "لم يتم العثور على ملف المريض",
     try_again: "حاول مرة أخرى",
+    submit: "إنهاء",
+    other_symptoms: "أسباب أخرى",
+    back: "الرجوع",
   },
 };

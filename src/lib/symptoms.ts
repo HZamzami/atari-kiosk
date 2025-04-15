@@ -43,7 +43,7 @@ export const symptoms: Symptom[] = [
   { key: "fracture", icon: Bone },
   { key: "abdominal_pain", icon: Stomach },
 
-  { key: "body_map", icon: PersonStanding },
+  // { key: "body_map", icon: PersonStanding },
 ];
 const getSymptom = (key: string) =>
   symptoms.find((s) => s.key === key)!;

@@ -1,14 +1,18 @@
 "use client";
 import { useLanguage } from "@/context/LanguageContext";
 import LanguageSwitcher from "@/components/LanguageSwitcher";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Introduction from "@/app/kiosk/steps/Introduction";
 import ReasonForVisit from "@/app/kiosk/steps/ReasonForVisit";
 import Pressure from "@/app/kiosk/steps/Pressure";
 import ThankYou from "@/app/kiosk/steps/ThankYou";
 import Stepper from "@/components/Stepper";
 import Fingerprint from "@/app/kiosk/steps/Fingerprint";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import {
+  ChevronLeft,
+  ChevronRight,
+  PersonStanding,
+} from "lucide-react";
 import {
   PatientDataProvider,
   usePatientData,
@@ -110,10 +114,22 @@ function PatientDataContextPage({
   };
 
   const showStepper = step !== 0;
-  const showLeftArrow = viewBodyMap;
-  const showRightArrow =
-    step !== 0 && step !== steps.length - 1 && !viewBodyMap;
+  const showLeftArrow = step == 5 && viewBodyMap;
+  const showRightArrow = step == 5;
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.code === "Space" || e.key === " ") {
+        e.preventDefault();
+        // if (step === 1 && !isPatientVerified) return;
+        if (step < steps.length - 1) {
+          nextStep();
+        }
+      }
+    };
 
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [step, isPatientVerified]);
   return (
     <div className="flex flex-col min-h-screen w-full">
       <div
@@ -130,7 +146,9 @@ function PatientDataContextPage({
                 {personalInfo.last_name}
               </span>
               <span className="mx-2">|</span>
-              <span className="font-medium">{t("date of birth")}</span>
+              <span className="font-medium">
+                {t("date of birth")}
+              </span>
               <span>{personalInfo.birth_date}</span>
               <span className="mx-2">|</span>
               <span className="font-medium">{t("national id")}</span>
@@ -147,6 +165,7 @@ function PatientDataContextPage({
               onClick={() => {
                 setStep(0);
                 resetAll();
+                setViewBodyMap(false);
                 setIsPatientVerified(false);
                 setIsVerifyingFingerprint(false);
               }}
@@ -156,16 +175,34 @@ function PatientDataContextPage({
             </button>
           )}
         </div>
-        <div className="flex-grow flex justify-between items-center">
-          <div className={showLeftArrow ? "" : "invisible"}>
+        <div className="flex-grow flex justify-between items-center relative">
+          {/* <div className={showLeftArrow ? "" : "invisible"}>
             {locale === "en" ? (
-              <ChevronLeft className="w-12 h-12" onClick={prevStep} />
+              <ChevronLeft className="w-10 h-10" onClick={prevStep} />
             ) : (
               <ChevronRight
-                className="w-12 h-12"
+                className="w-10 h-10"
                 onClick={prevStep}
               />
             )}
+          </div> */}
+          <div
+            className={`flex flex-col items-end absolute gap-24
+              ${locale === "en" ? "left-0" : "right-0"}
+              ${!showLeftArrow && "invisible"}
+              `}
+          >
+            <div
+              onClick={toggleViewBodyMap}
+              className={"flex items-center gap-2 cursor-pointer"}
+            >
+              {locale === "en" ? (
+                <ChevronLeft className="w-10 h-10" />
+              ) : (
+                <ChevronRight className="w-10 h-10" />
+              )}
+              <span className=" font-medium">{t("back")}</span>
+            </div>
           </div>
 
           <div className="flex-grow px-2">
@@ -188,14 +225,46 @@ function PatientDataContextPage({
             )}
             {step === 6 && <ThankYou />}
           </div>
-          <div className={showRightArrow ? "" : "invisible"}>
-            {locale === "en" ? (
-              <ChevronRight
-                className="w-12 h-12"
-                onClick={nextStep}
-              />
-            ) : (
-              <ChevronLeft className="w-12 h-12" onClick={nextStep} />
+          <div
+            className={`flex flex-col items-end absolute gap-24
+              ${locale === "en" ? "right-0" : "left-0"}
+              ${!showRightArrow && "invisible"}
+              `}
+          >
+            <div
+              onClick={() => {
+                if (viewBodyMap) {
+                  toggleViewBodyMap();
+                }
+                nextStep();
+              }}
+              className={"flex items-center gap-2 cursor-pointer"}
+            >
+              <span className=" font-medium">{t("submit")}</span>
+              {locale === "en" ? (
+                <ChevronRight className="w-10 h-10" />
+              ) : (
+                <ChevronLeft className="w-10 h-10" />
+              )}
+            </div>
+            {!showLeftArrow && (
+              <div
+                className={"flex items-center gap-2 cursor-pointer"}
+                onClick={toggleViewBodyMap}
+              >
+                <span className=" font-medium">{t("body_map")}</span>
+                {locale === "en" ? (
+                  <>
+                    {/* <PersonStanding /> */}
+                    <ChevronRight className="w-10 h-10" />
+                  </>
+                ) : (
+                  <>
+                    {/* <PersonStanding /> */}
+                    <ChevronLeft className="w-10 h-10" />
+                  </>
+                )}
+              </div>
             )}
           </div>
         </div>
