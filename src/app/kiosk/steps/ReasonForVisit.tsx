@@ -27,7 +27,7 @@ export default function ReasonForVisit({
             {t("chief_complaint_title")}
           </h1>
           <div className="w-[80%]">
-            <SymptomsGrid toggleViewBodyMap={toggleViewBodyMap} />
+            <SymptomsGrid />
           </div>
         </div>
       )}
