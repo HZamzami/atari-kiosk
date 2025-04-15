@@ -137,42 +137,41 @@ function PatientDataContextPage({
           showStepper && "pb-[80px]"
         }`}
       >
-        {personalInfo && (
-          <div className="bg-blue-50 p-3 rounded-md mb-4 flex justify-between items-center">
-            <div>
-              <span className="font-medium">{t("patient")}</span>
-              <span>
-                {personalInfo.first_name} {personalInfo.middle_name}{" "}
-                {personalInfo.last_name}
-              </span>
-              <span className="mx-2">|</span>
-              <span className="font-medium">
-                {t("date of birth")}
-              </span>
-              <span>{personalInfo.birth_date}</span>
-              <span className="mx-2">|</span>
-              <span className="font-medium">{t("national id")}</span>
-              <span>{personalInfo.national_id}</span>
-            </div>
-            <div className="w-6 h-6 rounded-full border border-green-600 flex items-center justify-center bg-green-100">
-              <Check className="w-4 h-4 text-green-600" />
-            </div>
-          </div>
-        )}
-        <div className="ms-auto">
+        <div className="w-full">
           {step !== 0 && (
-            <button
-              onClick={() => {
-                setStep(0);
-                resetAll();
-                setViewBodyMap(false);
-                setIsPatientVerified(false);
-                setIsVerifyingFingerprint(false);
-              }}
-              className="px-4 py-2 bg-red-100 text-red-600 hover:bg-red-200 border border-red-300 rounded-xl shadow-sm transition-all duration-200 ease-in-out  font-medium"
-            >
-              {t("exit")}
-            </button>
+            <div className="flex w-full gap-4 h-[40px] justify-between">
+              <LanguageSwitcher />
+              {personalInfo && (
+                <div className="bg-blue-50 p-3 rounded-md border flex flex-row-reverse justify-between items-center grow h-[40px]">
+                  <div>
+                    <span>
+                      {personalInfo.first_name}{" "}
+                      {personalInfo.middle_name}{" "}
+                      {personalInfo.last_name}
+                    </span>
+                    <span className="mx-2">|</span>
+                    <span>{personalInfo.birth_date}</span>
+                    <span className="mx-2">|</span>
+                    <span>{personalInfo.national_id}</span>
+                  </div>
+                  <div className="w-6 h-6 rounded-full border border-green-600 flex items-center justify-center bg-green-100">
+                    <Check className="w-4 h-4 text-green-600" />
+                  </div>
+                </div>
+              )}
+              <button
+                onClick={() => {
+                  setStep(0);
+                  resetAll();
+                  setViewBodyMap(false);
+                  setIsPatientVerified(false);
+                  setIsVerifyingFingerprint(false);
+                }}
+                className="w-[80px] px-4 py-2 bg-red-50 text-red-600 hover:bg-red-200 border border-red-300 rounded-md shadow-sm transition-all duration-200 ease-in-out  font-medium"
+              >
+                {t("exit")}
+              </button>
+            </div>
           )}
         </div>
         <div className="flex-grow flex justify-between items-center relative">
