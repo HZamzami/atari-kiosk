@@ -116,7 +116,7 @@ export async function POST(request: Request) {
       }
     );
 
-    const medical_history = (!medicalHistoryResponse.ok) ? [] : await patientDataResponse.json();
+    const medical_history = (!medicalHistoryResponse.ok) ? [] : await medicalHistoryResponse.json();
 
     return NextResponse.json({
       verified: true,
