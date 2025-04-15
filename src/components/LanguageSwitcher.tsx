@@ -6,7 +6,10 @@ export default function LanguageSwitcher() {
   const { locale, setLocale } = useLanguage();
 
   return (
-    <Button onClick={() => setLocale(locale === "en" ? "ar" : "en")}>
+    <Button
+      className="w-[80px]"
+      onClick={() => setLocale(locale === "en" ? "ar" : "en")}
+    >
       {locale === "en" ? "ع" : "EN"}
     </Button>
   );

@@ -2,12 +2,8 @@
 import { symptoms } from "@/lib/symptoms";
 import SymptomCard from "./SymptomCard";
 import { usePatientData } from "@/context/PatientDataContext";
-interface SymptomsGridProps {
-  toggleViewBodyMap: () => void;
-}
-export default function SymptomsGrid({
-  toggleViewBodyMap,
-}: SymptomsGridProps) {
+
+export default function SymptomsGrid() {
   const { reasons, toggleReason } = usePatientData();
 
   return (
@@ -15,7 +11,6 @@ export default function SymptomsGrid({
       <div className="grid grid-cols-3 gap-4 justify-items-center">
         {symptoms.map((symptom) => (
           <SymptomCard
-            toggleViewBodyMap={toggleViewBodyMap}
             key={symptom.key}
             symptom={symptom}
             selected={reasons.includes(symptom.key)}
