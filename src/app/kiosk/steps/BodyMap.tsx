@@ -147,7 +147,7 @@ export default function BodyMap({ toggleViewBodyMap }: BodyMapProps) {
   };
 
   return (
-    <div className="grid grid-cols-3 gap-1">
+    <div className="grid grid-cols-3 gap-1 px-[100px]">
       <div className="flex flex-col justify-center items-center">
         <div className="w-full h-full bg-gray-100">
           <div className="p-4 w-full h-full">
@@ -178,7 +178,7 @@ export default function BodyMap({ toggleViewBodyMap }: BodyMapProps) {
         </div>
       </div>
 
-      <div className="col-span-2 flex justify-center gap-10">
+      <div className="col-span-2 flex justify-around ">
         <div className="relative">
           <img
             src="/front-m.webp"
