@@ -1,32 +1,25 @@
 "use client";
 import { useLanguage } from "@/context/LanguageContext";
 import { Symptom } from "@/types/symptom";
-import { ArrowLeft, ArrowRight, X } from "lucide-react";
+import { X } from "lucide-react";
 
 type SymptomCardProps = {
   symptom: Symptom;
   selected: boolean;
   onToggle: (key: string) => void;
-  toggleViewBodyMap: () => void;
 };
 
 export default function SymptomCard({
   symptom,
   selected,
   onToggle,
-  toggleViewBodyMap,
 }: SymptomCardProps) {
   const Icon = symptom.icon;
-  const isBodyMap = symptom.key === "body_map";
   const { t, locale } = useLanguage();
   const isRTL = locale === "ar";
 
   const handleClick = () => {
-    if (isBodyMap) {
-      toggleViewBodyMap();
-    } else {
-      onToggle(symptom.key);
-    }
+    onToggle(symptom.key);
   };
 
   return (
@@ -34,7 +27,6 @@ export default function SymptomCard({
       onClick={handleClick}
       className={`
         relative flex flex-col items-center justify-center p-4 rounded-lg border
-        ${isBodyMap ? "border-dashed" : "border-solid"}
         ${
           selected
             ? "border-blue-600 bg-blue-50"
@@ -44,8 +36,7 @@ export default function SymptomCard({
         w-60 h-36
       `}
     >
-      {/* Only show X indicator when selected */}
-      {!isBodyMap && selected && (
+      {selected && (
         <div
           className={`absolute top-2 ${isRTL ? "left-2" : "right-2"}`}
         >
@@ -54,28 +45,13 @@ export default function SymptomCard({
           </div>
         </div>
       )}
-      {!isBodyMap && !selected && (
+      {!selected && (
         <div
           className={`absolute top-2 ${isRTL ? "left-2" : "right-2"}`}
         >
           <div className="w-4 h-4 border border-gray-400 rounded-full" />
         </div>
       )}
-      {isBodyMap && (
-        <div
-          className={`absolute bottom-2 flex items-center text-sm text-gray-700 bg-gray-100 px-2 py-1 rounded-full ${
-            isRTL ? "left-2" : "right-2"
-          }`}
-        >
-          <span>{t("more")}</span>
-          {isRTL ? (
-            <ArrowLeft className="w-4 h-4 ms-1" />
-          ) : (
-            <ArrowRight className="w-4 h-4 ms-1" />
-          )}
-        </div>
-      )}
-
       <Icon
         className={`w-8 h-8 ${
           selected ? "text-blue-600" : "text-gray-600"
