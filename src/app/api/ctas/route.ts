@@ -30,7 +30,7 @@ export async function POST(req: NextRequest) {
        * Respiratory Rate: ${vitalSigns.respiratoryRate} breaths/min
        * Oxygen Saturation: ${vitalSigns.oxygenSaturation}%
 
-    2. Review the patient's chief complaints: "${joinedReasons}"
+    2. Review the patient"s chief complaints: "${joinedReasons}"
     
     3. Consider each factor in the context of the patient"s overall health, working through your clinical reasoning step by step:
        * Identify any abnormal vital signs that indicate an immediate risk
