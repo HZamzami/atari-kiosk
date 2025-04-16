@@ -10,7 +10,8 @@ interface CtasResponse {
 }
 
 export default function ThankYou() {
-  const { reasons, vitalSigns } = usePatientData();
+  const { reasons, vitalSigns, personalInfo, medicalHistoryList } =
+    usePatientData();
   const { t } = useLanguage();
   const [ctasData, setCtasData] = useState<CtasResponse | null>(null);
   const [loading, setLoading] = useState(true);
@@ -24,7 +25,12 @@ export default function ThankYou() {
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({ vitalSigns, reasons }),
+          body: JSON.stringify({
+            vitalSigns,
+            reasons,
+            personalInfo,
+            medicalHistoryList,
+          }),
         });
 
         if (!response.ok) {

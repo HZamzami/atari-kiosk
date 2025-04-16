@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { Groq } from "groq-sdk";
+import { calculateAge } from "@/utils/dateUtils";
 export async function POST(req: NextRequest) {
   const headersList = req.headers;
   const referer = headersList.get("referer") || "";
@@ -12,16 +13,26 @@ export async function POST(req: NextRequest) {
     );
   }
   try {
-    const { vitalSigns, reasons } = await req.json();
+    const { vitalSigns, reasons, medicalHistory, personalInfo } =
+      await req.json();
     const joinedReasons =
       reasons?.join(", ") || "No complaint provided";
 
     const groq = new Groq({
       apiKey: process.env.GROQ_API_KEY,
     });
+    const age = calculateAge(personalInfo.birth_date);
+    const relevantMedicalHistory = {
+      condition: medicalHistory.condition,
+      major_disease: medicalHistory.major_disease,
+      treatment: medicalHistory.treatment,
+    };
 
     const prompt = `
-    You are a medical triage expert specializing in the Canadian Triage and Acuity Scale (CTAS). Your task is to evaluate patient data and assign the appropriate CTAS level with supporting reasoning. Assume patient is an adult. Follow these steps carefully:
+    You are a medical triage expert specializing in the Canadian Triage and Acuity Scale (CTAS). Your task is to evaluate patient data and assign the appropriate CTAS level with supporting reasoning. Assume patient is an adult.
+
+    Patient's age: ${age}
+    Medical History: ${JSON.stringify(relevantMedicalHistory)}
 
     1. Analyze the vital signs in comparison to standard clinical thresholds:
        * Heart Rate: ${vitalSigns.heartRate} bpm
@@ -35,7 +46,7 @@ export async function POST(req: NextRequest) {
     3. Consider each factor in the context of the patient"s overall health, working through your clinical reasoning step by step:
        * Identify any abnormal vital signs that indicate an immediate risk
        * Consider the urgency of the chief complaint, especially if it suggests life-threatening conditions
-       * Evaluate the relationship between vital signs and the complaint
+       * Evaluate the relationship between vital signs, the complaints, the patient's age and their medical history 
        * Assess potential for rapid deterioration, and whether immediate intervention is warranted
 
     4. Based on the data, assign the appropriate CTAS level:
