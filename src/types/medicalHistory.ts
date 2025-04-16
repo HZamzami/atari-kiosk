@@ -3,5 +3,5 @@ export type MedicalHistoryType = {
   patient_id: String;
   condition: String;
   major_disease: String;
-  treatment: String;
+  treatment?: String;
 };
