@@ -69,14 +69,13 @@ export default function BodySheet({
         </SheetHeader>
 
         <div className="mt-6 overflow-x-auto ">
-          <div className="flex gap-4 px-1 justify-center">
+          <div className="flex gap-4 px-1 justify-center flex-wrap-reverse">
             {zoneSymptoms.map((symptom) => (
               <SymptomCard
                 key={symptom.key}
                 symptom={symptom}
                 selected={reasons.includes(symptom.key)}
                 onToggle={(key) => toggleReason(key)}
-                toggleViewBodyMap={toggleViewBodyMap}
               />
             ))}
           </div>
