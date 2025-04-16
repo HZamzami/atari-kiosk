@@ -28,6 +28,7 @@ export default function Page() {
   const [isVerifyingFingerprint, setIsVerifyingFingerprint] =
     useState(true);
   const [isPatientVerified, setIsPatientVerified] = useState(false);
+  const [isTempretaureVerified, setIsTemperatureVerified] = useState(false);
 
   // Wrap usePatientData hook inside the PatientDataProvider
   return (
@@ -37,6 +38,7 @@ export default function Page() {
         isPatientVerified={isPatientVerified}
         setIsVerifyingFingerprint={setIsVerifyingFingerprint}
         setIsPatientVerified={setIsPatientVerified}
+        setIsTemperatureVerified={setIsTemperatureVerified}
       />
     </PatientDataProvider>
   );
@@ -47,6 +49,7 @@ function PatientDataContextPage({
   isPatientVerified,
   setIsVerifyingFingerprint,
   setIsPatientVerified,
+  setIsTemperatureVerified
 }: any) {
   const { t, locale } = useLanguage();
   const [step, setStep] = useState(0);
@@ -55,7 +58,7 @@ function PatientDataContextPage({
     setViewBodyMap(!viewBodyMap);
   };
 
-  const { personalInfo, setPersonalInfo, resetAll, medicalHistoryList, setMedicalHistoryList } =
+  const { personalInfo, setPersonalInfo, resetAll, medicalHistoryList, setMedicalHistoryList, updateVitalSign } =
     usePatientData();
 
   const steps = [
@@ -95,7 +98,7 @@ function PatientDataContextPage({
     setStep(newStep);
   };
 
-  const handleVerificationComplete = (
+  const handleFingerprintComplete = (
     isVerified: boolean,
     personalInfo?: PersonalPatientDataType,
     medicalHistory?: MedicalHistoryType[]
@@ -105,8 +108,18 @@ function PatientDataContextPage({
 
     if (isVerified && personalInfo) {
       setPersonalInfo(personalInfo);
-      console.log("medical his: ",medicalHistory);
       setMedicalHistoryList(medicalHistory || null);
+    }
+  };
+
+  const handleTemperatureComplete = (
+    isVerified: boolean,
+    temperature?: number
+  ) => {
+    setIsTemperatureVerified(isVerified);
+
+    if (isVerified && temperature) {
+      updateVitalSign("temperature", temperature);
     }
   };
 
@@ -207,10 +220,14 @@ function PatientDataContextPage({
             )}
             {step === 1 && (
               <Fingerprint
-                onVerificationComplete={handleVerificationComplete}
+                onFingerprintComplete={handleFingerprintComplete}
               />
             )}
-            {step === 2 && <Temperature />}
+            {step === 2 && (
+              <Temperature 
+                onTemperatureComplete={handleTemperatureComplete}
+              />
+            )}
             {step === 3 && <Pressure />}
             {step === 4 && <Oximeter />}
             {step === 5 && (

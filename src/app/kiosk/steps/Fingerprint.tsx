@@ -5,7 +5,7 @@ import { PersonalPatientDataType } from "@/types/patientData";
 import { MedicalHistoryType } from "@/types/medicalHistory";
 
 type FingerprintProps = {
-  onVerificationComplete: (
+  onFingerprintComplete: (
     isVerified: boolean,
     patientData?: PersonalPatientDataType,
     medicalHistory?: MedicalHistoryType[]
@@ -21,7 +21,7 @@ type FingerprintStatus =
   | "failed";
 
 export default function Fingerprint({
-  onVerificationComplete,
+  onFingerprintComplete,
 }: FingerprintProps) {
   const { t } = useLanguage();
   const [status, setStatus] = useState<FingerprintStatus>("initializing");
@@ -37,7 +37,7 @@ export default function Fingerprint({
       setTimeout(() => {
         if (status === "initializing") {
           socket.close();
-          onVerificationComplete(false);
+          onFingerprintComplete(false);
         }
       }, 10000);
 
@@ -75,7 +75,7 @@ export default function Fingerprint({
               data.message || "Verification failed"
             );
             socket.close();
-            onVerificationComplete(false);
+            onFingerprintComplete(false);
           }
           if (data.status === "scanning") {
             setStatus("scanning");
@@ -89,9 +89,10 @@ export default function Fingerprint({
               if (verificationResult.verified) {
                 setStatus("verified");
                 socket.close();
-                onVerificationComplete(
+                onFingerprintComplete(
                   true,
-                  verificationResult.patientData
+                  verificationResult.patientData,
+                  verificationResult.medicalHistory
                 );
               } else {
                 console.log(verificationResult.message);
@@ -100,7 +101,7 @@ export default function Fingerprint({
                   verificationResult.message || "Verification failed"
                 );
                 socket.close();
-                onVerificationComplete(false);
+                onFingerprintComplete(false);
               }
             } else {
               console.log("Invalid template length, requesting new capture");
@@ -115,6 +116,7 @@ export default function Fingerprint({
 
       socket.onerror = (error) => {
         console.error("WebSocket error:", error);
+        socket.send(JSON.stringify({ action: "capture" }));
       };
 
       socket.onclose = () => {
@@ -125,7 +127,7 @@ export default function Fingerprint({
       console.log("Error creating WebSocket", error);
       setStatus("failed");
       setError("Could not connect to fingerprint scanner");
-      onVerificationComplete(false);
+      onFingerprintComplete(false);
     }
   };
 
@@ -138,7 +140,7 @@ export default function Fingerprint({
       wsRef.current?.close();
       wsRef.current = null;
     };
-  }, [onVerificationComplete]);
+  }, []);
 
   const verifyFingerprint = async (template: string) => {
     try {
