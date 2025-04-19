@@ -41,15 +41,15 @@ export const messages = {
     other: "Other",
     other_placeholder: "Enter your reason...",
     ctas_1_instruction:
-      "Your condition is less urgent. Please wait in the designated area, and a nurse will assist you as soon as possible.",
+      "Your condition is life-threatening. Please proceed immediately to the resuscitation area; a medical team is awaiting you.",
     ctas_2_instruction:
-      "Your condition is less urgent. Please wait in the designated area, and a nurse will assist you as soon as possible.",
+      "Your condition is potentially life- or limb-threatening. Please wait in the rapid assessment area; a provider will see you as soon as possible.",
     ctas_3_instruction:
-      "Your condition is less urgent. Please wait in the designated area, and a nurse will assist you as soon as possible.",
+      "Your condition is urgent. Please wait in the urgent care area; a nurse will call you when it’s your turn.",
     ctas_4_instruction:
       "Your condition is less urgent. Please wait in the designated area, and a nurse will assist you as soon as possible.",
     ctas_5_instruction:
-      "Your condition is less urgent. Please wait in the designated area, and a nurse will assist you as soon as possible.",
+      "Your condition is non-urgent. Please take a seat in the general waiting area; a nurse will assist you when available.",
     generating_ticket: "Generating ticket...",
     take_your_ticket: "Take your ticket",
     thank_you: "Thank you,",
@@ -137,8 +137,16 @@ export const messages = {
 
     other: "أخرى",
     other_placeholder: "أدخل السبب...",
+    ctas_1_instruction:
+      "حالتك تهدد حياتك. يرجى التوجه فوراً إلى منطقة الإنعاش؛ الفريق الطبي في انتظارك.",
+    ctas_2_instruction:
+      "حالتك قد تهدد حياتك أو أطرافك. يرجى الانتظار في منطقة التقييم السريع؛ سيقوم مقدم الرعاية بمعاينتك في أقرب وقت ممكن.",
+    ctas_3_instruction:
+      "حالتك عاجلة. يرجى الانتظار في منطقة الرعاية العاجلة؛ سيقوم الممرض باستدعائك عندما يحين دورك.",
     ctas_4_instruction:
       "حالتك ليست حرجة. يرجى الانتظار في المنطقة المحددة، وسوف يساعدك الممرض قريباً.",
+    ctas_5_instruction:
+      "حالتك غير مستعجلة. يرجى الجلوس في منطقة الانتظار العامة؛ سوف يساعدك الممرض عندما يتوفر.",
     take_your_ticket: "استلم تذكرتك",
     generating_ticket: "جاري إنشاء التذكرة...",
     thank_you: "شكرا،",

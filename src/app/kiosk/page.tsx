@@ -1,4 +1,6 @@
 "use client";
+import Image from "next/image";
+
 import { useLanguage } from "@/context/LanguageContext";
 import LanguageSwitcher from "@/components/LanguageSwitcher";
 import { useEffect, useState } from "react";
@@ -15,7 +17,7 @@ import {
 } from "lucide-react";
 import {
   PatientDataProvider,
-  usePatientData
+  usePatientData,
 } from "@/context/PatientDataContext";
 import { PersonalPatientDataType } from "@/types/patientData";
 import { Button } from "@/components/ui/button";
@@ -28,7 +30,8 @@ export default function Page() {
   const [isVerifyingFingerprint, setIsVerifyingFingerprint] =
     useState(true);
   const [isPatientVerified, setIsPatientVerified] = useState(false);
-  const [isTempretaureVerified, setIsTemperatureVerified] = useState(false);
+  const [isTempretaureVerified, setIsTemperatureVerified] =
+    useState(false);
 
   // Wrap usePatientData hook inside the PatientDataProvider
   return (
@@ -49,7 +52,7 @@ function PatientDataContextPage({
   isPatientVerified,
   setIsVerifyingFingerprint,
   setIsPatientVerified,
-  setIsTemperatureVerified
+  setIsTemperatureVerified,
 }: any) {
   const { t, locale } = useLanguage();
   const [step, setStep] = useState(0);
@@ -58,8 +61,14 @@ function PatientDataContextPage({
     setViewBodyMap(!viewBodyMap);
   };
 
-  const { personalInfo, setPersonalInfo, resetAll, medicalHistoryList, setMedicalHistoryList, updateVitalSign } =
-    usePatientData();
+  const {
+    personalInfo,
+    setPersonalInfo,
+    resetAll,
+    medicalHistoryList,
+    setMedicalHistoryList,
+    updateVitalSign,
+  } = usePatientData();
 
   const steps = [
     "Intro",
@@ -224,7 +233,7 @@ function PatientDataContextPage({
               />
             )}
             {step === 2 && (
-              <Temperature 
+              <Temperature
                 onTemperatureComplete={handleTemperatureComplete}
               />
             )}
@@ -262,18 +271,24 @@ function PatientDataContextPage({
             </div>
             {!showLeftArrow && (
               <div
-                className={"flex items-center gap-2 cursor-pointer"}
+                className={"flex items-center gap-1 cursor-pointer"}
                 onClick={toggleViewBodyMap}
               >
+                <PersonStanding className="w-8 h-8" />
+                {/* <Image
+                  src="/front-m.webp"
+                  alt="Person standing"
+                  width={32}
+                  height={32}
+                  className="w-10 h-10"
+                /> */}
                 <span className=" font-medium">{t("body_map")}</span>
                 {locale === "en" ? (
                   <>
-                    {/* <PersonStanding /> */}
                     <ChevronRight className="w-10 h-10" />
                   </>
                 ) : (
                   <>
-                    {/* <PersonStanding /> */}
                     <ChevronLeft className="w-10 h-10" />
                   </>
                 )}
