@@ -95,6 +95,7 @@ export const messages = {
     submit: "Submit",
     other_symptoms: "Other symptoms",
     back: "Back",
+    name: "Name"
   },
   ar: {
     welcome: "مرحبًا بك في جهاز الطوارئ!",
@@ -192,5 +193,6 @@ export const messages = {
     submit: "إنهاء",
     other_symptoms: "أسباب أخرى",
     back: "الرجوع",
+    name: "الاسم"
   },
 };

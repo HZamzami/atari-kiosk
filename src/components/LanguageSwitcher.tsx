@@ -7,7 +7,7 @@ export default function LanguageSwitcher() {
 
   return (
     <Button
-      className="w-[80px]"
+      className="w-[80px] h-[50px]"
       onClick={() => setLocale(locale === "en" ? "ar" : "en")}
     >
       {locale === "en" ? "ع" : "EN"}

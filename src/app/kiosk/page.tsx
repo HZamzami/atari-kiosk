@@ -140,7 +140,7 @@ function PatientDataContextPage({
       updateVitalSign("bloodPressure", bloodPressure)
     }
   };
-  
+
   const handleOximeterComplete = (
     isVerified: boolean,
     measurements?: {
@@ -176,29 +176,33 @@ function PatientDataContextPage({
   return (
     <div className="flex flex-col min-h-screen w-full">
       <div
-        className={`container flex flex-col mx-auto flex-grow pt-4  px-4 sm:px-6 md:px-8 ${
-          showStepper && "pb-[80px]"
-        }`}
+        className={`container flex flex-col mx-auto flex-grow pt-4  px-4 sm:px-6 md:px-8 ${showStepper && "pb-[80px]"
+          }`}
       >
         <div className="w-full">
           {step !== 0 && (
-            <div className="flex w-full gap-4 h-[40px] justify-between">
+            <div className="flex w-full gap-4 h-[50px] justify-between">
               <LanguageSwitcher />
               {personalInfo && (
-                <div className="bg-blue-50 p-3 rounded-md border flex justify-between items-center grow h-[40px]">
-                  <div>
-                    <span>
-                      {personalInfo.first_name}{" "}
-                      {personalInfo.middle_name}{" "}
-                      {personalInfo.last_name}
-                    </span>
-                    <span className="mx-2">|</span>
-                    <span>{personalInfo.birth_date}</span>
-                    <span className="mx-2">|</span>
-                    <span>{medicalHistoryList?.length}</span>
-                  </div>
-                  <div className="w-6 h-6 rounded-full border border-green-600 flex items-center justify-center bg-green-100">
-                    <Check className="w-4 h-4 text-green-600" />
+                <div className="bg-blue-50 p-3 rounded-md border flex justify-between items-center grow h-[50px]">
+                  <div className="flex items-center flex-wrap gap-2">
+                    {/* Name pill */}
+                    <div className="flex items-center bg-white rounded-full border border-blue-100 overflow-hidden">
+                      <div className="bg-white px-3 py-1 border-r border-blue-100">
+                        <span className="text-gray-500">{t("name")}</span>
+                      </div>
+                      <div className="px-3 py-1">
+                        <span className="text- font-medium">
+                          {personalInfo.first_name} {personalInfo.middle_name} {personalInfo.last_name}
+                        </span>
+                      </div>
+                    </div>
+                    {/* Birth date pill */}
+                    <div className="bg-white px-3 py-1 rounded-full border border-green-100">
+                      <span className="text-green-700 font-medium">
+                        {personalInfo.birth_date}
+                      </span>
+                    </div>
                   </div>
                 </div>
               )}
