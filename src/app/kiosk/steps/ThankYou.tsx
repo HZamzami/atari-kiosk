@@ -110,7 +110,7 @@ export default function ThankYou() {
             </div>
             <div className="text-center">
               <h3 className="text-lg font-semibold text-gray-800 mt-4">
-                {t("thank_you")} Hamza!
+                {t("thank_you")} {personalInfo?.first_name}!
               </h3>
               <div className="mt-6 text-2xl font-bold text-blue-500">
                 {t("take_your_ticket")}
