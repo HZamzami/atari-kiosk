@@ -208,7 +208,7 @@ export default function Temperature({ onTemperatureComplete }: TemperatureProps)
   return (
     <div className="flex flex-col items-center justify-center h-full space-y-6">
       <h1 className="text-4xl font-bold">{t("keep_head_stable")}</h1>
-      <div className={`w-[${width}px] h-[${height}px] bg-gray-900 rounded-xl border-4 ${getBorderStyle()} transition-colors duration-300 overflow-hidden flex items-center justify-center`}>
+      <div className={`w-[${width || "640"}px] h-[${height || "360"}px] bg-gray-900 rounded-xl border-4 ${getBorderStyle()} transition-colors duration-300 overflow-hidden flex items-center justify-center`}>
         <img
           ref={imgRef}
           width={width}
@@ -217,7 +217,7 @@ export default function Temperature({ onTemperatureComplete }: TemperatureProps)
           className="w-full h-full object-cover"
           style={{ display: isProcessing ? "block" : "none" }}
         />
-        {!isProcessing && (
+        {!isConnected && (
           <div className="absolute inset-0 flex flex-col items-center justify-center p-4 text-center text-white text-xl">
             <p>{statusMessage || "Camera Preview"}</p>
             {error && <p className="text-red-400 mt-2">{error}</p>}
