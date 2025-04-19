@@ -132,6 +132,30 @@ function PatientDataContextPage({
     }
   };
 
+  const handlePressureComplete = (
+    isVerified: boolean,
+    bloodPressure?: string
+  ) => {
+    if (isVerified && bloodPressure) {
+      updateVitalSign("bloodPressure", bloodPressure)
+    }
+  };
+  
+  const handleOximeterComplete = (
+    isVerified: boolean,
+    measurements?: {
+      spo2: number,
+      heartRate: number,
+      respiratoryRate: number
+    }
+  ) => {
+    if (isVerified && measurements) {
+      updateVitalSign("oxygenSaturation", measurements.spo2);
+      updateVitalSign("heartRate", measurements.heartRate);
+      updateVitalSign("respiratoryRate", measurements.respiratoryRate);
+    }
+  };
+
   const showStepper = step !== 0;
   const showLeftArrow = step == 5 && viewBodyMap;
   const showRightArrow = step == 5;
@@ -237,8 +261,8 @@ function PatientDataContextPage({
                 onTemperatureComplete={handleTemperatureComplete}
               />
             )}
-            {step === 3 && <Pressure />}
-            {step === 4 && <Oximeter />}
+            {step === 3 && <Pressure onPressureComplete={handlePressureComplete} />}
+            {step === 4 && <Oximeter onOximeterComplete={handleOximeterComplete} />}
             {step === 5 && (
               <ReasonForVisit
                 viewBodyMap={viewBodyMap}
