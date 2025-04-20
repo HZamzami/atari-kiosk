@@ -23,9 +23,9 @@ export async function POST(req: NextRequest) {
     });
     const age = calculateAge(personalInfo.birth_date);
     const relevantMedicalHistory = {
-      condition: medicalHistory.condition,
-      major_disease: medicalHistory.major_disease,
-      treatment: medicalHistory.treatment,
+      condition: medicalHistory?.condition,
+      major_disease: medicalHistory?.major_disease,
+      treatment: medicalHistory?.treatment,
     };
 
     const prompt = `

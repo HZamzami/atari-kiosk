@@ -22,8 +22,8 @@ export default function Temperature({ onTemperatureComplete }: TemperatureProps)
 
   const imgRef = useRef<HTMLImageElement>(null);
   const serverUrl = process.env.NEXT_PUBLIC_CV_SERVICE_URL;
-  const width = 640;
-  const height = 360;
+  const width = "640";
+  const height = "360";
   const autoStart = true;
 
   useEffect(() => {
@@ -93,6 +93,20 @@ export default function Temperature({ onTemperatureComplete }: TemperatureProps)
       }
     }
   };
+  
+  // useEffect(() => {
+  //   // Force success with static data after 5 seconds
+  //   const timer = setTimeout(() => {
+  //     if (!metadata?.temperature) {
+  //       const staticTemperature = 36.8;
+  //       console.log("Setting static temperature data:", staticTemperature);
+  //       setMetadata(prev => prev ? {...prev, temperature: staticTemperature, measurement_complete: true} : null);
+  //       onTemperatureComplete(true, staticTemperature);
+  //     }
+  //   }, 10);
+  
+  //   return () => clearTimeout(timer);
+  // }, []);
 
   const handleStartStream = async () => {
     try {

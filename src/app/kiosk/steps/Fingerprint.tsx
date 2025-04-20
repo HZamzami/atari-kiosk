@@ -27,6 +27,18 @@ export default function Fingerprint({
   const [status, setStatus] = useState<FingerprintStatus>("initializing");
   const [error, setError] = useState<string | null>(null);
   const wsRef = useRef<WebSocket | null>(null);
+  // const STATIC_PATIENT_DATA: PersonalPatientDataType = {
+  //   national_id: "1010101010",
+  //   first_name: "Abdullah",
+  //   middle_name: "Ahmad",
+  //   last_name: "Zamzami",
+  //   email: "zamzami@patient.com",
+  //   phone: "00966534140111",
+  //   patient_id: "10101010101010101",
+  //   birth_date: "2002-03-06",
+  //   gender: "male",
+  //   address: "addr"
+  // };
   const webSocket = () => {
     try {
       const socket = new WebSocket(
@@ -66,7 +78,7 @@ export default function Fingerprint({
 
           if (data.status === "error") {
             console.log(data.message);
-            socket.send(JSON.stringify({ action: "capture" }));
+            //socket.send(JSON.stringify({ action: "capture" }));
           }
           if (data.status === "failed") {
             console.log(data.message);
@@ -106,7 +118,7 @@ export default function Fingerprint({
             } else {
               console.log("Invalid template length, requesting new capture");
               setStatus("scanning");
-              socket.send(JSON.stringify({ action: "capture" }));
+              //socket.send(JSON.stringify({ action: "capture" }));
             }
           }
         } catch (error) {
@@ -116,7 +128,7 @@ export default function Fingerprint({
 
       socket.onerror = (error) => {
         console.error("WebSocket error:", error);
-        socket.send(JSON.stringify({ action: "capture" }));
+        //socket.send(JSON.stringify({ action: "capture" }));
       };
 
       socket.onclose = () => {
@@ -168,6 +180,21 @@ export default function Fingerprint({
       };
     }
   };
+  
+  // useEffect(() => {
+  //   if (status === "initializing" || status === "waiting" || status === "scanning") {
+  //     const timer = setTimeout(() => {
+  //       // Force success with static data after 5 seconds
+  //       setStatus("verified");
+  //       onFingerprintComplete(true, STATIC_PATIENT_DATA);
+  //       if (wsRef.current) {
+  //         wsRef.current.close();
+  //       }
+  //     }, 5000); // 5 seconds delay
+      
+  //     return () => clearTimeout(timer);
+  //   }
+  // }, [status, onFingerprintComplete]);
 
   return (
     <div className="flex flex-col items-center justify-center h-full space-y-6">
