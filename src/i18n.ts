@@ -95,7 +95,11 @@ export const messages = {
     submit: "Submit",
     other_symptoms: "Other symptoms",
     back: "Back",
-    name: "Name"
+    name: "Name",
+    age: "Age",
+    temp: "Temp",
+    pressure: "Pressure",
+    resp: "Respiratory",
   },
   ar: {
     welcome: "مرحبًا بك في جهاز الطوارئ!",
@@ -193,6 +197,8 @@ export const messages = {
     submit: "إنهاء",
     other_symptoms: "أسباب أخرى",
     back: "الرجوع",
-    name: "الاسم"
+    name: "الاسم",
+    age: "العمر",
+    temp: "الحرارة",
   },
 };

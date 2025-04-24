@@ -1,7 +1,7 @@
 export type MedicalHistoryType = {
-  mhid: String;
-  patient_id: String;
-  condition: String;
-  major_disease: String;
-  treatment?: String;
+  mhid: string;
+  patient_id: string;
+  condition: string;
+  major_disease: string;
+  treatment?: string;
 };
