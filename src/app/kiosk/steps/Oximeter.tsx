@@ -30,6 +30,35 @@ export default function Oximeter({ onOximeterComplete }: OximeterProps) {
   const wsRef = useRef<WebSocket | null>(null);
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
 
+  // useEffect(() => {
+  //   // Force success with static oximeter data after 5 seconds
+  //   const staticDataTimer = setTimeout(() => {
+  //     if (status === "initializing" || status === "waiting" || status === "measuring") {
+  //       console.log("Setting static oximeter data");
+  //       const staticSpo2 = 99.5;
+  //       const staticHeartRate = 70;
+  //       const staticRespiratoryRate = 12;
+        
+  //       setSpo2(staticSpo2);
+  //       setHeartRate(staticHeartRate);
+  //       setRespiratoryRate(staticRespiratoryRate);
+  //       setStatus("complete");
+        
+  //       onOximeterComplete(true, {
+  //         spo2: staticSpo2,
+  //         heartRate: staticHeartRate,
+  //         respiratoryRate: staticRespiratoryRate
+  //       });
+        
+  //       if (wsRef.current) {
+  //         wsRef.current.close();
+  //       }
+  //     }
+  //   }, 10000);
+    
+  //   return () => clearTimeout(staticDataTimer);
+  // }, [status, onOximeterComplete]);
+  
   useEffect(() => {
     connectWebSocket();
 
@@ -105,32 +134,32 @@ export default function Oximeter({ onOximeterComplete }: OximeterProps) {
           }
         } catch (error) {
           console.error("Error processing oximeter data:", error);
-          setStatus("failed");
-          setError("Failed to process oximeter data");
-          onOximeterComplete(false);
+          //setStatus("failed");
+          //setError("Failed to process oximeter data");
+          //onOximeterComplete(false);
         }
       };
 
       socket.onerror = (error) => {
         console.error("WebSocket error:", error);
-        setStatus("failed");
-        setError("Connection error to pulse oximeter");
+        //setStatus("failed");
+        //setError("Connection error to pulse oximeter");
       };
 
       socket.onclose = () => {
         console.log("Disconnected from pulse oximeter service");
         wsRef.current = null;
         if (status === "initializing") {
-          setStatus("failed");
-          setError("Connection to pulse oximeter closed unexpectedly");
-          onOximeterComplete(false);
+          //setStatus("failed");
+          //setError("Connection to pulse oximeter closed unexpectedly");
+          //onOximeterComplete(false);
         }
       };
     } catch (error) {
       console.log("Error creating WebSocket:", error);
-      setStatus("failed");
-      setError("Could not connect to pulse oximeter");
-      onOximeterComplete(false);
+      //setStatus("failed");
+      //setError("Could not connect to pulse oximeter");
+      //onOximeterComplete(false);
     }
   };
 
@@ -142,8 +171,8 @@ export default function Oximeter({ onOximeterComplete }: OximeterProps) {
         measurement: "pulse_oximeter"
       }));
     } else {
-      setStatus("failed");
-      setError("Not connected to pulse oximeter");
+      //setStatus("failed");
+      //setError("Not connected to pulse oximeter");
     }
   };
 

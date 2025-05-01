@@ -13,7 +13,7 @@ export async function POST(req: NextRequest) {
     );
   }
   try {
-    const { vitalSigns, reasons, medicalHistory, personalInfo } =
+    const { vitalSigns, reasons, medicalHistoryList, personalInfo } =
       await req.json();
     const joinedReasons =
       reasons?.join(", ") || "No complaint provided";
@@ -21,11 +21,11 @@ export async function POST(req: NextRequest) {
     const groq = new Groq({
       apiKey: process.env.GROQ_API_KEY,
     });
-    const age = calculateAge(personalInfo.birth_date);
+    const age = calculateAge(personalInfo?.birth_date);
     const relevantMedicalHistory = {
-      condition: medicalHistory.condition,
-      major_disease: medicalHistory.major_disease,
-      treatment: medicalHistory.treatment,
+      condition: medicalHistoryList?.condition,
+      major_disease: medicalHistoryList?.major_disease,
+      treatment: medicalHistoryList?.treatment,
     };
 
     const prompt = `

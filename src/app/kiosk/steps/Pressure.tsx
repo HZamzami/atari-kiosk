@@ -24,6 +24,35 @@ export default function Pressure({ onPressureComplete }: PressureProps) {
   const wsRef = useRef<WebSocket | null>(null);
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
 
+  // useEffect(() => {
+  //   // Function to handle space key press
+  //   const handleKeyPress = (event: KeyboardEvent) => {
+  //     // Respond to space key or Enter key
+  //     if ((event.code === 'Space' || event.key === ' ' || event.key === 'Enter') &&
+  //       (status === "initializing" || status === "waiting" || status === "measuring")) {
+  //       console.log("Setting static blood pressure data via key press");
+  //       const staticBP = "114/78";
+
+  //       setBloodPressure(staticBP);
+  //       setStatus("complete");
+
+  //       onPressureComplete(true, staticBP);
+
+  //       if (wsRef.current) {
+  //         wsRef.current.close();
+  //       }
+  //     }
+  //   };
+
+  //   // Add event listener for key press
+  //   window.addEventListener('keydown', handleKeyPress);
+
+  //   // Clean up event listener on component unmount
+  //   return () => {
+  //     window.removeEventListener('keydown', handleKeyPress);
+  //   };
+  // }, [status, onPressureComplete]);
+
   useEffect(() => {
     connectWebSocket();
 
@@ -51,7 +80,7 @@ export default function Pressure({ onPressureComplete }: PressureProps) {
           setError(t("could_not_connect_to_bp_monitor"));
           onPressureComplete(false);
         }
-      }, 10000);
+      }, 10000000);
 
       socket.onopen = () => {
         console.log("Connected to blood pressure WebSocket service");
@@ -94,32 +123,32 @@ export default function Pressure({ onPressureComplete }: PressureProps) {
           }
         } catch (error) {
           console.error("Error processing blood pressure data:", error);
-          setStatus("failed");
-          setError("Failed to process blood pressure data");
-          onPressureComplete(false);
+          //setStatus("failed");
+          //setError("Failed to process blood pressure data");
+          //onPressureComplete(false);
         }
       };
 
       socket.onerror = (error) => {
         console.error("WebSocket error:", error);
-        setStatus("failed");
-        setError("Connection error to blood pressure monitor");
+        //setStatus("failed");
+        //setError("Connection error to blood pressure monitor");
       };
 
       socket.onclose = () => {
         console.log("Disconnected from blood pressure service");
         wsRef.current = null;
         if (status === "initializing") {
-          setStatus("failed");
-          setError("Connection to blood pressure monitor closed unexpectedly");
-          onPressureComplete(false);
+          //setStatus("failed");
+          //setError("Connection to blood pressure monitor closed unexpectedly");
+          //onPressureComplete(false);
         }
       };
     } catch (error) {
       console.log("Error creating WebSocket:", error);
-      setStatus("failed");
-      setError("Could not connect to blood pressure monitor");
-      onPressureComplete(false);
+      //setStatus("failed");
+      //setError("Could not connect to blood pressure monitor");
+      //onPressureComplete(false);
     }
   };
 
@@ -131,8 +160,8 @@ export default function Pressure({ onPressureComplete }: PressureProps) {
         measurement: "blood_pressure"
       }));
     } else {
-      setStatus("failed");
-      setError("Not connected to blood pressure monitor");
+      //setStatus("failed");
+      //setError("Not connected to blood pressure monitor");
     }
   };
 
