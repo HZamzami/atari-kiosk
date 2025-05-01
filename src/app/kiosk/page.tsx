@@ -1,5 +1,4 @@
 "use client";
-import Image from "next/image";
 
 import { useLanguage } from "@/context/LanguageContext";
 import LanguageSwitcher from "@/components/LanguageSwitcher";
@@ -10,11 +9,7 @@ import Pressure from "@/app/kiosk/steps/Pressure";
 import ThankYou from "@/app/kiosk/steps/ThankYou";
 import Stepper from "@/components/Stepper";
 import Fingerprint from "@/app/kiosk/steps/Fingerprint";
-import {
-  ChevronLeft,
-  ChevronRight,
-  PersonStanding,
-} from "lucide-react";
+
 import {
   PatientDataProvider,
   usePatientData,
@@ -22,9 +17,9 @@ import {
 import { PersonalPatientDataType } from "@/types/patientData";
 import Temperature from "./steps/Temperature";
 import Oximeter from "./steps/Oximeter";
-import { Check } from "lucide-react";
 import { MedicalHistoryType } from "@/types/medicalHistory";
 import PillBar from "@/components/PillBar";
+import NavigationButton from "@/components/icons/NavigationButton";
 
 export default function Page() {
   const [isVerifyingFingerprint, setIsVerifyingFingerprint] =
@@ -32,8 +27,6 @@ export default function Page() {
   const [isPatientVerified, setIsPatientVerified] = useState(false);
   const [isTempretaureVerified, setIsTemperatureVerified] =
     useState(false);
-
-  // Wrap usePatientData hook inside the PatientDataProvider
   return (
     <PatientDataProvider>
       <PatientDataContextPage
@@ -54,12 +47,13 @@ function PatientDataContextPage({
   setIsPatientVerified,
   setIsTemperatureVerified,
 }: any) {
-  const { t, locale } = useLanguage();
+  const { t, locale, setLocale } = useLanguage();
   const [step, setStep] = useState(0);
   const [viewBodyMap, setViewBodyMap] = useState<boolean>(false);
   const toggleViewBodyMap = () => {
     setViewBodyMap(!viewBodyMap);
   };
+  const isRTL = locale === "ar";
 
   const {
     personalInfo,
@@ -164,18 +158,61 @@ function PatientDataContextPage({
   const showRightArrow = step == 5;
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
+      // Existing keyboard handlers
       if (e.code === "Space" || e.key === " ") {
         e.preventDefault();
-        // if (step === 1 && !isPatientVerified) return;
         if (step < steps.length - 1) {
           nextStep();
         }
+      }
+
+      if (step === 5) {
+        if (
+          (e.key === "ArrowRight" &&
+            ((!isRTL && !viewBodyMap) || (isRTL && viewBodyMap))) ||
+          (e.key === "ArrowLeft" &&
+            ((!isRTL && viewBodyMap) || (isRTL && !viewBodyMap)))
+        ) {
+          e.preventDefault();
+          toggleViewBodyMap();
+        }
+
+        if (e.key === "Enter") {
+          e.preventDefault();
+          if (viewBodyMap) {
+            toggleViewBodyMap();
+          }
+          nextStep();
+        }
+      }
+
+      // New escape key handler for exit functionality
+      if (e.key === "Escape") {
+        e.preventDefault();
+        setStep(0);
+        resetAll();
+        setViewBodyMap(false);
+        setIsPatientVerified(false);
+        setIsVerifyingFingerprint(false);
+      }
+
+      // New handler for language switching (using '=' key)
+      if (e.key === "Backspace") {
+        e.preventDefault();
+        setLocale(locale === "en" ? "ar" : "en");
       }
     };
 
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [step, isPatientVerified]);
+  }, [
+    step,
+    isPatientVerified,
+    viewBodyMap,
+    toggleViewBodyMap,
+    nextStep,
+    locale, // Added locale to dependencies
+  ]);
   return (
     <div className="flex flex-col min-h-screen w-full">
       <div
@@ -204,33 +241,19 @@ function PatientDataContextPage({
           )}
         </div>
         <div className="flex-grow flex justify-between items-center relative">
-          {/* <div className={showLeftArrow ? "" : "invisible"}>
-            {locale === "en" ? (
-              <ChevronLeft className="w-10 h-10" onClick={prevStep} />
-            ) : (
-              <ChevronRight
-                className="w-10 h-10"
-                onClick={prevStep}
-              />
-            )}
-          </div> */}
           <div
             className={`flex flex-col items-end absolute gap-24
               ${locale === "en" ? "left-0" : "right-0"}
               ${!showLeftArrow && "invisible"}
               `}
           >
-            <div
+            <NavigationButton
+              symbolFirst={true}
+              text={t("back").toLocaleUpperCase()}
+              symbol={isRTL ? "→" : "←"}
               onClick={toggleViewBodyMap}
-              className={"flex items-center gap-2 cursor-pointer"}
-            >
-              {locale === "en" ? (
-                <ChevronLeft className="w-10 h-10" />
-              ) : (
-                <ChevronRight className="w-10 h-10" />
-              )}
-              <span className=" font-medium">{t("back")}</span>
-            </div>
+              className="cursor-pointer"
+            />
           </div>
 
           <div className="flex-grow px-2">
@@ -267,46 +290,25 @@ function PatientDataContextPage({
               ${!showRightArrow && "invisible"}
               `}
           >
-            <div
+            <NavigationButton
+              text={t("submit").toLocaleUpperCase()}
+              symbol="↵"
               onClick={() => {
                 if (viewBodyMap) {
                   toggleViewBodyMap();
                 }
                 nextStep();
               }}
-              className={"flex items-center gap-2 cursor-pointer"}
-            >
-              <span className=" font-medium">{t("submit")}</span>
-              {locale === "en" ? (
-                <ChevronRight className="w-10 h-10" />
-              ) : (
-                <ChevronLeft className="w-10 h-10" />
-              )}
-            </div>
+              className="cursor-pointer"
+            />
+
             {!showLeftArrow && (
-              <div
-                className={"flex items-center gap-1 cursor-pointer"}
+              <NavigationButton
+                text={t("other").toLocaleUpperCase()}
+                symbol={isRTL ? "←" : "→"}
                 onClick={toggleViewBodyMap}
-              >
-                <PersonStanding className="w-8 h-8" />
-                {/* <Image
-                  src="/front-m.webp"
-                  alt="Person standing"
-                  width={32}
-                  height={32}
-                  className="w-10 h-10"
-                /> */}
-                <span className=" font-medium">{t("body_map")}</span>
-                {locale === "en" ? (
-                  <>
-                    <ChevronRight className="w-10 h-10" />
-                  </>
-                ) : (
-                  <>
-                    <ChevronLeft className="w-10 h-10" />
-                  </>
-                )}
-              </div>
+                className="cursor-pointer"
+              />
             )}
           </div>
         </div>

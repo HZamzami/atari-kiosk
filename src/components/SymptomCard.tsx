@@ -7,12 +7,14 @@ type SymptomCardProps = {
   symptom: Symptom;
   selected: boolean;
   onToggle: (key: string) => void;
+  index: number;
 };
 
 export default function SymptomCard({
   symptom,
   selected,
   onToggle,
+  index,
 }: SymptomCardProps) {
   const Icon = symptom.icon;
   const { t, locale } = useLanguage();
@@ -26,7 +28,7 @@ export default function SymptomCard({
     <button
       onClick={handleClick}
       className={`
-        relative flex flex-col items-center justify-center p-4 rounded-lg border
+        relative flex flex-col items-center justify-center p-4 rounded-lg border shadow-sm overflow-hidden
         ${
           selected
             ? "border-blue-600 bg-blue-50"
@@ -35,6 +37,7 @@ export default function SymptomCard({
         hover:shadow-md transition
         w-60 h-36
       `}
+      aria-pressed={selected}
     >
       {selected && (
         <div
@@ -52,6 +55,16 @@ export default function SymptomCard({
           <div className="w-4 h-4 border border-gray-400 rounded-full" />
         </div>
       )}
+      <div
+        className={`absolute -top-1 ${
+          isRTL ? "-right-1" : "-left-1"
+        }`}
+      >
+        <div className="w-8 h-8 rounded-lg border border-gray-400 flex items-center justify-center  text-xs  font-bold text-gray-700">
+          {index}
+        </div>
+      </div>
+
       <Icon
         className={`w-8 h-8 ${
           selected ? "text-blue-600" : "text-gray-600"
