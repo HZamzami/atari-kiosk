@@ -10,7 +10,7 @@ import {
   SheetClose,
 } from "@/components/ui/sheet";
 import SymptomCard from "@/components/SymptomCard";
-import React from "react";
+import React, { useEffect } from "react";
 import { BodyZone } from "@/app/kiosk/steps/BodyMap";
 interface BodySheetProps {
   open: boolean;
@@ -18,7 +18,6 @@ interface BodySheetProps {
   selectedZone: BodyZone | null;
   toggleViewBodyMap: () => void;
 }
-
 export default function BodySheet({
   open,
   onOpenChange,
@@ -27,12 +26,10 @@ export default function BodySheet({
 }: BodySheetProps) {
   const { t } = useLanguage();
   const { reasons, toggleReason } = usePatientData();
-
   const zoneSymptoms = React.useMemo(() => {
     if (!selectedZone || !bodyZoneSymptoms[selectedZone]) return [];
     return bodyZoneSymptoms[selectedZone];
   }, [selectedZone]);
-
   const getZoneName = (zone: BodyZone | null) => {
     switch (zone) {
       case "head&neck":
@@ -51,7 +48,33 @@ export default function BodySheet({
         return "";
     }
   };
+  useEffect(() => {
+    if (open && zoneSymptoms.length > 0) {
+      const handleKeyDown = (event: KeyboardEvent) => {
+        // Close the sheet when period (.) is pressed
+        if (event.key === ".") {
+          onOpenChange(false);
+          return;
+        }
 
+        const keyNum = parseInt(event.key);
+        if (
+          !isNaN(keyNum) &&
+          keyNum > 0 &&
+          keyNum <= zoneSymptoms.length
+        ) {
+          const symptom = zoneSymptoms[keyNum - 1];
+          if (symptom) {
+            toggleReason(symptom.key);
+          }
+        }
+      };
+      window.addEventListener("keydown", handleKeyDown);
+      return () => {
+        window.removeEventListener("keydown", handleKeyDown);
+      };
+    }
+  }, [open, zoneSymptoms, toggleReason, onOpenChange]);
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
       <SheetContent
@@ -60,18 +83,17 @@ export default function BodySheet({
       >
         <SheetHeader className="space-y-0">
           <SheetTitle>{t(getZoneName(selectedZone))}</SheetTitle>
-
           <div className="ms-auto">
-            <SheetClose className="border border-green-400 text-green-400  px-4 py-1 rounded-md">
+            <SheetClose className="border bg-green-400 text-white  px-4 py-1 rounded-md">
               {t("done")}
             </SheetClose>
           </div>
         </SheetHeader>
-
         <div className="mt-6 overflow-x-auto ">
           <div className="flex gap-4 px-1 justify-center flex-wrap-reverse">
-            {zoneSymptoms.map((symptom) => (
+            {zoneSymptoms.map((symptom, index) => (
               <SymptomCard
+                index={index + 1}
                 key={symptom.key}
                 symptom={symptom}
                 selected={reasons.includes(symptom.key)}

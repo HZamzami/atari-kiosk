@@ -1,7 +1,7 @@
 import { useLanguage } from "@/context/LanguageContext";
 import { usePatientData } from "@/context/PatientDataContext";
 import { Trash } from "lucide-react";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { bodyZoneSymptoms } from "@/lib/symptoms";
 import BodySheet from "@/components/BodySheet";
 export type BodyZone =
@@ -18,6 +18,8 @@ type BodyPartInfo = {
     shape: "rect" | "poly";
     areas: string[];
   };
+  labelPosition: { x: number; y: number };
+  number: number;
 };
 
 interface BodyMapProps {
@@ -36,14 +38,20 @@ export default function BodyMap({ toggleViewBodyMap }: BodyMapProps) {
     "head&neck": {
       name: "Head & Neck",
       coords: { shape: "rect", areas: ["100,0,175,83"] },
+      labelPosition: { x: 85, y: 40 },
+      number: 1,
     },
     chest: {
       name: "Chest",
       coords: { shape: "rect", areas: ["95,83,175,135"] },
+      labelPosition: { x: 120, y: 110 },
+      number: 2,
     },
     abdomen: {
       name: "Abdomen",
       coords: { shape: "rect", areas: ["100,135,175,220"] },
+      labelPosition: { x: 120, y: 175 },
+      number: 3,
     },
     arms: {
       name: "Arms",
@@ -54,6 +62,8 @@ export default function BodyMap({ toggleViewBodyMap }: BodyMapProps) {
           "175,84, 175,150, 175,130, 190,165, 225,209, 250,258, 285,258, 270,209, 240,165, 210,120, 195,84",
         ],
       },
+      labelPosition: { x: 55, y: 160 },
+      number: 4,
     },
     legs: {
       name: "Legs",
@@ -61,6 +71,8 @@ export default function BodyMap({ toggleViewBodyMap }: BodyMapProps) {
         shape: "poly",
         areas: ["95,220,55,500,220,500,180,220"],
       },
+      labelPosition: { x: 85, y: 350 },
+      number: 5,
     },
   };
 
@@ -68,14 +80,17 @@ export default function BodyMap({ toggleViewBodyMap }: BodyMapProps) {
     "head&neck": {
       name: "Head & Neck",
       coords: { shape: "rect", areas: ["105,-10,180,65"] },
+      labelPosition: { x: 90, y: 40 },
+      number: 1,
     },
     "back&buttocks": {
       name: "Back & Buttocks",
-
       coords: {
         shape: "rect",
         areas: ["105,65,180,240"],
       },
+      labelPosition: { x: 130, y: 135 },
+      number: 6,
     },
     arms: {
       name: "Arms",
@@ -86,6 +101,8 @@ export default function BodyMap({ toggleViewBodyMap }: BodyMapProps) {
           "185,84, 185,150, 185,130, 200,165, 235,209, 260,258, 300,258, 285,209, 255,165, 225,120, 210,80",
         ],
       },
+      labelPosition: { x: 45, y: 160 },
+      number: 4,
     },
     legs: {
       name: "Legs",
@@ -93,7 +110,17 @@ export default function BodyMap({ toggleViewBodyMap }: BodyMapProps) {
         shape: "poly",
         areas: ["90,240,50,500,235,500,195,240"],
       },
+      labelPosition: { x: 90, y: 350 },
+      number: 5,
     },
+  };
+  const numberToZoneMap: Record<number, BodyZone> = {
+    1: "head&neck",
+    2: "chest",
+    3: "abdomen",
+    4: "arms",
+    5: "legs",
+    6: "back&buttocks",
   };
   const getZoneSymptoms = (zone: BodyZone | null) => {
     if (!zone || !bodyZoneSymptoms[zone]) return [];
@@ -103,6 +130,38 @@ export default function BodyMap({ toggleViewBodyMap }: BodyMapProps) {
     setSelectedZone(zone);
     setSheetOpen(true);
   };
+  useEffect(() => {
+    if (!sheetOpen) {
+      const handleKeyDown = (event: KeyboardEvent) => {
+        const keyNum = parseInt(event.key);
+
+        // Handle number keys 1-6 for selecting body zones
+        if (!isNaN(keyNum) && keyNum >= 1 && keyNum <= 6) {
+          const zone = numberToZoneMap[keyNum];
+          if (zone) {
+            handleZoneClick(zone);
+          }
+        }
+
+        // Handle key "0" for deleting the last reason
+        else if (event.key === "0" && reasons.length > 0) {
+          const lastReason = reasons[reasons.length - 1];
+          removeReason(lastReason);
+        }
+      };
+
+      window.addEventListener("keydown", handleKeyDown);
+      return () => {
+        window.removeEventListener("keydown", handleKeyDown);
+      };
+    }
+  }, [
+    sheetOpen,
+    reasons,
+    removeReason,
+    handleZoneClick,
+    numberToZoneMap,
+  ]);
   const renderOverlay = (
     bodyParts: Partial<Record<BodyZone, BodyPartInfo>>
   ) => {
@@ -145,7 +204,24 @@ export default function BodyMap({ toggleViewBodyMap }: BodyMapProps) {
 
     return null;
   };
-
+  const renderNumberLabels = (
+    bodyParts: Partial<Record<BodyZone, BodyPartInfo>>
+  ) => {
+    return Object.entries(bodyParts).map(([zone, part]) => (
+      <div
+        key={`label-${zone}`}
+        className="absolute cursor-pointer w-6 h-6 flex items-center justify-center bg-blue-500 text-white rounded-full font-bold text-sm"
+        style={{
+          top: part.labelPosition.y,
+          left: part.labelPosition.x,
+          zIndex: 10,
+        }}
+        onClick={() => handleZoneClick(zone as BodyZone)}
+      >
+        {part.number}
+      </div>
+    ));
+  };
   return (
     <div className="grid grid-cols-3 gap-1 px-[100px]">
       <div className="flex flex-col justify-center items-center">
@@ -187,6 +263,7 @@ export default function BodyMap({ toggleViewBodyMap }: BodyMapProps) {
             className="max-h-[500px] w-auto"
           />
           {renderOverlay(frontBodyParts)}
+          {renderNumberLabels(frontBodyParts)}
           <map name="frontmap">
             {Object.entries(frontBodyParts).map(([zone, part]) =>
               part.coords.areas.map((coords, index) => (
@@ -211,6 +288,7 @@ export default function BodyMap({ toggleViewBodyMap }: BodyMapProps) {
             className="max-h-[500px] w-auto"
           />
           {renderOverlay(backBodyParts)}
+          {renderNumberLabels(backBodyParts)}
           <map name="backmap">
             {Object.entries(backBodyParts).map(([zone, part]) =>
               part.coords.areas.map((coords, index) => (
