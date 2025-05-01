@@ -32,8 +32,9 @@ export const PatientDataProvider: React.FC<{
   const [reasons, setReasons] = useState<string[]>([]);
   const [personalInfo, setPersonalInfo] =
     useState<PersonalPatientDataType | null>(null);
-  const [medicalHistoryList, setMedicalHistoryList] =
-    useState<MedicalHistoryType[] | null>(null);
+  const [medicalHistoryList, setMedicalHistoryList] = useState<
+    MedicalHistoryType[] | null
+  >(null);
 
   const [vitalSigns, setVitalSigns] = useState<VitalSignsType>({
     heartRate: 72,

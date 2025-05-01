@@ -10,7 +10,7 @@ export default function PillBar() {
   const { t } = useLanguage();
   return (
     <div className="bg-[#F1F3F5] p-3 rounded-md border flex justify-between items-center grow h-[50px]">
-      <div className="flex items-center flex-wrap gap-2 w-full justify-between">
+      <div className="flex items-center flex-wrap gap-3 w-full justify-center">
         {/* Name pill */}
         {/* <div className="flex items-center bg-white rounded-full border border-blue-100 overflow-hidden">
           <div className="bg-white px-3 py-1 border-r border-blue-100">
@@ -33,26 +33,36 @@ export default function PillBar() {
             personalInfo.birth_date
           ).toString()}
         />
-        <Pill
-          labelKey={t("temp_abbr")}
-          labelValue={vitalSigns.temperature.toString()}
-        />
-        <Pill
-          labelKey={t("bp_abbr")}
-          labelValue={vitalSigns.bloodPressure}
-        />
-        <Pill
-          labelKey={t("rr_abbr")}
-          labelValue={vitalSigns.respiratoryRate.toString()}
-        />
-        <Pill
-          labelKey={t("spo_abbr")}
-          labelValue={vitalSigns.oxygenSaturation.toString()}
-        />
-        <Pill
-          labelKey={t("hr_abbr")}
-          labelValue={vitalSigns.heartRate.toString()}
-        />
+        {vitalSigns.temperature != null && (
+          <Pill
+            labelKey={t("temp_abbr")}
+            labelValue={vitalSigns.temperature.toString()}
+          />
+        )}
+        {vitalSigns.bloodPressure != null && (
+          <Pill
+            labelKey={t("bp_abbr")}
+            labelValue={vitalSigns.bloodPressure}
+          />
+        )}
+        {vitalSigns.respiratoryRate != null && (
+          <Pill
+            labelKey={t("rr_abbr")}
+            labelValue={vitalSigns.respiratoryRate.toString()}
+          />
+        )}
+        {vitalSigns.oxygenSaturation != null && (
+          <Pill
+            labelKey={t("spo_abbr")}
+            labelValue={vitalSigns.oxygenSaturation.toString()}
+          />
+        )}
+        {vitalSigns.heartRate != null && (
+          <Pill
+            labelKey={t("hr_abbr")}
+            labelValue={vitalSigns.heartRate.toString()}
+          />
+        )}
 
         {/* Birth date pill */}
         {/* <div className="bg-white px-3 py-1 rounded-full border border-green-100">
