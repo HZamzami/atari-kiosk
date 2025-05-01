@@ -5,12 +5,12 @@ interface PillProps {
 }
 export default function Pill({ labelKey, labelValue }: PillProps) {
   return (
-    <div className="flex items-center bg-white rounded-full border border-blue-100 overflow-hidden">
-      <div className="bg-white px-3 py-1 border-r border-blue-100">
-        <span className="text-gray-500">{labelKey}</span>
+    <div className="flex items-center rounded-full  border border-gray-200 shadow-sm overflow-hidden">
+      <div className="bg-[#61c9b7] px-3 py-1 text-sm font-medium text-white border-r border-gray-300">
+        {labelKey}
       </div>
-      <div className="px-3 py-1">
-        <span className="text- font-medium">{labelValue}</span>
+      <div className="bg-white px-3 py-1 text-sm font-semibold text-gray-800">
+        {labelValue}
       </div>
     </div>
   );

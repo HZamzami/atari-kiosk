@@ -9,8 +9,8 @@ export default function PillBar() {
 
   const { t } = useLanguage();
   return (
-    <div className="bg-blue-50 p-3 rounded-md border flex justify-between items-center grow h-[50px]">
-      <div className="flex items-center flex-wrap gap-2">
+    <div className="bg-[#F1F3F5] p-3 rounded-md border flex justify-between items-center grow h-[50px]">
+      <div className="flex items-center flex-wrap gap-2 w-full justify-between">
         {/* Name pill */}
         {/* <div className="flex items-center bg-white rounded-full border border-blue-100 overflow-hidden">
           <div className="bg-white px-3 py-1 border-r border-blue-100">
@@ -25,7 +25,7 @@ export default function PillBar() {
         </div> */}
         <Pill
           labelKey={t("name")}
-          labelValue={`${personalInfo.first_name} ${personalInfo.middle_name} ${personalInfo.last_name}`}
+          labelValue={`${personalInfo.first_name} ${personalInfo.last_name}`}
         />
         <Pill
           labelKey={t("age")}
@@ -34,20 +34,23 @@ export default function PillBar() {
           ).toString()}
         />
         <Pill
-          labelKey={"T"}
+          labelKey={t("temp_abbr")}
           labelValue={vitalSigns.temperature.toString()}
         />
-        <Pill labelKey={"BP"} labelValue={vitalSigns.bloodPressure} />
         <Pill
-          labelKey={"RR"}
+          labelKey={t("bp_abbr")}
+          labelValue={vitalSigns.bloodPressure}
+        />
+        <Pill
+          labelKey={t("rr_abbr")}
           labelValue={vitalSigns.respiratoryRate.toString()}
         />
         <Pill
-          labelKey={"SpO₂"}
+          labelKey={t("spo_abbr")}
           labelValue={vitalSigns.oxygenSaturation.toString()}
         />
         <Pill
-          labelKey={"HR"}
+          labelKey={t("hr_abbr")}
           labelValue={vitalSigns.heartRate.toString()}
         />
 
