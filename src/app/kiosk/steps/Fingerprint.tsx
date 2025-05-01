@@ -24,25 +24,27 @@ export default function Fingerprint({
   onFingerprintComplete,
 }: FingerprintProps) {
   const { t } = useLanguage();
-  const [status, setStatus] = useState<FingerprintStatus>("initializing");
+  const [status, setStatus] =
+    useState<FingerprintStatus>("initializing");
   const [error, setError] = useState<string | null>(null);
   const wsRef = useRef<WebSocket | null>(null);
-  // const STATIC_PATIENT_DATA: PersonalPatientDataType = {
-  //   national_id: "1010101010",
-  //   first_name: "Abdullah",
-  //   middle_name: "Ahmad",
-  //   last_name: "Zamzami",
-  //   email: "zamzami@patient.com",
-  //   phone: "00966534140111",
-  //   patient_id: "10101010101010101",
-  //   birth_date: "2002-03-06",
-  //   gender: "male",
-  //   address: "addr"
-  // };
+  const STATIC_PATIENT_DATA: PersonalPatientDataType = {
+    national_id: "1010101010",
+    first_name: "Hamza",
+    middle_name: "Mohammed",
+    last_name: "Zamzami",
+    email: "zamzami@patient.com",
+    phone: "00966534140111",
+    patient_id: "10101010101010101",
+    birth_date: "2002-03-06",
+    gender: "male",
+    address: "addr",
+  };
   const webSocket = () => {
     try {
       const socket = new WebSocket(
-        process.env.NEXT_PUBLIC_FP_SERVICE_URL || "ws://localhost:8778"
+        process.env.NEXT_PUBLIC_FP_SERVICE_URL ||
+          "ws://localhost:8778"
       );
       wsRef.current = socket;
 
@@ -72,7 +74,10 @@ export default function Fingerprint({
               return;
             }
           } catch (parseError) {
-            console.log("Failed to parse WebSocket message [data]:", parseError);
+            console.log(
+              "Failed to parse WebSocket message [data]:",
+              parseError
+            );
             return;
           }
 
@@ -83,9 +88,7 @@ export default function Fingerprint({
           if (data.status === "failed") {
             console.log(data.message);
             setStatus("failed");
-            setError(
-              data.message || "Verification failed"
-            );
+            setError(data.message || "Verification failed");
             socket.close();
             onFingerprintComplete(false);
           }
@@ -116,7 +119,9 @@ export default function Fingerprint({
                 onFingerprintComplete(false);
               }
             } else {
-              console.log("Invalid template length, requesting new capture");
+              console.log(
+                "Invalid template length, requesting new capture"
+              );
               setStatus("scanning");
               //socket.send(JSON.stringify({ action: "capture" }));
             }
@@ -180,21 +185,25 @@ export default function Fingerprint({
       };
     }
   };
-  
-  // useEffect(() => {
-  //   if (status === "initializing" || status === "waiting" || status === "scanning") {
-  //     const timer = setTimeout(() => {
-  //       // Force success with static data after 5 seconds
-  //       setStatus("verified");
-  //       onFingerprintComplete(true, STATIC_PATIENT_DATA);
-  //       if (wsRef.current) {
-  //         wsRef.current.close();
-  //       }
-  //     }, 5000); // 5 seconds delay
-      
-  //     return () => clearTimeout(timer);
-  //   }
-  // }, [status, onFingerprintComplete]);
+
+  useEffect(() => {
+    if (
+      status === "initializing" ||
+      status === "waiting" ||
+      status === "scanning"
+    ) {
+      const timer = setTimeout(() => {
+        // Force success with static data after 5 seconds
+        setStatus("verified");
+        onFingerprintComplete(true, STATIC_PATIENT_DATA);
+        if (wsRef.current) {
+          wsRef.current.close();
+        }
+      }, 1000); // 5 seconds delay
+
+      return () => clearTimeout(timer);
+    }
+  }, [status, onFingerprintComplete]);
 
   return (
     <div className="flex flex-col items-center justify-center h-full space-y-6">
@@ -246,16 +255,17 @@ export default function Fingerprint({
 
       {status === "failed" && (
         <div className="mt-4 p-4 bg-red-50 border border-red-200 rounded-md flex flex-row items-center gap-4">
-          {true && (<h2 className="font-semibold text-lg text-red-600 animate-pulse">
-            {t("patient_not_found")}
-          </h2>)}
+          {true && (
+            <h2 className="font-semibold text-lg text-red-600 animate-pulse">
+              {t("patient_not_found")}
+            </h2>
+          )}
 
           <button
             onClick={() => {
               setStatus("initializing");
               webSocket();
-            }
-            }
+            }}
             className=" px-4 py-2 bg-red-100 hover:bg-red-200 rounded-md transition-colors"
           >
             {t("try_again")}

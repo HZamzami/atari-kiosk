@@ -10,13 +10,17 @@ type TemperatureProps = {
   ) => void;
 };
 
-export default function Temperature({ onTemperatureComplete }: TemperatureProps) {
+export default function Temperature({
+  onTemperatureComplete,
+}: TemperatureProps) {
   const { t } = useLanguage();
   const [isInitialized, setIsInitialized] = useState(false);
   const [isConnected, setIsConnected] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
   const [isStopped, setIsStopped] = useState(false);
-  const [metadata, setMetadata] = useState<FrameMetadata | null>(null);
+  const [metadata, setMetadata] = useState<FrameMetadata | null>(
+    null
+  );
   const [statusMessage, setStatusMessage] = useState("Not connected");
   const [error, setError] = useState<string | null>(null);
 
@@ -54,7 +58,9 @@ export default function Temperature({ onTemperatureComplete }: TemperatureProps)
 
   const checkServerStatus = async () => {
     try {
-      const response = await axios.get(`${serverUrl}/metadata`, { timeout: 3000 });
+      const response = await axios.get(`${serverUrl}/metadata`, {
+        timeout: 3000,
+      });
       setIsConnected(true);
       setIsStopped(false);
       setStatusMessage("Connected to server");
@@ -72,14 +78,16 @@ export default function Temperature({ onTemperatureComplete }: TemperatureProps)
       const response = await axios.get(`${serverUrl}/metadata`);
       setMetadata(response.data);
       if (error) setError(null);
-      if (response.data.measurement_complete && 
-          response.data.temperature && 
-          onTemperatureComplete) {
+      if (
+        response.data.measurement_complete &&
+        response.data.temperature &&
+        onTemperatureComplete
+      ) {
         const tempValue = parseFloat(response.data.temperature);
         onTemperatureComplete(true, tempValue);
-        
+
         await axios.post(`${serverUrl}/acknowledge`, {
-          request_id: response.data.request_id
+          request_id: response.data.request_id,
         });
       }
     } catch (err) {
@@ -118,7 +126,9 @@ export default function Temperature({ onTemperatureComplete }: TemperatureProps)
           landmarks_model: "face_landmarker.task",
         });
         if (loaded.data.status === "error") {
-          setStatusMessage("Forehead detection could not be initialized");
+          setStatusMessage(
+            "Forehead detection could not be initialized"
+          );
           setError(loaded.data.message);
           setIsInitialized(false);
         }
@@ -214,15 +224,22 @@ export default function Temperature({ onTemperatureComplete }: TemperatureProps)
 
   const getBorderStyle = () => {
     if (!isProcessing) return { borderColor: "border-gray-600" };
-    if (metadata?.measurement_complete && metadata?.temperature) return "border-blue-500";
-    return metadata?.face_detected ? "border-green-500" : "border-red-500";
+    if (metadata?.measurement_complete && metadata?.temperature)
+      return "border-blue-500";
+    return metadata?.face_detected
+      ? "border-green-500"
+      : "border-red-500";
     //transition: "border-color 0.3s ease",
   };
 
   return (
     <div className="flex flex-col items-center justify-center h-full space-y-6">
       <h1 className="text-4xl font-bold">{t("keep_head_stable")}</h1>
-      <div className={`w-[${width || "640"}px] h-[${height || "360"}px] bg-gray-900 rounded-xl border-4 ${getBorderStyle()} transition-colors duration-300 overflow-hidden flex items-center justify-center`}>
+      <div
+        className={`w-[${width || "640"}px] h-[${
+          height || "360"
+        }px] bg-gray-900 rounded-xl border-4 ${getBorderStyle()} transition-colors duration-300 overflow-hidden flex items-center justify-center`}
+      >
         <img
           ref={imgRef}
           width={width}
@@ -244,8 +261,13 @@ export default function Temperature({ onTemperatureComplete }: TemperatureProps)
             <h3>Stream Information</h3>
             <p>FPS: {metadata.fps}</p>
             <p>Inference Time: {metadata.inference_time} ms</p>
-            <p>Postprocessing Time: {metadata.postprocessing_time} ms</p>
-            <p>Forehead Detected: {metadata.face_detected ? "Yes" : "No"}</p>
+            <p>
+              Postprocessing Time: {metadata.postprocessing_time} ms
+            </p>
+            <p>
+              Forehead Detected:{" "}
+              {metadata.face_detected ? "Yes" : "No"}
+            </p>
             {metadata.depth && <p>Distance: {metadata.depth} cm</p>}
             {metadata.tilt && <p>Tilt Angle: {metadata.tilt}°</p>}
           </div>
@@ -255,34 +277,44 @@ export default function Temperature({ onTemperatureComplete }: TemperatureProps)
       <div className="flex gap-2 mt-4">
         <button
           onClick={handleStartStream}
-          disabled={!isConnected || isProcessing || (!isInitialized && isStopped)}
-          className={`px-4 py-2 rounded-md font-medium ${!isConnected || isProcessing 
-            ? "bg-gray-300 text-gray-500 cursor-not-allowed" 
-            : "bg-green-600 text-white hover:bg-green-700"}`}
+          disabled={
+            !isConnected ||
+            isProcessing ||
+            (!isInitialized && isStopped)
+          }
+          className={`px-4 py-2 rounded-md font-medium ${
+            !isConnected || isProcessing
+              ? "bg-gray-300 text-gray-500 cursor-not-allowed"
+              : "bg-green-600 text-white hover:bg-green-700"
+          }`}
         >
           Start Detection
         </button>
-        
+
         <button
           onClick={handleStopProcessing}
           disabled={!isProcessing}
-          className={`px-4 py-2 rounded-md font-medium ${!isProcessing 
-            ? "bg-gray-300 text-gray-500 cursor-not-allowed" 
-            : "bg-amber-600 text-white hover:bg-amber-700"}`}
+          className={`px-4 py-2 rounded-md font-medium ${
+            !isProcessing
+              ? "bg-gray-300 text-gray-500 cursor-not-allowed"
+              : "bg-amber-600 text-white hover:bg-amber-700"
+          }`}
         >
           Stop Detection
         </button>
-        
+
         <button
           onClick={handleUnloadModels}
           disabled={isProcessing || !isInitialized}
-          className={`px-4 py-2 rounded-md font-medium ${isProcessing || !isInitialized 
-            ? "bg-gray-300 text-gray-500 cursor-not-allowed" 
-            : "bg-blue-600 text-white hover:bg-blue-700"}`}
+          className={`px-4 py-2 rounded-md font-medium ${
+            isProcessing || !isInitialized
+              ? "bg-gray-300 text-gray-500 cursor-not-allowed"
+              : "bg-blue-600 text-white hover:bg-blue-700"
+          }`}
         >
           Unload Models
         </button>
-        
+
         <button
           onClick={handleShutdown}
           disabled={!isConnected}

@@ -95,7 +95,16 @@ export const messages = {
     submit: "Submit",
     other_symptoms: "Other symptoms",
     back: "Back",
-    name: "Name"
+    name: "Name",
+    age: "Age",
+    temp: "Temp",
+    pressure: "Pressure",
+    resp: "Respiratory",
+    temp_abbr: "T",
+    bp_abbr: "BP",
+    rr_abbr: "RR",
+    spo_abbr: "SpO₂",
+    hr_abbr: "HR",
   },
   ar: {
     welcome: "مرحبًا بك في جهاز الطوارئ!",
@@ -193,6 +202,13 @@ export const messages = {
     submit: "إنهاء",
     other_symptoms: "أسباب أخرى",
     back: "الرجوع",
-    name: "الاسم"
+    name: "الاسم",
+    age: "العمر",
+    temp: "الحرارة",
+    temp_abbr: "الحرارة",
+    bp_abbr: "الضغط",
+    rr_abbr: "معدل التنفس",
+    spo_abbr: "تشبع الأكسجين",
+    hr_abbr: "النبض",
   },
 };

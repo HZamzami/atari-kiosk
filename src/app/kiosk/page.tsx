@@ -20,11 +20,11 @@ import {
   usePatientData,
 } from "@/context/PatientDataContext";
 import { PersonalPatientDataType } from "@/types/patientData";
-import { Button } from "@/components/ui/button";
 import Temperature from "./steps/Temperature";
 import Oximeter from "./steps/Oximeter";
 import { Check } from "lucide-react";
 import { MedicalHistoryType } from "@/types/medicalHistory";
+import PillBar from "@/components/PillBar";
 
 export default function Page() {
   const [isVerifyingFingerprint, setIsVerifyingFingerprint] =
@@ -137,22 +137,25 @@ function PatientDataContextPage({
     bloodPressure?: string
   ) => {
     if (isVerified && bloodPressure) {
-      updateVitalSign("bloodPressure", bloodPressure)
+      updateVitalSign("bloodPressure", bloodPressure);
     }
   };
 
   const handleOximeterComplete = (
     isVerified: boolean,
     measurements?: {
-      spo2: number,
-      heartRate: number,
-      respiratoryRate: number
+      spo2: number;
+      heartRate: number;
+      respiratoryRate: number;
     }
   ) => {
     if (isVerified && measurements) {
       updateVitalSign("oxygenSaturation", measurements.spo2);
       updateVitalSign("heartRate", measurements.heartRate);
-      updateVitalSign("respiratoryRate", measurements.respiratoryRate);
+      updateVitalSign(
+        "respiratoryRate",
+        measurements.respiratoryRate
+      );
     }
   };
 
@@ -176,36 +179,15 @@ function PatientDataContextPage({
   return (
     <div className="flex flex-col min-h-screen w-full">
       <div
-        className={`container flex flex-col mx-auto flex-grow pt-4  px-4 sm:px-6 md:px-8 ${showStepper && "pb-[80px]"
-          }`}
+        className={`container flex flex-col mx-auto flex-grow pt-4  px-4 sm:px-6 md:px-8 ${
+          showStepper && "pb-[80px]"
+        }`}
       >
         <div className="w-full">
           {step !== 0 && (
             <div className="flex w-full gap-4 h-[50px] justify-between">
               <LanguageSwitcher />
-              {personalInfo && (
-                <div className="bg-blue-50 p-3 rounded-md border flex justify-between items-center grow h-[50px]">
-                  <div className="flex items-center flex-wrap gap-2">
-                    {/* Name pill */}
-                    <div className="flex items-center bg-white rounded-full border border-blue-100 overflow-hidden">
-                      <div className="bg-white px-3 py-1 border-r border-blue-100">
-                        <span className="text-gray-500">{t("name")}</span>
-                      </div>
-                      <div className="px-3 py-1">
-                        <span className="text- font-medium">
-                          {personalInfo.first_name} {personalInfo.middle_name} {personalInfo.last_name}
-                        </span>
-                      </div>
-                    </div>
-                    {/* Birth date pill */}
-                    <div className="bg-white px-3 py-1 rounded-full border border-green-100">
-                      <span className="text-green-700 font-medium">
-                        {personalInfo.birth_date}
-                      </span>
-                    </div>
-                  </div>
-                </div>
-              )}
+              {personalInfo && <PillBar />}
               <button
                 onClick={() => {
                   setStep(0);
@@ -265,8 +247,12 @@ function PatientDataContextPage({
                 onTemperatureComplete={handleTemperatureComplete}
               />
             )}
-            {step === 3 && <Pressure onPressureComplete={handlePressureComplete} />}
-            {step === 4 && <Oximeter onOximeterComplete={handleOximeterComplete} />}
+            {step === 3 && (
+              <Pressure onPressureComplete={handlePressureComplete} />
+            )}
+            {step === 4 && (
+              <Oximeter onOximeterComplete={handleOximeterComplete} />
+            )}
             {step === 5 && (
               <ReasonForVisit
                 viewBodyMap={viewBodyMap}

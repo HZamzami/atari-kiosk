@@ -1,12 +1,12 @@
 export type PersonalPatientDataType = {
-  national_id: String;
-  first_name: String;
-  middle_name: String;
-  last_name: String;
-  email: String;
-  phone: String;
-  patient_id: String;
-  birth_date: String;
-  gender: String;
-  address: String;
+  national_id: string;
+  first_name: string;
+  middle_name: string;
+  last_name: string;
+  email: string;
+  phone: string;
+  patient_id: string;
+  birth_date: string;
+  gender: string;
+  address: string;
 };
