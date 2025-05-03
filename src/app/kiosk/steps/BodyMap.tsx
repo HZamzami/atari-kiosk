@@ -230,16 +230,18 @@ export default function BodyMap({ toggleViewBodyMap }: BodyMapProps) {
             {reasons.length === 0 ? (
               <div className="w-full h-full flex justify-center items-center flex-col gap-8">
                 <img src="/symptoms.svg" alt="symptoms" />
-                <span>No Symptoms Added</span>
+                <span>{t("no_symptoms_added")}</span>
               </div>
             ) : (
-              <div className="w-full h-full flex flex-col items-center justify-center gap-6">
+              <div className="w-full h-full flex flex-col items-center justify-center ">
                 {reasons.map((reason) => (
                   <div
                     key={reason}
-                    className="flex items-center justify-between w-full border-b pb-2"
+                    className="flex items-center justify-between w-full bg-white shadow-sm rounded-md p-3 mb-2"
                   >
-                    <span className="text-sm">{t(reason)}</span>
+                    <span className="text-sm text-gray-800">
+                      {t(reason)}
+                    </span>
                     <button
                       onClick={() => removeReason(reason)}
                       className="text-red-500 hover:text-red-700"

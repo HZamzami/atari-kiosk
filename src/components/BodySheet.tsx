@@ -49,32 +49,29 @@ export default function BodySheet({
     }
   };
   useEffect(() => {
-    if (open && zoneSymptoms.length > 0) {
-      const handleKeyDown = (event: KeyboardEvent) => {
-        // Close the sheet when period (.) is pressed
-        if (event.key === ".") {
-          onOpenChange(false);
-          return;
-        }
+    if (!open || zoneSymptoms.length === 0) return;
 
-        const keyNum = parseInt(event.key);
-        if (
-          !isNaN(keyNum) &&
-          keyNum > 0 &&
-          keyNum <= zoneSymptoms.length
-        ) {
-          const symptom = zoneSymptoms[keyNum - 1];
-          if (symptom) {
-            toggleReason(symptom.key);
-          }
-        }
-      };
-      window.addEventListener("keydown", handleKeyDown);
-      return () => {
-        window.removeEventListener("keydown", handleKeyDown);
-      };
-    }
-  }, [open, zoneSymptoms, toggleReason, onOpenChange]);
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === ".") {
+        onOpenChange(false);
+      }
+
+      const keyNum = parseInt(event.key);
+      if (
+        !isNaN(keyNum) &&
+        keyNum > 0 &&
+        keyNum <= zoneSymptoms.length
+      ) {
+        const symptom = zoneSymptoms[keyNum - 1];
+        if (symptom) toggleReason(symptom.key);
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [open, zoneSymptoms.length, toggleReason, onOpenChange]);
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
       <SheetContent
