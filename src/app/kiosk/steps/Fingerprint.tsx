@@ -28,18 +28,30 @@ export default function Fingerprint({
     useState<FingerprintStatus>("initializing");
   const [error, setError] = useState<string | null>(null);
   const wsRef = useRef<WebSocket | null>(null);
-  const STATIC_PATIENT_DATA: PersonalPatientDataType = {
-    national_id: "1010101010",
-    first_name: "Hamza",
-    middle_name: "Mohammed",
-    last_name: "Zamzami",
-    email: "zamzami@patient.com",
-    phone: "00966534140111",
-    patient_id: "10101010101010101",
-    birth_date: "2002-03-06",
-    gender: "male",
-    address: "addr",
+  const guestP = {
+    national_id: "0000000000",
+    first_name: "Guest",
+    middle_name: "bin",
+    last_name: "Al-Guest",
+    email: "guest@patient.com",
+    phone: "00966500000000",
+    patient_id: "000000000000000",
+    birth_date: new Date().toISOString().split("T")[0],
+    gender: "unknown",
+    address: "unknown",
   };
+  // const STATIC_PATIENT_DATA: PersonalPatientDataType = {
+  //   national_id: "1010101010",
+  //   first_name: "Hamza",
+  //   middle_name: "Mohammed",
+  //   last_name: "Zamzami",
+  //   email: "zamzami@patient.com",
+  //   phone: "00966534140111",
+  //   patient_id: "10101010101010101",
+  //   birth_date: "2002-03-06",
+  //   gender: "male",
+  //   address: "addr",
+  // };
   const webSocket = () => {
     try {
       const socket = new WebSocket(
@@ -120,10 +132,15 @@ export default function Fingerprint({
               }
             } else {
               console.log(
-                "Invalid template length, requesting new capture"
+                "Invalid template length, or unregistred patient"
               );
-              setStatus("scanning");
-              //socket.send(JSON.stringify({ action: "capture" }));
+              setStatus("verified");
+              socket.close();
+              onFingerprintComplete(
+                true,
+                guestP,
+                []
+              );
             }
           }
         } catch (error) {
@@ -186,24 +203,24 @@ export default function Fingerprint({
     }
   };
 
-  useEffect(() => {
-    if (
-      status === "initializing" ||
-      status === "waiting" ||
-      status === "scanning"
-    ) {
-      const timer = setTimeout(() => {
-        // Force success with static data after 5 seconds
-        setStatus("verified");
-        onFingerprintComplete(true, STATIC_PATIENT_DATA);
-        if (wsRef.current) {
-          wsRef.current.close();
-        }
-      }, 1000); // 5 seconds delay
+  // useEffect(() => {
+  //   if (
+  //     status === "initializing" ||
+  //     status === "waiting" ||
+  //     status === "scanning"
+  //   ) {
+  //     const timer = setTimeout(() => {
+  //       // Force success with static data after 5 seconds
+  //       setStatus("verified");
+  //       onFingerprintComplete(true, STATIC_PATIENT_DATA);
+  //       if (wsRef.current) {
+  //         wsRef.current.close();
+  //       }
+  //     }, 1000); // 5 seconds delay
 
-      return () => clearTimeout(timer);
-    }
-  }, [status, onFingerprintComplete]);
+  //     return () => clearTimeout(timer);
+  //   }
+  // }, [status, onFingerprintComplete]);
 
   return (
     <div className="flex flex-col items-center justify-center h-full space-y-6">
