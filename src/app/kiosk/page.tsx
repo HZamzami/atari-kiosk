@@ -159,7 +159,8 @@ function PatientDataContextPage({
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       // Existing keyboard handlers
-      if (e.code === "Space" || e.key === " ") {
+      console.log(e.key);
+      if (e.code === "Space" || e.key === " " || e.key === "=") {
         e.preventDefault();
         if (step < steps.length - 1) {
           nextStep();
@@ -193,7 +194,8 @@ function PatientDataContextPage({
         resetAll();
         setViewBodyMap(false);
         setIsPatientVerified(false);
-        setIsVerifyingFingerprint(false);
+        setIsVerifyingFingerprint(false); 
+        window.location.reload();
       }
 
       // New handler for language switching (using '=' key)
