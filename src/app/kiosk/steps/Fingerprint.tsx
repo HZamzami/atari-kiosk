@@ -76,10 +76,12 @@ export default function Fingerprint({
       return;
     }
     try {
-      const socket = new WebSocket(
-        process.env.NEXT_PUBLIC_FP_SERVICE_URL ||
-          "ws://localhost:8778"
-      );
+      let wsUrl = process.env.NEXT_PUBLIC_FP_SERVICE_URL || "wss://localhost:8778";
+      if (wsUrl.startsWith('ws://') && window.location.protocol === 'https:') {
+        wsUrl = wsUrl.replace('ws://', 'wss://');
+        console.log("Converting to secure WebSocket:", wsUrl);
+      }
+      const socket = new WebSocket(wsUrl);
       wsRef.current = socket;
 
       setTimeout(() => {

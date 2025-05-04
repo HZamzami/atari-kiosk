@@ -70,9 +70,12 @@ export default function Pressure({ onPressureComplete }: PressureProps) {
 
   const connectWebSocket = () => {
     try {
-      const socket = new WebSocket(
-        process.env.NEXT_PUBLIC_WSS_BRIDGE_URL || "ws://localhost:8779"
-      );
+      let wsUrl = process.env.NEXT_PUBLIC_WSS_BRIDGE_URL || "wss://localhost:8779";
+      if (wsUrl.startsWith('ws://') && window.location.protocol === 'https:') {
+        wsUrl = wsUrl.replace('ws://', 'wss://');
+        console.log("Converting to secure WebSocket:", wsUrl);
+      }
+      const socket = new WebSocket(wsUrl);
       wsRef.current = socket;
       timeoutRef.current = setTimeout(() => {
         if (status === "initializing") {
