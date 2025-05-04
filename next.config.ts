@@ -4,6 +4,13 @@ const nextConfig: NextConfig = {
   eslint: {
     ignoreDuringBuilds: true, // Disables ESLint during `next build`
   },
+  server: {
+    https: {
+      key: '/home/parsley/certs/key.pem',
+      cert: '/home/parsley/certs/cert.pem',
+    },
+    port: 5000,
+  },
   reactStrictMode: true,
   trailingSlash: true,
   cleanDistDir: true,
