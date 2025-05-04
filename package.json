@@ -4,10 +4,10 @@
   "private": true,
   "scripts": {
     "dev": "next dev --turbopack",
-    "dev:tls": "next dev --experimental-https",
+    "dev:tls": "next dev -p 5000 --experimental-https",
     "build": "next build",
     "start": "next start",
-    "start:tls": "next start -H 0.0.0.0 -p 5000 --experimental-https",
+    "start:tls": "next start -p 5000 --experimental-https",
     "lint": "next lint"
   },
   "dependencies": {
