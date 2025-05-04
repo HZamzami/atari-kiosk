@@ -33,31 +33,31 @@ export default function PillBar() {
             personalInfo.birth_date
           ).toString()}
         />
-        {vitalSigns.temperature != null && (
+        {vitalSigns?.temperature != null && (
           <Pill
             labelKey={t("temp_abbr")}
             labelValue={vitalSigns.temperature.toString()}
           />
         )}
-        {vitalSigns.bloodPressure != null && (
+        {vitalSigns?.bloodPressure != null && (
           <Pill
             labelKey={t("bp_abbr")}
             labelValue={vitalSigns.bloodPressure}
           />
         )}
-        {vitalSigns.respiratoryRate != null && (
+        {vitalSigns?.respiratoryRate != null && (
           <Pill
             labelKey={t("rr_abbr")}
             labelValue={vitalSigns.respiratoryRate.toString()}
           />
         )}
-        {vitalSigns.oxygenSaturation != null && (
+        {vitalSigns?.oxygenSaturation != null && (
           <Pill
             labelKey={t("spo_abbr")}
             labelValue={vitalSigns.oxygenSaturation.toString()}
           />
         )}
-        {vitalSigns.heartRate != null && (
+        {vitalSigns?.heartRate != null && (
           <Pill
             labelKey={t("hr_abbr")}
             labelValue={vitalSigns.heartRate.toString()}

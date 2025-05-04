@@ -28,6 +28,8 @@ export default function Fingerprint({
     useState<FingerprintStatus>("initializing");
   const [error, setError] = useState<string | null>(null);
   const wsRef = useRef<WebSocket | null>(null);
+  const retryCountRef = useRef(0);
+  const shouldRestartRef = useRef(true); 
   const guestP = {
     national_id: "0000000000",
     first_name: "Guest",
@@ -52,7 +54,27 @@ export default function Fingerprint({
   //   gender: "male",
   //   address: "addr",
   // };
+
+  const restartConnection = () => {
+    if (!shouldRestartRef.current) return;
+    retryCountRef.current += 1;
+    console.log(`Retrying connection (attempt ${retryCountRef.current}...)`);
+    if (wsRef.current) {
+      wsRef.current.close();
+      wsRef.current = null;
+    }
+    setStatus("initializing");
+    setError(null);
+    // Delay slightly before attempting reconnection
+    setTimeout(() => {
+      webSocket();
+    }, 1000);
+  };
   const webSocket = () => {
+    if (wsRef.current) {
+      console.log("WebSocket already exists, not creating a new one");
+      return;
+    }
     try {
       const socket = new WebSocket(
         process.env.NEXT_PUBLIC_FP_SERVICE_URL ||
@@ -62,8 +84,8 @@ export default function Fingerprint({
 
       setTimeout(() => {
         if (status === "initializing") {
-          socket.close();
-          onFingerprintComplete(false);
+          console.log("Connection timed out during initialization");
+          restartConnection();
         }
       }, 10000);
 
@@ -76,6 +98,7 @@ export default function Fingerprint({
       socket.onmessage = async (event) => {
         if (status === "verified") {
           socket.close();
+          return;
         }
         try {
           let data;
@@ -83,6 +106,7 @@ export default function Fingerprint({
             data = JSON.parse(event.data);
             if (data === null || data === undefined) {
               console.log("Data is null or undefined after parsing");
+              restartConnection();
               return;
             }
           } catch (parseError) {
@@ -90,15 +114,17 @@ export default function Fingerprint({
               "Failed to parse WebSocket message [data]:",
               parseError
             );
+            restartConnection(); 
             return;
           }
 
           if (data.status === "error") {
-            console.log(data.message);
-            //socket.send(JSON.stringify({ action: "capture" }));
+            console.log("error", data.message);
+            socket.send(JSON.stringify({ action: "capture" }));//
           }
           if (data.status === "failed") {
-            console.log(data.message);
+            shouldRestartRef.current = false;
+            console.log("failed", data.message);
             setStatus("failed");
             setError(data.message || "Verification failed");
             socket.close();
@@ -114,6 +140,7 @@ export default function Fingerprint({
                 data.template
               );
               if (verificationResult.verified) {
+                shouldRestartRef.current = false;
                 setStatus("verified");
                 socket.close();
                 onFingerprintComplete(
@@ -123,6 +150,7 @@ export default function Fingerprint({
                 );
               } else {
                 console.log(verificationResult.message);
+                shouldRestartRef.current = false;
                 setStatus("failed");
                 setError(
                   verificationResult.message || "Verification failed"
@@ -134,6 +162,7 @@ export default function Fingerprint({
               console.log(
                 "Invalid template length, or unregistred patient"
               );
+              shouldRestartRef.current = false;
               setStatus("verified");
               socket.close();
               onFingerprintComplete(
@@ -145,12 +174,16 @@ export default function Fingerprint({
           }
         } catch (error) {
           console.error("Error processing fingerprint data:", error);
-        }
+          if (shouldRestartRef.current) {
+            restartConnection();
+          }        }
       };
 
       socket.onerror = (error) => {
         console.error("WebSocket error:", error);
-        //socket.send(JSON.stringify({ action: "capture" }));
+        if (shouldRestartRef.current) {
+          restartConnection();
+        }
       };
 
       socket.onclose = () => {
@@ -171,6 +204,7 @@ export default function Fingerprint({
     }
 
     return () => {
+      shouldRestartRef.current = false;
       wsRef.current?.close();
       wsRef.current = null;
     };
@@ -232,8 +266,8 @@ export default function Fingerprint({
         <Image
           src={"/fingerScanner.gif"}
           alt="finger scanner"
-          width={524}
-          height={354}
+          width={640}
+          height={360}
           unoptimized
         />
 
@@ -262,15 +296,15 @@ export default function Fingerprint({
         </div>
       </div>
 
-      {status === "verified" && (
+      {/* {status === "verified" && (
         <div className="mt-4 p-4 bg-green-50 border border-green-200 rounded-md">
           <h2 className="font-semibold text-lg text-green-600 animate-pulse">
             {t("patient_found")}
           </h2>
         </div>
-      )}
+      )} */}
 
-      {status === "failed" && (
+      {/* {status === "failed" && (
         <div className="mt-4 p-4 bg-red-50 border border-red-200 rounded-md flex flex-row items-center gap-4">
           {true && (
             <h2 className="font-semibold text-lg text-red-600 animate-pulse">
@@ -288,7 +322,7 @@ export default function Fingerprint({
             {t("try_again")}
           </button>
         </div>
-      )}
+      )} */}
     </div>
   );
 }

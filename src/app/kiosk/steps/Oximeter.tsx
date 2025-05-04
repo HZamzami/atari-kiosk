@@ -195,8 +195,8 @@ export default function Oximeter({ onOximeterComplete }: OximeterProps) {
       <Image
         src={"/fingerScanner.gif"}
         alt="finger scanner"
-        width={524}
-        height={354}
+        width={640}
+        height={360}
         unoptimized
       />
 
@@ -223,8 +223,8 @@ export default function Oximeter({ onOximeterComplete }: OximeterProps) {
           </p>
         )}
       </div>
-
-      {/* Measurement results display */}
+{/*}
+      {/* Measurement results display }
       {status === "complete" && spo2 !== null && heartRate !== null && (
         <div className="mt-4 p-4 bg-green-50 border border-green-200 rounded-md w-[524px]">
           <h2 className="font-semibold text-lg text-green-700 mb-4 text-center">
@@ -232,7 +232,7 @@ export default function Oximeter({ onOximeterComplete }: OximeterProps) {
           </h2>
 
           <div className="grid grid-cols-3 gap-4">
-            {/* SpO2 */}
+            {/* SpO2 }
             <div className="flex flex-col items-center p-2 bg-white rounded-lg shadow-sm">
               <div className="text-sm text-gray-500">{t("oxygen_saturation")}</div>
               <div className="flex items-baseline">
@@ -241,7 +241,7 @@ export default function Oximeter({ onOximeterComplete }: OximeterProps) {
               </div>
             </div>
 
-            {/* Heart Rate */}
+            {/* Heart Rate }
             <div className="flex flex-col items-center p-2 bg-white rounded-lg shadow-sm">
               <div className="text-sm text-gray-500">{t("heart_rate")}</div>
               <div className="flex items-baseline">
@@ -250,7 +250,7 @@ export default function Oximeter({ onOximeterComplete }: OximeterProps) {
               </div>
             </div>
 
-            {/* Respiratory Rate */}
+            {/* Respiratory Rate }
             <div className="flex flex-col items-center p-2 bg-white rounded-lg shadow-sm">
               <div className="text-sm text-gray-500">{t("respiratory_rate")}</div>
               <div className="flex items-baseline">
@@ -260,9 +260,9 @@ export default function Oximeter({ onOximeterComplete }: OximeterProps) {
             </div>
           </div>
         </div>
-      )}
-
-      {/* Error display with retry button */}
+      )} */}
+{/*}
+      {/* Error display with retry button }
       {status === "failed" && (
         <div className="mt-4 p-4 bg-red-50 border border-red-200 rounded-md flex flex-col items-center">
           <h2 className="font-semibold text-lg text-red-600 mb-2">
@@ -276,6 +276,7 @@ export default function Oximeter({ onOximeterComplete }: OximeterProps) {
           </button>
         </div>
       )}
+*/}
     </div>
   );
 }

@@ -14,7 +14,7 @@ type PatientDataContextType = {
   addReason: (reason: string) => void;
   removeReason: (reason: string) => void;
   toggleReason: (reason: string) => void;
-  vitalSigns: VitalSignsType;
+  vitalSigns: VitalSignsType | null;
   updateVitalSign: (
     key: keyof VitalSignsType,
     value: number | string
@@ -36,13 +36,14 @@ export const PatientDataProvider: React.FC<{
     MedicalHistoryType[] | null
   >(null);
 
-  const [vitalSigns, setVitalSigns] = useState<VitalSignsType>({
-    heartRate: 72,
-    bloodPressure: "120/80",
-    temperature: 36.8,
-    respiratoryRate: 16,
-    oxygenSaturation: 98,
-  });
+  const [vitalSigns, setVitalSigns] = useState<VitalSignsType | null>(null)
+  // {
+  //   heartRate: 72,
+  //   bloodPressure: "120/80",
+  //   temperature: 36.8,
+  //   respiratoryRate: 16,
+  //   oxygenSaturation: 98,
+  // });
 
   const addReason = (reason: string) => {
     if (reason && !reasons.includes(reason)) {
@@ -71,13 +72,7 @@ export const PatientDataProvider: React.FC<{
     setPersonalInfo(null);
     setMedicalHistoryList(null);
     setReasons([]);
-    setVitalSigns({
-      heartRate: 72,
-      bloodPressure: "120/80",
-      temperature: 36.8,
-      respiratoryRate: 16,
-      oxygenSaturation: 98,
-    });
+    setVitalSigns(null);
   };
   return (
     <PatientDataContext.Provider

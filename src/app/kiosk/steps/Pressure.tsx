@@ -182,8 +182,8 @@ export default function Pressure({ onPressureComplete }: PressureProps) {
       <Image
         src={"/picture2.gif"}
         alt="finger scanner"
-        width={524}
-        height={354}
+        width={640}
+        height={360}
         unoptimized
       />
       {/* Status overlay */}
@@ -211,7 +211,7 @@ export default function Pressure({ onPressureComplete }: PressureProps) {
       </div>
 
       {/* Blood pressure result display */}
-      {status === "complete" && bloodPressure && (
+      {/* {status === "complete" && bloodPressure && (
         <div className="mt-4 p-4 bg-green-50 border border-green-200 rounded-md">
           <h2 className="font-semibold text-lg text-green-700 mb-2">
             {t("blood_pressure_result")}
@@ -221,10 +221,10 @@ export default function Pressure({ onPressureComplete }: PressureProps) {
             <div className="text-lg text-gray-600">mmHg</div>
           </div>
         </div>
-      )}
+      )} */}
 
       {/* Error display with retry button */}
-      {status === "failed" && (
+      {/* {status === "failed" && (
         <div className="mt-4 p-4 bg-red-50 border border-red-200 rounded-md flex flex-col items-center">
           <h2 className="font-semibold text-lg text-red-600 mb-2">
             {error || t("measurement_failed")}
@@ -236,7 +236,7 @@ export default function Pressure({ onPressureComplete }: PressureProps) {
             {t("try_again")}
           </button>
         </div>
-      )}
+      )} */}
     </div>
   );
 }
