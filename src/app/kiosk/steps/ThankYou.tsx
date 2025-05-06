@@ -93,14 +93,16 @@ export default function ThankYou() {
                 {t("vital_signs")}
               </h3>
               <div className="grid grid-cols-2 gap-x-4 gap-y-2 text-gray-700 text-sm mt-1">
-                {Object.entries(vitalSigns || {}).map(([key, value]) => (
-                  <div key={key} className="flex justify-between">
-                    <span className="font-semibold capitalize">
-                      {t(key)}
-                    </span>
-                    <span>{value}</span>
-                  </div>
-                ))}
+                {Object.entries(vitalSigns || {}).map(
+                  ([key, value]) => (
+                    <div key={key} className="flex justify-between">
+                      <span className="font-semibold capitalize">
+                        {t(key)}
+                      </span>
+                      <span>{value}</span>
+                    </div>
+                  )
+                )}
               </div>
             </div>
 

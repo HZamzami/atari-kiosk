@@ -22,11 +22,15 @@ import PillBar from "@/components/PillBar";
 import NavigationButton from "@/components/icons/NavigationButton";
 
 export default function Page() {
-  const [isFingerprintVerified, setIsFingerprintVerified] = useState(false);
+  const [isFingerprintVerified, setIsFingerprintVerified] =
+    useState(false);
   const [isPatientVerified, setIsPatientVerified] = useState(false);
-  const [isTemperatureVerified, setIsTemperatureVerified] = useState(false);
-  const [isBloodPressureVerified, setIsBloodPressureVerified] = useState(false);
-  const [isPulseOximeterVerified, setIsPulseOximeterVerified] = useState(false);
+  const [isTemperatureVerified, setIsTemperatureVerified] =
+    useState(false);
+  const [isBloodPressureVerified, setIsBloodPressureVerified] =
+    useState(false);
+  const [isPulseOximeterVerified, setIsPulseOximeterVerified] =
+    useState(false);
   return (
     <PatientDataProvider>
       <PatientDataContextPage
@@ -68,7 +72,7 @@ function PatientDataContextPage({
   setIsPatientVerified,
   setIsTemperatureVerified,
   setIsBloodPressureVerified,
-  setIsPulseOximeterVerified
+  setIsPulseOximeterVerified,
 }: PatientDataContextPageProps) {
   const { t, locale, setLocale } = useLanguage();
   const [step, setStep] = useState(0);
@@ -109,12 +113,12 @@ function PatientDataContextPage({
       setStep((prevStep) => Math.min(prevStep + 1, steps.length - 1));
       setIsTransitioning(false);
     }, 1000); // 1 second delay
-  }
+  };
 
   const handleStepChange = (newStep: number) => {
     if (isTransitioning) return;
     if (newStep < step) {
-      return; 
+      return;
     }
     if (step === 1 && newStep !== 1) {
       if (!isPatientVerified && newStep > step) {
@@ -248,7 +252,7 @@ function PatientDataContextPage({
         resetAll();
         setViewBodyMap(false);
         setIsPatientVerified(false);
-        setIsFingerprintVerified(false); 
+        setIsFingerprintVerified(false);
         window.location.reload();
       }
 
