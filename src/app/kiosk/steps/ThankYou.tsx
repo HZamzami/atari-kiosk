@@ -1,28 +1,12 @@
 import { useLanguage } from "@/context/LanguageContext";
 import React, { useEffect, useState } from "react";
 import { usePatientData } from "@/context/PatientDataContext";
-import { TriageType } from "@/types/triage";
 
 interface CtasResponse {
   ctasLevel: number;
   clinicalReasoning: string;
   keyFactors: string[];
   recommendedActions: string[];
-}
-
-interface ClinicAssignment {
-  clinic: {
-    room_number: string;
-    name: string;
-    department: string;
-  };
-  assignment: {
-    id: number;
-    session_id: number;
-    patient_id: number;
-    clinic_room: string;
-    created_at: string;
-  };
 }
 
 export default function ThankYou() {
@@ -32,8 +16,10 @@ export default function ThankYou() {
     personalInfo,
     medicalHistoryList,
     session,
-    setClinicAssignment,
-    clinicAssignment,
+    setClinic,
+    clinic,
+    setAssigned,
+    assigned,
   } = usePatientData();
   const { t } = useLanguage();
   const [ctasData, setCtasData] = useState<CtasResponse | null>(null);
@@ -87,8 +73,9 @@ export default function ThankYou() {
 
     setProcessingSession(true);
     //action, session, session_id, patient_id, reasons, vitalSigns, triage, ctaslvl
-    const triage: TriageType = {
+    const triage = {
       patient_id: personalInfo.patient_id,
+      session_id: null,
       assigned_lvl: ctaslvl,
       algo_lvl: ctaslvl,
       ml_lvl: ctaslvl,
@@ -105,7 +92,8 @@ export default function ThankYou() {
           action: "create_session",
           session: session,
           patient_id: personalInfo.patient_id,
-          triage,
+          session_id: null,
+          triage: null,
           vitalSigns,
           reasons,
           ctaslvl,
@@ -118,7 +106,8 @@ export default function ThankYou() {
 
       const data = await response.json();
       if (data.success) {
-        setClinicAssignment(data);
+        setClinic(data.clinic);
+        setAssigned(data.assigned);
       }
     } catch (error) {
       console.error("Error processing session:", error);

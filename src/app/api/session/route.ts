@@ -17,8 +17,7 @@ export async function POST(req: NextRequest) {
     const { action, session, patient_id, reasons, vitalSigns, triage, ctaslvl } = await req.json();
     let session_id: number;
     const server = process.env.DB_API_URL || "https://localhost:5050";
-
-    if (action === "create_session") {
+    if (action === "post_session") {
       if (!session) {
         return NextResponse.json(
         { error: "Missing session obj" },
@@ -46,14 +45,7 @@ export async function POST(req: NextRequest) {
           { status: response.status }
         );
       }
-      const sessionResponse = await response.json();
-      return NextResponse.json({
-        success: true,
-        session: sessionResponse
-      });
-    }
-    
-    else if (action === "record_vitals") {
+      
       if (!session_id || !patient_id || !vitalSigns) {
         return NextResponse.json(
           { error: "Missing session_id, patient_id or vitalSigns" },
@@ -79,13 +71,7 @@ export async function POST(req: NextRequest) {
           { status: vitalSignsResponse.status }
         );
       }
-      return NextResponse.json({
-          success: true,
-          msg: vitalSignsResponse
-      });
-    }
 
-    else if (action==="record_reasons") {
       if (!patient_id || !session_id || !reasons || reasons.length === 0) {
         return NextResponse.json(
           { error: "Missing session_id, patient_id or reasons" },
@@ -100,7 +86,7 @@ export async function POST(req: NextRequest) {
           answer_id: reason
         };
       });
-      const reasonsResponse = await fetch(`${server}/patient_responses/batch`, {
+      const reasonsResponse = await fetch(`${server}/records`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json"
@@ -114,30 +100,20 @@ export async function POST(req: NextRequest) {
           { status: reasonsResponse.status }
         );
       }
-      return NextResponse.json({
-          success: true,
-          msg: reasonsResponse
-      });
-    }
-
-    else if (action === "record_triage") {
+      
       if (!session_id || !patient_id || !triage) {
         return NextResponse.json(
           { error: "Missing session_id, patient_id or triage" },
           { status: 400 }
         );
       }
-      const triaged = {
-        patient_id,
-        session_id,
-        ...triage,
-      };
-      const triageResponse = await fetch(`${server}/vital_signs`, {
+      triage.session_id = session_id;
+      const triageResponse = await fetch(`${server}/triaged`, {
         method: "POST",
         headers: {
         "Content-Type": "application/json"
         },
-        body: JSON.stringify(triaged)
+        body: JSON.stringify(triage)
       });
       if (!triageResponse.ok) {
         const errorData = await triageResponse.text();
@@ -146,20 +122,14 @@ export async function POST(req: NextRequest) {
           { status: triageResponse.status }
         );
       }
-      return NextResponse.json({
-          success: true,
-          msg: triageResponse
-      });
-    }
 
-    else if (action === "assign_clinic") {
       if (!session_id || !patient_id || !ctaslvl) {
         return NextResponse.json(
           { error: "Missing session_id, patient_id or CTAS level" },
           { status: 400 }
         );
       }
-      const clinicsResponse = await fetch(`${server}/clinics?ctas_zone=${ctaslvl}`, {
+      const clinicsResponse = await fetch(`${server}/clinics`, {
         method: "GET"
       });
       if (!clinicsResponse.ok) {
@@ -180,19 +150,19 @@ export async function POST(req: NextRequest) {
       const clinic = selectedClinic.sort(
         (a: ClinicType, b: ClinicType) => a.queue - b.queue
       )[0];
-  
+
       if (clinic != null) {
-        const assigned = {
+        const assignemnt = {
           session_id,
           patient_id,
           room: clinic.room
         };
-        const assignmentResponse = await fetch(`${server}/assignments`, {
+        const assignmentResponse = await fetch(`${server}/assigned`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json"
           },
-          body: JSON.stringify(assigned)
+          body: JSON.stringify(assignemnt)
         });
         if (!assignmentResponse.ok) {
           const errorData = await assignmentResponse.text();
@@ -201,25 +171,36 @@ export async function POST(req: NextRequest) {
             { status: assignmentResponse.status }
           );
         }
+
+        const assignedRespose = await fetch(`${server}/assigned?patient_id=${patient_id}&session_id=${session_id}`, {
+          method: "GET",
+        });
+        if (!assignedRespose.ok) {
+          const errorData = await assignedRespose.text();
+          return NextResponse.json(
+            { error: errorData || "Failed to create" },
+            { status: assignedRespose.status }
+          );
+        }
+        const assigned = await assignedRespose.json();
+
         return NextResponse.json({
-          success: true,
-          clinic: selectedClinic,
+          clinic: clinic,
           assigned: assigned
         });
       }
     }
-
     else {
-    return NextResponse.json(
-      { error: "Invalid action" },
-      { status: 400 }
-    );
-  }
+      return NextResponse.json(
+        { error: "Invalid action" },
+        { status: 400 }
+      );
+    }
   } catch (error) {
     console.error("Session processing error:", error);
-    return NextResponse.json(
-      { error: "Internal server error" },
-      { status: 500 }
-    );
+      return NextResponse.json(
+        { error: "Internal server error" },
+        { status: 500 }
+      );
   }
 }

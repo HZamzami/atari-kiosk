@@ -5,6 +5,8 @@ import { VitalSignsType } from "@/types/vital-signs";
 import { PersonalPatientDataType } from "@/types/patientData";
 import { MedicalHistoryType } from "@/types/medicalHistory";
 import { SessionType } from "@/types/session";
+import { AssignedType } from "@/types/assigned";
+import { ClinicType } from "@/types/clinic";
 
 type PatientDataContextType = {
   personalInfo: PersonalPatientDataType | null;
@@ -24,8 +26,10 @@ type PatientDataContextType = {
   // Add session management
   session: SessionType | null;
   setSession: (session: SessionType | null) => void;
-  clinicAssignment: any | null;
-  setClinicAssignment: (assignment: any | null) => void;
+  clinic: ClinicType | null;
+  setClinic: (clinic: ClinicType | null) => void;
+  assigned: AssignedType | null;
+  setAssigned: (assigned: AssignedType | null) => void;
 };
 
 const PatientDataContext = createContext<
@@ -42,7 +46,8 @@ export const PatientDataProvider: React.FC<{
     MedicalHistoryType[] | null
   >(null);
   const [session, setSession] = useState<SessionType | null>(null);
-  const [clinicAssignment, setClinicAssignment] = useState<any | null>(null);
+  const [clinic, setClinic] = useState<any | null>(null);
+  const [assigned, setAssigned] = useState<any | null>(null);
   const [vitalSigns, setVitalSigns] = useState<VitalSignsType | null>(null);
   // {
   //   heartRate: 72,
@@ -81,9 +86,10 @@ export const PatientDataProvider: React.FC<{
     setReasons([]);
     setVitalSigns(null);
     setSession(null);
-    setClinicAssignment(null);
+    setClinic(null);
+    setAssigned(null);
   };
-  
+
   return (
     <PatientDataContext.Provider
       value={{
@@ -100,8 +106,10 @@ export const PatientDataProvider: React.FC<{
         resetAll,
         session,
         setSession,
-        clinicAssignment,
-        setClinicAssignment,
+        clinic,
+        setClinic,
+        assigned,
+        setAssigned
       }}
     >
       {children}
