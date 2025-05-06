@@ -2,21 +2,15 @@
 
 import { useState } from "react";
 import {
-  Activity,
-  Bell,
   Calendar,
   ChevronDown,
   Clock,
   Filter,
-  History,
-  Home,
   Laptop,
-  LayoutDashboard,
   MapPin,
   Menu,
   RefreshCw,
   Search,
-  Settings,
   Users,
   X,
 } from "lucide-react";
@@ -47,12 +41,12 @@ import {
   SheetTitle,
 } from "@/components/ui/sheet";
 import { useToast } from "@/hooks/use-toast";
-import { cn } from "@/lib/utils";
 import { PatientDetails } from "./components/patient-details";
 import { RoomAssignment } from "./components/room-assignment";
 import { HistoricalRecords } from "./components/historical-records";
 import { KioskStatus } from "./components/kiosk-status";
 import { PatientList } from "./components/patient-list";
+import DashboardSidebar from "./components/dashboard-sidebar";
 
 // Define the Patient type
 interface Patient {
@@ -85,104 +79,10 @@ export default function Dashboard() {
   return (
     <div className="flex min-h-screen bg-slate-50">
       {/* Sidebar */}
-      <aside
-        className={cn(
-          "fixed inset-y-0 left-0 z-50 w-64 bg-white border-r border-slate-200 transition-transform duration-300 ease-in-out lg:translate-x-0 lg:static lg:inset-auto lg:flex",
-          sidebarOpen ? "translate-x-0" : "-translate-x-full"
-        )}
-      >
-        <div className="flex flex-col h-full">
-          <div className="flex items-center h-16 px-4 border-b border-slate-200">
-            <div className="flex items-center gap-2 font-semibold text-slate-900">
-              <Activity className="h-6 w-6 text-blue-600" />
-              <span>ATARI</span>
-            </div>
-            <Button
-              variant="ghost"
-              size="icon"
-              className="ml-auto lg:hidden"
-              onClick={() => setSidebarOpen(false)}
-            >
-              <X className="h-5 w-5" />
-              <span className="sr-only">Close sidebar</span>
-            </Button>
-          </div>
-          <nav className="flex-1 overflow-auto py-4">
-            <div className="px-3 py-2">
-              <h2 className="mb-2 px-4 text-xs font-semibold tracking-tight text-slate-500">
-                Overview
-              </h2>
-              <div className="space-y-1">
-                <Button
-                  variant="ghost"
-                  className="w-full justify-start gap-2 font-normal"
-                >
-                  <Home className="h-4 w-4" />
-                  Home
-                </Button>
-                <Button
-                  variant="secondary"
-                  className="w-full justify-start gap-2 font-normal"
-                >
-                  <LayoutDashboard className="h-4 w-4" />
-                  Dashboard
-                </Button>
-                <Button
-                  variant="ghost"
-                  className="w-full justify-start gap-2 font-normal"
-                >
-                  <Bell className="h-4 w-4" />
-                  Alerts
-                </Button>
-              </div>
-            </div>
-            <div className="px-3 py-2">
-              <h2 className="mb-2 px-4 text-xs font-semibold tracking-tight text-slate-500">
-                Management
-              </h2>
-              <div className="space-y-1">
-                <Button
-                  variant="ghost"
-                  className="w-full justify-start gap-2 font-normal"
-                >
-                  <Users className="h-4 w-4" />
-                  Patients
-                </Button>
-                <Button
-                  variant="ghost"
-                  className="w-full justify-start gap-2 font-normal"
-                >
-                  <Laptop className="h-4 w-4" />
-                  Kiosks
-                </Button>
-                <Button
-                  variant="ghost"
-                  className="w-full justify-start gap-2 font-normal"
-                >
-                  <MapPin className="h-4 w-4" />
-                  Rooms
-                </Button>
-                <Button
-                  variant="ghost"
-                  className="w-full justify-start gap-2 font-normal"
-                >
-                  <History className="h-4 w-4" />
-                  History
-                </Button>
-              </div>
-            </div>
-          </nav>
-          <div className="border-t border-slate-200 p-4">
-            <Button
-              variant="ghost"
-              className="w-full justify-start gap-2 font-normal"
-            >
-              <Settings className="h-4 w-4" />
-              Settings
-            </Button>
-          </div>
-        </div>
-      </aside>
+      <DashboardSidebar
+        sidebarOpen={sidebarOpen}
+        setSidebarOpen={setSidebarOpen}
+      />
 
       {/* Main content */}
       <div className="flex-1 flex flex-col min-h-screen overflow-hidden">
@@ -424,26 +324,26 @@ export default function Dashboard() {
         <SheetContent className="w-full sm:max-w-xl overflow-auto">
           <SheetHeader className="mb-4">
             <SheetTitle>Patient Details</SheetTitle>
-            <SheetDescription>
-              {selectedPatient && (
-                <div className="flex items-center gap-2 mt-1">
-                  <Badge
-                    variant={
-                      selectedPatient.ctasScore <= 2
-                        ? "destructive"
-                        : selectedPatient.ctasScore === 3
-                        ? "secondary"
-                        : "outline"
-                    }
-                  >
-                    CTAS {selectedPatient.ctasScore}
-                  </Badge>
-                  <span className="text-sm text-slate-500">
-                    ID: {selectedPatient.id}
-                  </span>
-                </div>
-              )}
-            </SheetDescription>
+            {/* <SheetDescription> */}
+            {selectedPatient && (
+              <div className="flex items-center gap-2 mt-1">
+                <Badge
+                  variant={
+                    selectedPatient.ctasScore <= 2
+                      ? "destructive"
+                      : selectedPatient.ctasScore === 3
+                      ? "secondary"
+                      : "outline"
+                  }
+                >
+                  CTAS {selectedPatient.ctasScore}
+                </Badge>
+                <span className="text-sm text-slate-500">
+                  ID: {selectedPatient.id}
+                </span>
+              </div>
+            )}
+            {/* </SheetDescription> */}
           </SheetHeader>
           {selectedPatient && (
             <PatientDetails patient={selectedPatient} />
