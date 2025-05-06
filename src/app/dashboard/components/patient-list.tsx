@@ -1,30 +1,35 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { Clock, MoreHorizontal } from "lucide-react"
-import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
+import { useState } from "react";
+import { Clock, MoreHorizontal } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 // Define the Patient type
 interface Patient {
-  id: string
-  name: string
-  age: number
-  gender: string
-  waitTime: number
-  ctasScore: number
-  chiefComplaint: string
+  id: string;
+  name: string;
+  age: number;
+  gender: string;
+  waitTime: number;
+  ctasScore: number;
+  chiefComplaint: string;
   vitalSigns: {
-    bloodPressure: string
-    heartRate: number
-    respiratoryRate: number
-    temperature: number
-    oxygenSaturation: number
-  }
-  medicalHistory: string[]
-  roomAssignment: string
-  arrivalTime: string
+    bloodPressure: string;
+    heartRate: number;
+    respiratoryRate: number;
+    temperature: number;
+    oxygenSaturation: number;
+  };
+  medicalHistory: string[];
+  roomAssignment: string;
+  arrivalTime: string;
 }
 
 // Replace the mock patient data with Arabic names
@@ -44,7 +49,11 @@ const patients: Patient[] = [
       temperature: 37.2,
       oxygenSaturation: 94,
     },
-    medicalHistory: ["Hypertension", "Type 2 Diabetes", "Previous MI (2019)"],
+    medicalHistory: [
+      "Hypertension",
+      "Type 2 Diabetes",
+      "Previous MI (2019)",
+    ],
     roomAssignment: "ER-04",
     arrivalTime: "10:45 AM",
   },
@@ -63,7 +72,10 @@ const patients: Patient[] = [
       temperature: 37.8,
       oxygenSaturation: 98,
     },
-    medicalHistory: ["Appendectomy (2015)", "No known chronic conditions"],
+    medicalHistory: [
+      "Appendectomy (2015)",
+      "No known chronic conditions",
+    ],
     roomAssignment: "Waiting",
     arrivalTime: "10:12 AM",
   },
@@ -82,7 +94,11 @@ const patients: Patient[] = [
       temperature: 36.9,
       oxygenSaturation: 92,
     },
-    medicalHistory: ["Atrial Fibrillation", "Hypertension", "Previous Stroke (2020)"],
+    medicalHistory: [
+      "Atrial Fibrillation",
+      "Hypertension",
+      "Previous Stroke (2020)",
+    ],
     roomAssignment: "ER-01",
     arrivalTime: "10:52 AM",
   },
@@ -101,7 +117,10 @@ const patients: Patient[] = [
       temperature: 39.2,
       oxygenSaturation: 97,
     },
-    medicalHistory: ["Recurrent ear infections", "No known allergies"],
+    medicalHistory: [
+      "Recurrent ear infections",
+      "No known allergies",
+    ],
     roomAssignment: "Waiting",
     arrivalTime: "10:27 AM",
   },
@@ -120,7 +139,10 @@ const patients: Patient[] = [
       temperature: 36.8,
       oxygenSaturation: 99,
     },
-    medicalHistory: ["Seasonal allergies", "No significant medical history"],
+    medicalHistory: [
+      "Seasonal allergies",
+      "No significant medical history",
+    ],
     roomAssignment: "Waiting",
     arrivalTime: "09:57 AM",
   },
@@ -162,16 +184,16 @@ const patients: Patient[] = [
     roomAssignment: "Waiting",
     arrivalTime: "09:42 AM",
   },
-]
+];
 
 interface PatientListProps {
-  onPatientClick: (patient: Patient) => void
+  onPatientClick: (patient: Patient) => void;
 }
 
 export function PatientList({ onPatientClick }: PatientListProps) {
   const [sortedPatients, setSortedPatients] = useState<Patient[]>(
-    [...patients].sort((a, b) => a.ctasScore - b.ctasScore),
-  )
+    [...patients].sort((a, b) => a.ctasScore - b.ctasScore)
+  );
 
   return (
     <div className="divide-y divide-slate-100">
@@ -187,22 +209,29 @@ export function PatientList({ onPatientClick }: PatientListProps) {
                 patient.ctasScore === 1
                   ? "bg-red-500"
                   : patient.ctasScore === 2
-                    ? "bg-orange-500"
-                    : patient.ctasScore === 3
-                      ? "bg-yellow-500"
-                      : patient.ctasScore === 4
-                        ? "bg-blue-500"
-                        : "bg-green-500"
+                  ? "bg-orange-500"
+                  : patient.ctasScore === 3
+                  ? "bg-yellow-500"
+                  : patient.ctasScore === 4
+                  ? "bg-blue-500"
+                  : "bg-green-500"
               }`}
             />
             <div>
               <div className="font-medium">{patient.name}</div>
               <div className="text-sm text-slate-500">
-                {patient.age}, {patient.gender} • {patient.chiefComplaint.split(",")[0]}
+                {patient.age}, {patient.gender} •{" "}
+                {patient.chiefComplaint.split(",")[0]}
               </div>
               <div className="flex items-center gap-2 mt-1">
                 <Badge
-                  variant={patient.ctasScore <= 2 ? "destructive" : patient.ctasScore === 3 ? "warning" : "outline"}
+                  variant={
+                    patient.ctasScore <= 2
+                      ? "destructive"
+                      : patient.ctasScore === 3
+                      ? "secondary"
+                      : "outline"
+                  }
                 >
                   CTAS {patient.ctasScore}
                 </Badge>
@@ -220,7 +249,10 @@ export function PatientList({ onPatientClick }: PatientListProps) {
             </div>
           </div>
           <DropdownMenu>
-            <DropdownMenuTrigger asChild onClick={(e) => e.stopPropagation()}>
+            <DropdownMenuTrigger
+              asChild
+              onClick={(e) => e.stopPropagation()}
+            >
               <Button variant="ghost" size="icon" className="h-8 w-8">
                 <MoreHorizontal className="h-4 w-4" />
                 <span className="sr-only">Open menu</span>
@@ -235,5 +267,5 @@ export function PatientList({ onPatientClick }: PatientListProps) {
         </div>
       ))}
     </div>
-  )
+  );
 }
