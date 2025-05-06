@@ -1,8 +1,8 @@
 import { useLanguage } from "@/context/LanguageContext";
 import React, { useState } from "react";
-
 import SymptomsGrid from "@/components/SymptomGrid";
 import BodyMap from "./BodyMap";
+
 interface ReasonForVisitProps {
   viewBodyMap: boolean;
   toggleViewBodyMap: () => void;

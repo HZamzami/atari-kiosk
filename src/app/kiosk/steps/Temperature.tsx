@@ -81,15 +81,22 @@ export default function Temperature({
       if (
         response.data.measurement_complete &&
         response.data.temperature &&
-        onTemperatureComplete
+        !isStopped
       ) {
         console.log(response.data);
         const tempValue = parseFloat(response.data.temperature);
-        onTemperatureComplete(true, tempValue);
 
         await axios.post(`${serverUrl}/acknowledge`, {
           request_id: response.data.request_id,
         });
+
+        await axios.post(`${serverUrl}/control`, {
+          command: "stop",
+        });
+
+        setIsStopped(true);
+        setIsProcessing(false);
+        onTemperatureComplete(true, tempValue);      
       }
     } catch (err) {
       console.error("Error fetching metadata:", err);
@@ -112,7 +119,7 @@ export default function Temperature({
   //       setMetadata(prev => prev ? {...prev, temperature: staticTemperature, measurement_complete: true} : null);
   //       onTemperatureComplete(true, staticTemperature);
   //     }
-  //   }, 10);
+  //   }, 10000);
   
   //   return () => clearTimeout(timer);
   // }, []);

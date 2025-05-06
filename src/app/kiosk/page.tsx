@@ -86,7 +86,11 @@ function PatientDataContextPage({
     resetAll,
     medicalHistoryList,
     setMedicalHistoryList,
+    vitalSigns,
     updateVitalSign,
+    reasons,
+    session,
+    setSession,
   } = usePatientData();
 
   const steps = [
@@ -120,6 +124,12 @@ function PatientDataContextPage({
       if (!isPatientVerified && newStep > step) {
         return;
       }
+    }
+    if (step === 0 && newStep === 1) {
+      const session = {
+        start_time: new Date().toISOString().split(".")[0],
+      }
+      setSession(session);
     }
     if (newStep === 1) {
       setIsFingerprintVerified(true);
@@ -354,17 +364,19 @@ function PatientDataContextPage({
               ${!showRightArrow && "invisible"}
               `}
           >
-            <NavigationButton
-              text={t("submit").toLocaleUpperCase()}
-              symbol="↵"
-              onClick={() => {
-                if (viewBodyMap) {
-                  toggleViewBodyMap();
-                }
-                nextStep();
-              }}
-              className="cursor-pointer"
-            />
+            {session && personalInfo && (vitalSigns != null) && (
+              <NavigationButton
+                text={t("submit").toLocaleUpperCase()}
+                symbol="↵"
+                onClick={() => {
+                  if (viewBodyMap) {
+                    toggleViewBodyMap();
+                  }
+                  nextStep();
+                }}
+                className="cursor-pointer"
+              />
+            )}
 
             {!showLeftArrow && (
               <NavigationButton

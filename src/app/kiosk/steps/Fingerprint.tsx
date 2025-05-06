@@ -137,6 +137,7 @@ export default function Fingerprint({
           }
           if (data.status === "captured") {
             if (data.match) {
+              console.log(data.template);
               setStatus("verifying");
               const verificationResult = await verifyFingerprint(
                 data.template
