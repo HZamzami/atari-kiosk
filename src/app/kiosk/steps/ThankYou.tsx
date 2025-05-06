@@ -26,8 +26,15 @@ interface ClinicAssignment {
 }
 
 export default function ThankYou() {
-  const { reasons, vitalSigns, personalInfo, medicalHistoryList, session, setClinicAssignment, clinicAssignment } =
-    usePatientData();
+  const {
+    reasons,
+    vitalSigns,
+    personalInfo,
+    medicalHistoryList,
+    session,
+    setClinicAssignment,
+    clinicAssignment,
+  } = usePatientData();
   const { t } = useLanguage();
   const [ctasData, setCtasData] = useState<CtasResponse | null>(null);
   const [loading, setLoading] = useState(true);
@@ -70,19 +77,24 @@ export default function ThankYou() {
   }, [vitalSigns, reasons]);
 
   const processPatientSession = async (ctaslvl: number) => {
-    if (!session || !personalInfo || processingSession || (vitalSigns === null)) return;
-    
+    if (
+      !session ||
+      !personalInfo ||
+      processingSession ||
+      vitalSigns === null
+    )
+      return;
+
     setProcessingSession(true);
     //action, session, session_id, patient_id, reasons, vitalSigns, triage, ctaslvl
     const triage: TriageType = {
       patient_id: personalInfo.patient_id,
-      session_id,
       assigned_lvl: ctaslvl,
       algo_lvl: ctaslvl,
       ml_lvl: ctaslvl,
       justification: reasons.join(","),
-    }
-    
+    };
+
     try {
       const response = await fetch("/api/session", {
         method: "POST",
@@ -96,14 +108,14 @@ export default function ThankYou() {
           triage,
           vitalSigns,
           reasons,
-          ctaslvl
+          ctaslvl,
         }),
       });
-      
+
       if (!response.ok) {
         throw new Error("Failed to process session");
       }
-      
+
       const data = await response.json();
       if (data.success) {
         setClinicAssignment(data);
