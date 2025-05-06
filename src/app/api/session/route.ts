@@ -152,7 +152,7 @@ export async function POST(req: NextRequest) {
       )[0];
 
       if (clinic != null) {
-        const assigned = {
+        const assignemnt = {
           session_id,
           patient_id,
           room: clinic.room
@@ -162,7 +162,7 @@ export async function POST(req: NextRequest) {
           headers: {
             "Content-Type": "application/json"
           },
-          body: JSON.stringify(assigned)
+          body: JSON.stringify(assignemnt)
         });
         if (!assignmentResponse.ok) {
           const errorData = await assignmentResponse.text();
@@ -171,24 +171,36 @@ export async function POST(req: NextRequest) {
             { status: assignmentResponse.status }
           );
         }
+
+        const assignedRespose = await fetch(`${server}/assigned?patient_id=${patient_id}&session_id=${session_id}`, {
+          method: "GET",
+        });
+        if (!assignedRespose.ok) {
+          const errorData = await assignedRespose.text();
+          return NextResponse.json(
+            { error: errorData || "Failed to create" },
+            { status: assignedRespose.status }
+          );
+        }
+        const assigned = await assignedRespose.json();
+
         return NextResponse.json({
           clinic: clinic,
           assigned: assigned
         });
       }
-  }
-
+    }
     else {
-    return NextResponse.json(
-      { error: "Invalid action" },
-      { status: 400 }
-    );
-  }
+      return NextResponse.json(
+        { error: "Invalid action" },
+        { status: 400 }
+      );
+    }
   } catch (error) {
     console.error("Session processing error:", error);
-    return NextResponse.json(
-      { error: "Internal server error" },
-      { status: 500 }
-    );
+      return NextResponse.json(
+        { error: "Internal server error" },
+        { status: 500 }
+      );
   }
 }
