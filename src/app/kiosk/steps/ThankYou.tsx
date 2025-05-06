@@ -1,6 +1,7 @@
 import { useLanguage } from "@/context/LanguageContext";
 import React, { useEffect, useState } from "react";
 import { usePatientData } from "@/context/PatientDataContext";
+import { TriageType } from "@/types/triage";
 
 interface CtasResponse {
   ctasLevel: number;
@@ -9,13 +10,29 @@ interface CtasResponse {
   recommendedActions: string[];
 }
 
+interface ClinicAssignment {
+  clinic: {
+    room_number: string;
+    name: string;
+    department: string;
+  };
+  assignment: {
+    id: number;
+    session_id: number;
+    patient_id: number;
+    clinic_room: string;
+    created_at: string;
+  };
+}
+
 export default function ThankYou() {
-  const { reasons, vitalSigns, personalInfo, medicalHistoryList } =
+  const { reasons, vitalSigns, personalInfo, medicalHistoryList, session, setClinicAssignment, clinicAssignment } =
     usePatientData();
   const { t } = useLanguage();
   const [ctasData, setCtasData] = useState<CtasResponse | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
+  const [processingSession, setProcessingSession] = useState(false);
 
   useEffect(() => {
     const fetchCtasLevel = async () => {
@@ -39,9 +56,11 @@ export default function ThankYou() {
 
         const data = await response.json();
         setCtasData(data);
+        processPatientSession(data.ctasLevel);
       } catch (err) {
         console.error("Error fetching CTAS level:", err);
         setError(true);
+        processPatientSession(4);
       } finally {
         setLoading(false);
       }
@@ -49,6 +68,50 @@ export default function ThankYou() {
 
     fetchCtasLevel();
   }, [vitalSigns, reasons]);
+
+  const processPatientSession = async (ctaslvl: number) => {
+    if (!session || !personalInfo || processingSession || (vitalSigns === null)) return;
+    
+    setProcessingSession(true);
+    //action, session, session_id, patient_id, reasons, vitalSigns, triage, ctaslvl
+    const triage: TriageType = {
+      patient_id: personalInfo.patient_id,
+      session_id,
+      assigned_lvl: ctaslvl,
+      algo_lvl: ctaslvl,
+      ml_lvl: ctaslvl,
+      justification: reasons.join(","),
+    }
+    
+    try {
+      const response = await fetch("/api/session", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          action: "create_session",
+          session: session,
+          patient_id: personalInfo.patient_id,
+          triage,
+          vitalSigns,
+          reasons,
+          ctaslvl
+        }),
+      });
+      
+      if (!response.ok) {
+        throw new Error("Failed to process session");
+      }
+      
+      const data = await response.json();
+      if (data.success) {
+        setClinicAssignment(data);
+      }
+    } catch (error) {
+      console.error("Error processing session:", error);
+    }
+  };
 
   const getCtasInstructions = (level: number) => {
     return t(`ctas_${level}_instruction`) || t("ctas_4_instruction");

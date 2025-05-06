@@ -76,12 +76,7 @@ export default function Oximeter({ onOximeterComplete }: OximeterProps) {
 
   const connectWebSocket = () => {
     try {
-      let wsUrl = process.env.NEXT_PUBLIC_WSS_BRIDGE_URL || "wss://localhost:8779";
-      if (wsUrl.startsWith('ws://') && window.location.protocol === 'https:') {
-        wsUrl = wsUrl.replace('ws://', 'wss://');
-        console.log("Converting to secure WebSocket:", wsUrl);
-      }
-      const socket = new WebSocket(wsUrl);
+      const socket = new WebSocket(process.env.NEXT_PUBLIC_WSS_BRIDGE_URL || "wss://localhost:8779");
       wsRef.current = socket;
 
       timeoutRef.current = setTimeout(() => {
