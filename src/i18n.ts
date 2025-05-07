@@ -106,6 +106,8 @@ export const messages = {
     spo_abbr: "SpO₂",
     hr_abbr: "HR",
     no_symptoms_added: "No Symptoms Added",
+    room_number: "Room Number",
+    waiting_number: "Waiting Number",
   },
   ar: {
     welcome: "مرحبًا بك في جهاز الطوارئ!",
@@ -212,5 +214,7 @@ export const messages = {
     spo_abbr: "تشبع الأكسجين",
     hr_abbr: "النبض",
     no_symptoms_added: "لم تضف أعراض",
+    room_number: "رقم العيادة",
+    waiting_number: "رقم الانتظار",
   },
 };

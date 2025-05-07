@@ -9,7 +9,7 @@ interface CtasResponse {
   keyFactors: string[];
   recommendedActions: string[];
 }
-
+// clinic number & waiting number
 export default function ThankYou() {
   const {
     reasons,
@@ -182,6 +182,30 @@ export default function ThankYou() {
               <div className="mt-6 text-2xl font-bold text-blue-500">
                 {t("take_your_ticket")}
               </div>
+
+              {/* Added room number and waiting number */}
+              {clinic && assigned && (
+                <div className="mt-4 p-4 border-2 border-blue-300 rounded-lg bg-blue-50">
+                  <div className="grid grid-cols-2 gap-4 text-lg">
+                    <div>
+                      <p className="text-gray-500">
+                        {t("room_number")}
+                      </p>
+                      <p className="text-2xl font-bold text-blue-600">
+                        {clinic.room}
+                      </p>
+                    </div>
+                    <div>
+                      <p className="text-gray-500">
+                        {t("waiting_number")}
+                      </p>
+                      <p className="text-2xl font-bold text-blue-600">
+                        {assigned.waiting}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              )}
             </div>
           </>
         )}
