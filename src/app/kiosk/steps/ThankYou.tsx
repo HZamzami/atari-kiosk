@@ -1,6 +1,7 @@
 import { useLanguage } from "@/context/LanguageContext";
 import React, { useEffect, useState } from "react";
 import { usePatientData } from "@/context/PatientDataContext";
+import { Train } from "lucide-react";
 
 interface CtasResponse {
   ctasLevel: number;
@@ -57,7 +58,7 @@ export default function ThankYou() {
     if (!session || !personalInfo || processingSession || (vitalSigns === null)) return;
     
     setProcessingSession(true);
-    //action, session, session_id, patient_id, reasons, vitalSigns, triage, ctaslvl
+    session.end_time = new Date().toISOString().split(".")[0];
     const triage = {
       patient_id: personalInfo.patient_id,
       session_id: null,
@@ -74,11 +75,11 @@ export default function ThankYou() {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          action: "create_session",
+          action: "post_session",
           session: session,
           patient_id: personalInfo.patient_id,
           session_id: null,
-          triage: null,
+          triage: triage,
           vitalSigns,
           reasons,
           ctaslvl

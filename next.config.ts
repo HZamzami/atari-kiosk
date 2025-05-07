@@ -4,7 +4,7 @@ const nextConfig: NextConfig = {
   eslint: {
     ignoreDuringBuilds: true, // Disables ESLint during `next build`
   },
-  reactStrictMode: true,
+  reactStrictMode: false,
   trailingSlash: true,
   cleanDistDir: true,
   compress: true,

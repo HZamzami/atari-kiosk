@@ -1,3 +1,4 @@
+import Temperature from "@/app/kiosk/steps/Temperature";
 import { ClinicType } from "@/types/clinic";
 import { NextRequest, NextResponse } from "next/server";
 
@@ -45,6 +46,7 @@ export async function POST(req: NextRequest) {
           { status: response.status }
         );
       }
+      console.log(response.body);
       
       if (!session_id || !patient_id || !vitalSigns) {
         return NextResponse.json(
@@ -55,7 +57,11 @@ export async function POST(req: NextRequest) {
       const vitalSignsData = {
           patient_id,
           session_id,
-          ...vitalSigns,
+          respiratory_rate: vitalSigns.respiratoryRate,
+          oxygen_saturation: vitalSigns.oxygenSaturation,
+          blood_pressure: vitalSigns.bloodPressure,
+          heart_rate: vitalSigns.heartRate,
+          body_temp: vitalSigns.temperature,
       };
       const vitalSignsResponse = await fetch(`${server}/vital_signs`, {
           method: "POST",
@@ -71,6 +77,7 @@ export async function POST(req: NextRequest) {
           { status: vitalSignsResponse.status }
         );
       }
+      console.log(vitalSignsResponse.body);
 
       if (!patient_id || !session_id || !reasons || reasons.length === 0) {
         return NextResponse.json(
@@ -100,6 +107,7 @@ export async function POST(req: NextRequest) {
           { status: reasonsResponse.status }
         );
       }
+      console.log(reasonsResponse.body);
       
       if (!session_id || !patient_id || !triage) {
         return NextResponse.json(
@@ -122,6 +130,7 @@ export async function POST(req: NextRequest) {
           { status: triageResponse.status }
         );
       }
+      console.log(triageResponse.body);
 
       if (!session_id || !patient_id || !ctaslvl) {
         return NextResponse.json(
@@ -139,8 +148,9 @@ export async function POST(req: NextRequest) {
           { status: clinicsResponse.status }
         );
       }
+      console.log(clinicsResponse.body);
+
       const clinics = await clinicsResponse.json();
-      
       let selectedClinic: ClinicType[] = [];
       if (clinics && clinics.length > 0) {
         selectedClinic = clinics.filter(
@@ -171,6 +181,7 @@ export async function POST(req: NextRequest) {
             { status: assignmentResponse.status }
           );
         }
+        console.log(assignmentResponse.body);
 
         const assignedRespose = await fetch(`${server}/assigned?patient_id=${patient_id}&session_id=${session_id}`, {
           method: "GET",
@@ -183,6 +194,7 @@ export async function POST(req: NextRequest) {
           );
         }
         const assigned = await assignedRespose.json();
+        console.log(assigned);
 
         return NextResponse.json({
           clinic: clinic,

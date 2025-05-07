@@ -140,7 +140,9 @@ export default function Fingerprint({
               console.log(data.template);
               setStatus("verifying");
               const verificationResult = await verifyFingerprint(
-                data.template
+                data.template,
+                false,
+                null,
               );
               if (verificationResult.verified) {
                 shouldRestartRef.current = false;
@@ -165,14 +167,23 @@ export default function Fingerprint({
               console.log(
                 "Invalid template length, or unregistred patient"
               );
-              shouldRestartRef.current = false;
-              setStatus("verified");
-              socket.close();
-              onFingerprintComplete(
+              console.log(data.template);
+              setStatus("verifying");
+              const verificationResult = await verifyFingerprint(
+                data.template,
                 true,
                 guestP,
-                []
               );
+              if (verificationResult.verified) {
+                shouldRestartRef.current = false;
+                setStatus("verified");
+                socket.close();
+                onFingerprintComplete(
+                  true,
+                  verificationResult.patientData,
+                  verificationResult.medicalHistory
+                );
+              }
             }
           }
         } catch (error) {
@@ -213,14 +224,50 @@ export default function Fingerprint({
     };
   }, []);
 
-  const verifyFingerprint = async (template: string) => {
+  // useEffect(() => {
+  //   if (
+  //     status === "initializing" ||
+  //     status === "waiting" ||
+  //     status === "scanning"
+  //   ) {
+  //     const timer = setTimeout(async () => {
+  //       // Force success with static data after 5 seconds
+  //       setStatus("verifying");
+  //       const verificationResult = await verifyFingerprint(
+  //         "",
+  //         true,
+  //         guestP,
+  //       );
+  //       if (verificationResult.verified) {
+  //         shouldRestartRef.current = false;
+  //         setStatus("verified");
+  //         onFingerprintComplete(
+  //           true,
+  //           verificationResult.patientData,
+  //           verificationResult.medicalHistory
+  //         );
+  //       }
+  //       if (wsRef.current) {
+  //         wsRef.current.close();
+  //       }
+  //     }, 1000);
+
+  //     return () => clearTimeout(timer);
+  //   }
+  // }, [status, onFingerprintComplete]);
+
+  const verifyFingerprint = async (template: string, isGuest: boolean, guest: PersonalPatientDataType | null) => {
     try {
       const response = await fetch("/api/fingerprint", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ template }),
+        body: JSON.stringify({ 
+          template,
+          isGuest,
+          guest,
+        }),
       });
 
       const result = await response.json();
@@ -239,25 +286,6 @@ export default function Fingerprint({
       };
     }
   };
-
-  // useEffect(() => {
-  //   if (
-  //     status === "initializing" ||
-  //     status === "waiting" ||
-  //     status === "scanning"
-  //   ) {
-  //     const timer = setTimeout(() => {
-  //       // Force success with static data after 5 seconds
-  //       setStatus("verified");
-  //       onFingerprintComplete(true, STATIC_PATIENT_DATA);
-  //       if (wsRef.current) {
-  //         wsRef.current.close();
-  //       }
-  //     }, 1000); // 5 seconds delay
-
-  //     return () => clearTimeout(timer);
-  //   }
-  // }, [status, onFingerprintComplete]);
 
   return (
     <div className="flex flex-col items-center justify-center h-full space-y-6">

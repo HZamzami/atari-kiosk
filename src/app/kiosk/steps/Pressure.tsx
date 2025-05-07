@@ -24,34 +24,34 @@ export default function Pressure({ onPressureComplete }: PressureProps) {
   const wsRef = useRef<WebSocket | null>(null);
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
 
-  // useEffect(() => {
-  //   // Function to handle space key press
-  //   const handleKeyPress = (event: KeyboardEvent) => {
-  //     // Respond to space key or Enter key
-  //     if ((event.code === 'Space' || event.key === ' ' || event.key === 'Enter') &&
-  //       (status === "initializing" || status === "waiting" || status === "measuring")) {
-  //       console.log("Setting static blood pressure data via key press");
-  //       const staticBP = "114/78";
+  useEffect(() => {
+    // Function to handle space key press
+    const handleKeyPress = (event: KeyboardEvent) => {
+      // Respond to space key or Enter key
+      if ((event.code === 'Space' || event.key === ' ' || event.key === 'Enter') &&
+        (status === "initializing" || status === "waiting" || status === "measuring")) {
+        console.log("Setting static blood pressure data via key press");
+        const staticBP = "114/78";
 
-  //       setBloodPressure(staticBP);
-  //       setStatus("complete");
+        setBloodPressure(staticBP);
+        setStatus("complete");
 
-  //       onPressureComplete(true, staticBP);
+        onPressureComplete(true, staticBP);
 
-  //       if (wsRef.current) {
-  //         wsRef.current.close();
-  //       }
-  //     }
-  //   };
+        if (wsRef.current) {
+          wsRef.current.close();
+        }
+      }
+    };
 
-  //   // Add event listener for key press
-  //   window.addEventListener('keydown', handleKeyPress);
+    // Add event listener for key press
+    window.addEventListener('keydown', handleKeyPress);
 
-  //   // Clean up event listener on component unmount
-  //   return () => {
-  //     window.removeEventListener('keydown', handleKeyPress);
-  //   };
-  // }, [status, onPressureComplete]);
+    // Clean up event listener on component unmount
+    return () => {
+      window.removeEventListener('keydown', handleKeyPress);
+    };
+  }, [status, onPressureComplete]);
 
   useEffect(() => {
     connectWebSocket();

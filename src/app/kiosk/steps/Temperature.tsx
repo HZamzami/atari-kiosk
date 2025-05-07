@@ -110,19 +110,19 @@ export default function Temperature({
     }
   };
   
-  // useEffect(() => {
-  //   // Force success with static data after 5 seconds
-  //   const timer = setTimeout(() => {
-  //     if (!metadata?.temperature) {
-  //       const staticTemperature = 36.8;
-  //       console.log("Setting static temperature data:", staticTemperature);
-  //       setMetadata(prev => prev ? {...prev, temperature: staticTemperature, measurement_complete: true} : null);
-  //       onTemperatureComplete(true, staticTemperature);
-  //     }
-  //   }, 10000);
+  useEffect(() => {
+    // Force success with static data after 5 seconds
+    const timer = setTimeout(() => {
+      if (!metadata?.temperature) {
+        const staticTemperature = 36.8;
+        console.log("Setting static temperature data:", staticTemperature);
+        setMetadata(prev => prev ? {...prev, temperature: staticTemperature, measurement_complete: true} : null);
+        onTemperatureComplete(true, staticTemperature);
+      }
+    }, 10000);
   
-  //   return () => clearTimeout(timer);
-  // }, []);
+    return () => clearTimeout(timer);
+  }, []);
 
   const handleStartStream = async () => {
     try {
@@ -255,16 +255,11 @@ export default function Temperature({
             className="w-full h-full object-cover bg-gray-900"
           />
         ) : (
-          <div className="w-full h-full bg-gray-900  flex items-center justify-center">
-            <p className="text-white text-xl">{statusMessage || "Waiting for connection..."}</p>
-          </div>
-        )}
-        {!isConnected && (
           <div className="w-full h-full bg-gray-900 flex flex-col items-center justify-center p-4 text-center text-white text-xl">
             <p>{statusMessage || "Camera Preview"}</p>
             {error && <p className="text-red-400 mt-2">{error}</p>}
           </div>
-        )}
+        )}        
       </div>
       <div className="metadata-container">
         {metadata && (
