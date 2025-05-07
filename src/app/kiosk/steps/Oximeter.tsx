@@ -30,34 +30,34 @@ export default function Oximeter({ onOximeterComplete }: OximeterProps) {
   const wsRef = useRef<WebSocket | null>(null);
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
 
-  useEffect(() => {
-    // Force success with static oximeter data after 5 seconds
-    const staticDataTimer = setTimeout(() => {
-      if (status === "initializing" || status === "waiting" || status === "measuring") {
-        console.log("Setting static oximeter data");
-        const staticSpo2 = 99.5;
-        const staticHeartRate = 70;
-        const staticRespiratoryRate = 12;
+  // useEffect(() => {
+  //   // Force success with static oximeter data after 5 seconds
+  //   const staticDataTimer = setTimeout(() => {
+  //     if (status === "initializing" || status === "waiting" || status === "measuring") {
+  //       console.log("Setting static oximeter data");
+  //       const staticSpo2 = 99.5;
+  //       const staticHeartRate = 70;
+  //       const staticRespiratoryRate = 12;
         
-        setSpo2(staticSpo2);
-        setHeartRate(staticHeartRate);
-        setRespiratoryRate(staticRespiratoryRate);
-        setStatus("complete");
+  //       setSpo2(staticSpo2);
+  //       setHeartRate(staticHeartRate);
+  //       setRespiratoryRate(staticRespiratoryRate);
+  //       setStatus("complete");
         
-        onOximeterComplete(true, {
-          spo2: staticSpo2,
-          heartRate: staticHeartRate,
-          respiratoryRate: staticRespiratoryRate
-        });
+  //       onOximeterComplete(true, {
+  //         spo2: staticSpo2,
+  //         heartRate: staticHeartRate,
+  //         respiratoryRate: staticRespiratoryRate
+  //       });
         
-        if (wsRef.current) {
-          wsRef.current.close();
-        }
-      }
-    }, 10000);
+  //       if (wsRef.current) {
+  //         wsRef.current.close();
+  //       }
+  //     }
+  //   }, 10000);
     
-    return () => clearTimeout(staticDataTimer);
-  }, [status, onOximeterComplete]);
+  //   return () => clearTimeout(staticDataTimer);
+  // }, [status, onOximeterComplete]);
   
   useEffect(() => {
     connectWebSocket();

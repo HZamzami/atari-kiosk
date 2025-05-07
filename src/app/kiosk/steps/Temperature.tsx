@@ -110,19 +110,19 @@ export default function Temperature({
     }
   };
   
-  useEffect(() => {
-    // Force success with static data after 5 seconds
-    const timer = setTimeout(() => {
-      if (!metadata?.temperature) {
-        const staticTemperature = 36.8;
-        console.log("Setting static temperature data:", staticTemperature);
-        setMetadata(prev => prev ? {...prev, temperature: staticTemperature, measurement_complete: true} : null);
-        onTemperatureComplete(true, staticTemperature);
-      }
-    }, 10000);
+  // useEffect(() => {
+  //   // Force success with static data after 5 seconds
+  //   const timer = setTimeout(() => {
+  //     if (!metadata?.temperature) {
+  //       const staticTemperature = 36.8;
+  //       console.log("Setting static temperature data:", staticTemperature);
+  //       setMetadata(prev => prev ? {...prev, temperature: staticTemperature, measurement_complete: true} : null);
+  //       onTemperatureComplete(true, staticTemperature);
+  //     }
+  //   }, 10000);
   
-    return () => clearTimeout(timer);
-  }, []);
+  //   return () => clearTimeout(timer);
+  // }, []);
 
   const handleStartStream = async () => {
     try {

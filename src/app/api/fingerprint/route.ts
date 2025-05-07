@@ -18,7 +18,7 @@ export async function POST(request: Request) {
       fingerprint: template
     };
     const server = process.env.DB_API_URL || "https://localhost:5050";
-
+    console.log(isGuest)
     if (!isGuest) {
       if (!template) {
         return NextResponse.json(
@@ -128,7 +128,7 @@ export async function POST(request: Request) {
 
     } else {
       const UpdateGuestPatientResponse = await fetch(
-        server + "/patients",
+        server + "patients/patient",
         {
           method: "PUT",
           headers: {

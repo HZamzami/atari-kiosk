@@ -29,6 +29,7 @@ export default function Fingerprint({
   const [error, setError] = useState<string | null>(null);
   const wsRef = useRef<WebSocket | null>(null);
   const retryCountRef = useRef(0);
+  const max = 10;
   const shouldRestartRef = useRef(true); 
   const guestP = {
     national_id: "0000000000",
@@ -68,7 +69,7 @@ export default function Fingerprint({
     // Delay slightly before attempting reconnection
     setTimeout(() => {
       webSocket();
-    }, 1000);
+    }, 5000);
   };
   const webSocket = () => {
     if (wsRef.current) {
@@ -184,6 +185,7 @@ export default function Fingerprint({
                   verificationResult.medicalHistory
                 );
               }
+              console.log(verificationResult.message);
             }
           }
         } catch (error) {
@@ -213,7 +215,7 @@ export default function Fingerprint({
   };
 
   useEffect(() => {
-    if (status !== "verified" && status !== "failed") {
+    if (status !== "verified" && status !== "failed" && status !== "verifying") {
       webSocket();
     }
 
