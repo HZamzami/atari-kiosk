@@ -1,5 +1,5 @@
 import { useLanguage } from "@/context/LanguageContext";
-import React, { useEffect } from "react";
+import React from "react";
 import { Button } from "../../../components/ui/button";
 
 // export default function Introduction() {
@@ -12,19 +12,7 @@ interface IntroductionProps {
 
 export default function Introduction({ onNext }: IntroductionProps) {
   const { setLocale } = useLanguage();
-  useEffect(() => {
-    // Call the printer API when the component mounts
-    fetch("/api/printer", {
-      method: "GET",
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        console.log("Printer response:", data);
-      })
-      .catch((error) => {
-        console.error("Printer error:", error);
-      });
-  }, []);
+
   return (
     <div className="flex flex-col items-center justify-center h-full space-y-8">
       <h1 className="text-4xl font-bold text-center">
