@@ -132,7 +132,7 @@ function PatientDataContextPage({
     if (step === 0 && newStep === 1) {
       const session = {
         start_time: new Date().toISOString().split(".")[0],
-      }
+      };
       setSession(session);
     }
     if (newStep === 1) {
@@ -368,7 +368,7 @@ function PatientDataContextPage({
               ${!showRightArrow && "invisible"}
               `}
           >
-            {session && personalInfo && (vitalSigns != null) && (
+            {session && personalInfo && vitalSigns != null && (
               <NavigationButton
                 text={t("submit").toLocaleUpperCase()}
                 symbol="↵"
