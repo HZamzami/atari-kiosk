@@ -25,8 +25,8 @@ export interface Patient {
   first_name: string;
   middle_name: string;
   last_name: string;
-  email?: string;
-  phone?: string;
+  email: string;
+  phone: string;
   patient_id: string;
   birth_date: string;
   gender: string;
@@ -134,9 +134,8 @@ const apiService = {
     update: (patient: Patient) => api.put("/patient", patient),
     delete: (patientId: string) =>
       api.delete(`/patient?patient_id=${patientId}`),
-    getAll: (limit: number, offset: number) =>
+    getAll: (limit: number = 20, offset: number = 0) =>
       api.get(`/patients?limit=${limit}&offset=${offset}`),
-
     search: (term: string) => api.get(`/patient/search?${term}`),
   },
 

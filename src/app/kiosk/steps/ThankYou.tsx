@@ -11,8 +11,17 @@ interface CtasResponse {
 }
 
 export default function ThankYou() {
-  const { reasons, vitalSigns, personalInfo, medicalHistoryList, session, setClinic, clinic, setAssigned, assigned } =
-    usePatientData();
+  const {
+    reasons,
+    vitalSigns,
+    personalInfo,
+    medicalHistoryList,
+    session,
+    setClinic,
+    clinic,
+    setAssigned,
+    assigned,
+  } = usePatientData();
   const { t } = useLanguage();
   const [ctasData, setCtasData] = useState<CtasResponse | null>(null);
   const [loading, setLoading] = useState(true);
@@ -55,8 +64,14 @@ export default function ThankYou() {
   }, [vitalSigns, reasons]);
 
   const processPatientSession = async (ctaslvl: number) => {
-    if (!session || !personalInfo || processingSession || (vitalSigns === null)) return;
-    
+    if (
+      !session ||
+      !personalInfo ||
+      processingSession ||
+      vitalSigns === null
+    )
+      return;
+
     setProcessingSession(true);
     session.end_time = new Date().toISOString().split(".")[0];
     const triage = {
@@ -67,7 +82,7 @@ export default function ThankYou() {
       ml_lvl: ctaslvl,
       justification: reasons.join(","),
     };
-    
+
     try {
       const response = await fetch("/api/session", {
         method: "POST",
@@ -82,14 +97,14 @@ export default function ThankYou() {
           triage: triage,
           vitalSigns,
           reasons,
-          ctaslvl
+          ctaslvl,
         }),
       });
-      
+
       if (!response.ok) {
         throw new Error("Failed to process session");
       }
-      
+
       const data = await response.json();
       if (data.success) {
         setClinic(data.clinic);
